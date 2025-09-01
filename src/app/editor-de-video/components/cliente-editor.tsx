@@ -83,6 +83,32 @@ export function EditorClient() {
     setIsReady(true);
   }, [searchParams]);
 
+  // Gera a sombra do texto para simular um contorno.
+  // Isso cria um contorno mais suave e que não sobrepõe o texto.
+  const createTextStrokeShadow = (width: number, color: string): string => {
+    if (width === 0) return "none";
+    const shadows = [];
+    for (let x = -width; x <= width; x++) {
+      for (let y = -width; y <= width; y++) {
+        if (Math.sqrt(x * x + y * y) <= width) {
+          shadows.push(`${x}px ${y}px 0 ${color}`);
+        }
+      }
+    }
+    return shadows.join(", ");
+  };
+  
+  const textStrokeShadow = createTextStrokeShadow(textStrokeWidth, textStrokeColor);
+  const mainTextShadow = textShadowBlur > 0 ? `2px 2px ${textShadowBlur}px rgba(0,0,0,0.8)` : "none";
+  
+  const combinedTextShadow = 
+    textStrokeShadow !== "none" && mainTextShadow !== "none"
+      ? `${textStrokeShadow}, ${mainTextShadow}`
+      : textStrokeShadow !== "none"
+      ? textStrokeShadow
+      : mainTextShadow;
+
+
   // Estilos CSS para o texto, aplicados dinamicamente.
   const textStyle: EstiloTexto = {
     fontFamily: fontFamily,
@@ -91,10 +117,7 @@ export function EditorClient() {
     fontStyle: fontStyle,
     color: textColor,
     textAlign: textAlign,
-    textShadow: textShadowBlur > 0 ? `2px 2px ${textShadowBlur}px rgba(0,0,0,0.8)` : "none",
-    WebkitTextStrokeWidth: `${textStrokeWidth}px`,
-    WebkitTextStrokeColor: textStrokeColor,
-    WebkitTextFillColor: textColor,
+    textShadow: combinedTextShadow,
     lineHeight: 1.3,
   };
   
