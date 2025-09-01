@@ -2,17 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { categories, quotes } from "@/lib/data";
+import { categories, quotes } from "@/lib/dados";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Film } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
+// Página principal que exibe uma lista de frases que podem ser filtradas e selecionadas.
 export default function PhrasesPage() {
+  // Estado para armazenar o termo de busca inserido pelo usuário.
   const [searchTerm, setSearchTerm] = useState("");
+  // Estado para armazenar a categoria de frase selecionada.
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Filtra as frases com base no termo de busca e na categoria selecionada.
   const filteredQuotes = quotes.filter(
     (quote) =>
       quote.text.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -23,10 +27,10 @@ export default function PhrasesPage() {
     <div className="container mx-auto py-8 px-4">
       <div className="text-center mb-8">
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
-          Find Your Inspiration
+          Encontre Sua Inspiração
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">
-          Browse through our collection of quotes and create your next viral video.
+          Navegue por nossa coleção de frases e crie seu próximo vídeo viral.
         </p>
       </div>
 
@@ -35,7 +39,7 @@ export default function PhrasesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search for a phrase..."
+            placeholder="Buscar por uma frase..."
             className="pl-10 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -50,7 +54,7 @@ export default function PhrasesPage() {
                         onClick={() => setSelectedCategory(null)}
                         className="rounded-full"
                     >
-                        All
+                        Todas
                     </Button>
                     {categories.map((category) => (
                         <Button
@@ -76,10 +80,10 @@ export default function PhrasesPage() {
               <span className="mt-4 inline-block bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">{quote.category}</span>
             </CardContent>
             <div className="p-6 pt-0">
-                <Link href={`/editor?quote=${encodeURIComponent(quote.text)}`} passHref>
+                <Link href={`/editor-de-video?quote=${encodeURIComponent(quote.text)}`} passHref>
                     <Button className="w-full" variant="secondary">
                         <Film className="mr-2 h-4 w-4"/>
-                        Create Video
+                        Criar Vídeo
                     </Button>
                 </Link>
             </div>
@@ -88,7 +92,7 @@ export default function PhrasesPage() {
       </div>
       {filteredQuotes.length === 0 && (
         <div className="text-center py-16 text-muted-foreground">
-          <p>No quotes found. Try a different search or category.</p>
+          <p>Nenhuma frase encontrada. Tente uma busca ou categoria diferente.</p>
         </div>
       )}
     </div>
