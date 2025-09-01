@@ -1,3 +1,4 @@
+
 // Componente para a aba "Estilo", que agrupa todos os controles de customização visual do texto.
 
 import {
