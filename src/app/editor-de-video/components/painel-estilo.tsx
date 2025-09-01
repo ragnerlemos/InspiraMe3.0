@@ -9,7 +9,6 @@ import {
   Italic,
   Baseline,
   Paintbrush,
-  Shadow,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -176,7 +175,7 @@ export function PainelEstilo({
             
             {/* Controle de Sombra do Texto */}
             <div className="space-y-4 rounded-lg border p-4">
-                <Label className="flex items-center"><Shadow className="mr-2 h-4 w-4" />Sombra</Label>
+                <Label className="flex items-center"><Paintbrush className="mr-2 h-4 w-4" />Sombra</Label>
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
                         <Label htmlFor="shadow-blur" className="text-xs text-muted-foreground">Desfoque da Sombra</Label>
