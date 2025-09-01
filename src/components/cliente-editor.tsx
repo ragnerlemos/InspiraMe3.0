@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,6 +12,7 @@ import {
   Palette,
   Share2,
   Type,
+  MoveVertical,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,7 @@ export function EditorClient() {
   const [aspectRatio, setAspectRatio] = useState("9:16");
   const [backgroundImage, setBackgroundImage] = useState("");
   const [isReady, setIsReady] = useState(false); // Estado para controlar quando o editor está pronto.
+  const [textVerticalPosition, setTextVerticalPosition] = useState(50); // Posição vertical do texto em porcentagem (50% = centro)
 
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
@@ -148,8 +151,15 @@ export function EditorClient() {
               data-ai-hint="background scenery"
               priority
             />
-            <div className="absolute inset-0 flex items-center justify-center p-8 bg-black/10">
-              <div style={textStyle} className="break-words">
+            <div className="absolute inset-0 p-8 bg-black/10">
+              <div 
+                style={{ 
+                    top: `${textVerticalPosition}%`,
+                    transform: 'translateY(-50%)', 
+                    ...textStyle 
+                }} 
+                className="break-words w-full absolute left-0 px-8"
+              >
                 {text}
               </div>
             </div>
@@ -212,6 +222,24 @@ export function EditorClient() {
                     />
                   </div>
 
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <Label htmlFor="vertical-position" className="flex items-center">
+                        <MoveVertical className="mr-2 h-4 w-4" />
+                        Posição Vertical
+                      </Label>
+                      <span className="text-sm text-muted-foreground">{textVerticalPosition}%</span>
+                    </div>
+                    <Slider
+                      id="vertical-position"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={[textVerticalPosition]}
+                      onValueChange={(value) => setTextVerticalPosition(value[0])}
+                    />
+                  </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="text-color">Cor do Texto</Label>
                      <div className="flex items-center gap-2">
