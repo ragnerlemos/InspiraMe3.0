@@ -7,15 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, RectangleHorizontal, UserCheck, MoveVertical, MoveHorizontal, Image as UserImage, CaseSensitive, AtSign } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, Image as UserImage, CaseSensitive, AtSign } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { PainelFundoProps, TipoFundo, ProporcaoTela } from './tipos';
+import type { PainelFundoProps, TipoFundo } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
-
-const proporcoes: ProporcaoTela[] = ["9:16", "1:1", "16:9"];
 
 // Componente para a aba de Mídia (upload)
 function PainelMidia({ onMediaUpload }: { onMediaUpload: (src: string) => void }) {
@@ -213,7 +211,6 @@ const parseGradient = (value: string) => {
 // Componente principal do Painel de Fundo
 export function PainelFundo({ 
     backgroundStyle, onBackgroundStyleChange, 
-    aspectRatio, onAspectRatioChange,
     showProfileSignature, onShowProfileSignatureChange,
     signaturePositionX, onSignaturePositionXChange,
     signaturePositionY, onSignaturePositionYChange,
@@ -268,24 +265,8 @@ export function PainelFundo({
 
     return (
         <div className="space-y-4">
-             {/* Controles de Proporção da Tela */}
-            <div className="space-y-2">
-                <Label className="flex items-center"><RectangleHorizontal className="mr-2 h-4 w-4" />Proporção da Tela</Label>
-                <div className="grid grid-cols-3 gap-2">
-                    {proporcoes.map((ar) => (
-                        <Button
-                            key={ar}
-                            variant={aspectRatio === ar ? "secondary" : "ghost"}
-                            onClick={() => onAspectRatioChange(ar)}
-                        >
-                            {ar}
-                        </Button>
-                    ))}
-                </div>
-            </div>
-
-            <Separator />
-             {/* Painel de seleção de tipo de fundo, estilizado como botões. */}
+            
+            {/* Painel de seleção de tipo de fundo, estilizado como botões. */}
             <div className="grid grid-cols-3 gap-2">
                  <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}>
                     <ImageIcon className="mr-2 h-4 w-4" /> Mídia
