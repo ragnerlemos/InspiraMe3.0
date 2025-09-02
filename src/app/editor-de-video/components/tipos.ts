@@ -13,6 +13,22 @@ export type EstiloFundo = {
     value: string; // URL da mídia, cor sólida, ou string do gradiente
 };
 
+// Agrupa todo o estado do editor em um único objeto.
+export interface EditorState {
+    text: string;
+    fontFamily: string;
+    fontSize: number;
+    fontWeight: "normal" | "bold";
+    fontStyle: "normal" | "italic";
+    textColor: string;
+    textAlign: "left" | "center" | "right";
+    textShadowBlur: number;
+    textVerticalPosition: number;
+    textStrokeColor: string;
+    textStrokeWidth: number;
+    backgroundStyle: EstiloFundo;
+    aspectRatio: ProporcaoTela;
+}
 
 // Define as propriedades (props) para o componente de visualização do editor.
 export interface VisualizacaoEditorProps {
@@ -25,7 +41,10 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {}
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {
+    onUndo: () => void;
+    canUndo: boolean;
+}
 
 // Define as propriedades para o painel de edição de texto.
 export interface PainelTextoProps {

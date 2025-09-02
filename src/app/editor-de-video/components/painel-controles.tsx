@@ -4,19 +4,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Type, Palette, Download, Share2, ImagePlus } from "lucide-react";
+import { Type, Palette, Download, Share2, ImagePlus, Undo2 } from "lucide-react";
 import { PainelTexto } from "./painel-texto";
 import { PainelEstilo } from "./painel-estilo";
 import { PainelFundo } from "./painel-fundo";
 import type { PainelControlesProps } from "./tipos";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 
 export function PainelControles(props: PainelControlesProps) {
     return (
         <div className="lg:col-span-1">
             <Card className="sticky top-20">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-headline">
+                    <CardTitle className="flex items-center justify-between gap-2 font-headline">
                         Customizar
+                         <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" onClick={props.onUndo} disabled={!props.canUndo}>
+                                        <Undo2 className="h-5 w-5" />
+                                        <span className="sr-only">Desfazer</span>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Desfazer</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
