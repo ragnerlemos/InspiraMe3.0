@@ -43,6 +43,7 @@ export const quotes: Quote[] = [
 
 // Array de modelos de vídeo, cada um com um ID, URL de imagem, dica de IA para a imagem e proporção de tela.
 export const templates = [
+  { id: -2, imageUrl: "", dataAiHint: "perfil de usuário", aspectRatio: "1:1" as const, name: "Modelo Twitter (do Perfil)" },
   { id: -1, imageUrl: "", dataAiHint: "fundo solido", aspectRatio: "9:16" as const, name: "Modelo Padrão" },
-  { id: 1, imageUrl: "https://picsum.photos/id/1018/1080/1920", dataAiHint: "paisagem montanha", aspectRatio: "9:16" as const },
+  { id: 1, imageUrl: "https://picsum.photos/id/1018/1080/1920", dataAiHint: "paisagem montanha", aspectRatio: "9:16" as const, name: "Paisagem na Montanha" },
 ];

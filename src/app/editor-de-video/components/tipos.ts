@@ -1,4 +1,5 @@
 // Arquivo para centralizar as definições de tipos compartilhadas entre os componentes do editor.
+import type { ProfileData } from "@/hooks/use-profile";
 
 // Define as possíveis proporções de tela que podem ser usadas no editor.
 export type ProporcaoTela = "1:1" | "9:16" | "16:9";
@@ -28,6 +29,7 @@ export interface EditorState {
     textStrokeWidth: number;
     backgroundStyle: EstiloFundo;
     aspectRatio: ProporcaoTela;
+    activeTemplateId: number | null;
 }
 
 // Define as propriedades (props) para o componente de visualização do editor.
@@ -37,6 +39,8 @@ export interface VisualizacaoEditorProps {
     text: string;
     textStyle: EstiloTexto;
     textVerticalPosition: number;
+    activeTemplateId: number | null;
+    profile: ProfileData;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
@@ -81,4 +85,11 @@ export interface PainelFundoProps {
     onBackgroundStyleChange: (style: EstiloFundo) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
+}
+
+// Props para o componente de visualização do perfil.
+export interface VisualizacaoPerfilProps {
+    profile: ProfileData;
+    text: string;
+    textStyle: EstiloTexto;
 }

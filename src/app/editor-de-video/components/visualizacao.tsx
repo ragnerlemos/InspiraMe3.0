@@ -4,6 +4,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
+import { VisualizacaoPerfil } from "./visualizacao-perfil";
 
 // Mapeia os valores de proporção de tela para as classes CSS correspondentes do Tailwind.
 const proporcoes: Record<ProporcaoTela, string> = {
@@ -37,9 +38,23 @@ export function VisualizacaoEditor({
     text,
     textStyle,
     textVerticalPosition,
+    activeTemplateId,
+    profile,
 }: VisualizacaoEditorProps) {
 
     const renderBackground = () => {
+        // Se o modelo de perfil estiver ativo, não renderiza fundo de mídia, apenas sólido/gradiente.
+        if (activeTemplateId === -2) {
+             const { type, value } = backgroundStyle;
+             if (type === 'solid') {
+                return <div className="absolute inset-0" style={{ backgroundColor: value }} />;
+            } else if (type === 'gradient') {
+                return <div className="absolute inset-0" style={{ background: value }} />;
+            }
+             return <div className="absolute inset-0 bg-white" />; // Fallback para branco
+        }
+
+
         const { type, value } = backgroundStyle;
         if (type === 'media') {
             const mediaType = getMediaType(value);
@@ -76,29 +91,38 @@ export function VisualizacaoEditor({
         return null; // ou um placeholder de carregamento/erro
     };
 
+     const renderContent = () => {
+        // Se for o modelo de perfil, renderiza a visualização do tweet.
+        if (activeTemplateId === -2) {
+            return <VisualizacaoPerfil profile={profile} text={text} textStyle={textStyle} />;
+        }
+
+        // Renderização padrão para os outros modelos.
+        return (
+            <div className="absolute inset-0 bg-black/10 flex items-center justify-center p-8">
+                <div className="relative w-full h-full">
+                    <div
+                        style={{
+                            ...textStyle,
+                            top: `${textVerticalPosition}%`,
+                            transform: 'translateY(-50%)',
+                        }}
+                        className="break-words w-full absolute transition-all duration-200"
+                    >
+                        {text}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
 
     return (
         <div className="lg:col-span-2 flex flex-col items-center gap-4">
             {/* Contêiner da visualização que se ajusta à proporção de tela selecionada. */}
             <div className={cn("relative w-full max-w-2xl bg-muted rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
                 {renderBackground()}
-                <div className="absolute inset-0 bg-black/10 flex items-center justify-center p-8">
-                    {/* Área que contém o texto, permitindo o posicionamento vertical. */}
-                    <div
-                        className="relative w-full h-full"
-                    >
-                        <div
-                            style={{
-                                ...textStyle,
-                                top: `${textVerticalPosition}%`,
-                                transform: 'translateY(-50%)',
-                             }}
-                            className="break-words w-full absolute transition-all duration-200"
-                        >
-                            {text}
-                        </div>
-                    </div>
-                </div>
+                {renderContent()}
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ import type { EstiloTexto, ProporcaoTela, EstiloFundo, EditorState } from "./tip
 import { VisualizacaoEditor } from "./visualizacao";
 import { PainelControles } from "./painel-controles";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useProfile } from "@/hooks/use-profile";
 
 // Estado inicial para o editor.
 const getInitialState = (): EditorState => ({
@@ -28,6 +29,7 @@ const getInitialState = (): EditorState => ({
         value: templates[0].imageUrl,
     },
     aspectRatio: "9:16",
+    activeTemplateId: null,
 });
 
 
@@ -51,6 +53,7 @@ function EditorSkeleton() {
 export function EditorClient() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { profile, isLoaded: isProfileLoaded } = useProfile();
 
   // Histórico de estados para a funcionalidade de desfazer.
   const [history, setHistory] = useState<EditorState[]>([getInitialState()]);
@@ -78,6 +81,8 @@ export function EditorClient() {
 
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
+    if (!isProfileLoaded) return; // Aguarda o perfil ser carregado
+
     const quoteParam = searchParams.get("quote");
     const templateIdParam = searchParams.get("templateId");
     
@@ -86,28 +91,38 @@ export function EditorClient() {
     // Define o texto inicial a partir do parâmetro 'quote' ou de uma citação aleatória.
     if (quoteParam) {
       initialState.text = decodeURIComponent(quoteParam);
-    } else if (!templateIdParam) {
-      // Se não houver citação ou modelo, usa a primeira citação como padrão.
-      initialState.text = quotes[0].text;
+    } else {
+      initialState.text = quotes[Math.floor(Math.random() * quotes.length)].text;
     }
     
     // Configura o editor com base em um modelo, se um 'templateId' for fornecido.
     if (templateIdParam) {
-      const template = templates.find(t => t.id === parseInt(templateIdParam));
+      const templateId = parseInt(templateIdParam);
+      const template = templates.find(t => t.id === templateId);
+
+      initialState.activeTemplateId = templateId;
+
       if (template) {
-        // Se for o modelo padrão (ID -1), aplica estilos específicos.
-        if (template.id === -1) {
+        // Se for o modelo de Perfil (ID -2), usa os dados do perfil
+        if (template.id === -2) {
+             initialState.backgroundStyle = { type: 'solid', value: '#FFFFFF' };
+             initialState.textColor = '#0D1419';
+             initialState.textAlign = 'left';
+             initialState.fontSize = 20;
+             initialState.fontFamily = 'PT Sans';
+             initialState.textStrokeWidth = 0;
+             initialState.textShadowBlur = 0;
+        } else if (template.id === -1) { // Se for o modelo padrão (ID -1), aplica estilos específicos.
             initialState.backgroundStyle = { type: 'solid', value: '#333333' };
             initialState.textStrokeWidth = 3.5;
             initialState.textShadowBlur = 16;
             initialState.textVerticalPosition = 50;
             initialState.textAlign = 'center';
+            initialState.textColor = '#FFFFFF';
         } else {
             initialState.backgroundStyle = { type: 'media', value: template.imageUrl };
         }
         initialState.aspectRatio = template.aspectRatio as ProporcaoTela;
-        // Se não houver uma citação específica, escolhe uma aleatória.
-        if (!quoteParam) initialState.text = quotes[Math.floor(Math.random() * quotes.length)].text;
       }
     }
     
@@ -115,7 +130,7 @@ export function EditorClient() {
     setCurrentStateIndex(0);
     // Marca o editor como pronto para ser renderizado.
     setIsReady(true);
-  }, [searchParams]);
+  }, [searchParams, isProfileLoaded]);
 
   // Gera a sombra do texto para simular um contorno.
   // Isso cria um contorno mais suave e que não sobrepõe o texto.
@@ -156,7 +171,7 @@ export function EditorClient() {
   };
   
   // Renderiza um esqueleto de carregamento enquanto o editor não está pronto.
-  if (!isReady) {
+  if (!isReady || !isProfileLoaded) {
      return <EditorSkeleton />;
   }
 
@@ -169,6 +184,8 @@ export function EditorClient() {
             text={currentState.text}
             textStyle={textStyle}
             textVerticalPosition={currentState.textVerticalPosition}
+            activeTemplateId={currentState.activeTemplateId}
+            profile={profile}
         />
 
         <PainelControles
