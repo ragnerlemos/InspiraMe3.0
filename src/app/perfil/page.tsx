@@ -9,9 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Link as LinkIcon, Edit2, Upload, Twitter } from 'lucide-react';
+import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
 
 function ProfileSkeleton() {
     return (
@@ -38,13 +39,10 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateProfile({ username: e.target.value });
+  const handleProfileChange = (field: keyof typeof profile, value: string | boolean) => {
+    updateProfile({ [field]: value });
   };
 
-  const handleSocialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateProfile({ social: e.target.value });
-  };
 
   const handlePhotoUpload = () => {
     fileInputRef.current?.click();
@@ -95,12 +93,12 @@ export default function ProfilePage() {
                 <CardTitle className="flex items-center gap-2"><Edit2 /> Editar Informações</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="space-y-2">
+                 <div className="space-y-2">
                     <Label htmlFor="username" className="flex items-center gap-2"><User />Nome de Usuário</Label>
                     <Input
                         id="username"
                         value={profile.username}
-                        onChange={handleUsernameChange}
+                        onChange={(e) => handleProfileChange('username', e.target.value)}
                         placeholder="Seu nome..."
                     />
                 </div>
@@ -109,7 +107,7 @@ export default function ProfilePage() {
                     <Input
                         id="social"
                         value={profile.social}
-                        onChange={handleSocialChange}
+                        onChange={(e) => handleProfileChange('social', e.target.value)}
                         placeholder="@seuusuario..."
                     />
                 </div>
@@ -129,6 +127,29 @@ export default function ProfilePage() {
                         Recomendado: imagem quadrada (1:1).
                     </p>
                 </div>
+                <Separator />
+                <div>
+                  <Label className="text-base font-medium">Customizar Prévia</Label>
+                   <div className="space-y-4 mt-2">
+                     <div className="space-y-2">
+                        <Label htmlFor="icon-url">URL do Ícone</Label>
+                        <Input
+                            id="icon-url"
+                            value={profile.iconUrl}
+                            onChange={(e) => handleProfileChange('iconUrl', e.target.value)}
+                            placeholder="https://... (JPG, PNG, GIF)"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant={profile.showIcon ? 'secondary' : 'outline'} className="flex-1" onClick={() => handleProfileChange('showIcon', !profile.showIcon)}>
+                            {profile.showIcon ? <EyeOff /> : <Eye />} {profile.showIcon ? 'Desativar' : 'Ativar'} Ícone
+                        </Button>
+                        <Button variant={profile.showDate ? 'secondary' : 'outline'} className="flex-1" onClick={() => handleProfileChange('showDate', !profile.showDate)}>
+                            {profile.showDate ? <EyeOff /> : <Eye />} {profile.showDate ? 'Desativar' : 'Ativar'} Data
+                        </Button>
+                    </div>
+                   </div>
+                </div>
             </CardContent>
         </Card>
         
@@ -147,25 +168,33 @@ export default function ProfilePage() {
 
                     <div className="mt-6 border-t pt-4">
                         <Card className="text-left">
-                            <CardHeader className="flex flex-row items-start gap-4 p-4">
-                                <Avatar>
-                                    <AvatarImage src={profile.photo || ''} alt={profile.username} />
-                                    <AvatarFallback><User /></AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="font-semibold">{profile.username}</p>
-                                            <p className="text-sm text-muted-foreground">{profile.social}</p>
+                            <CardHeader className="p-4">
+                                <div className="flex items-start gap-3">
+                                    <Avatar>
+                                        <AvatarImage src={profile.photo || ''} alt={profile.username} />
+                                        <AvatarFallback><User /></AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                         <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-semibold">{profile.username}</p>
+                                                <p className="text-sm text-muted-foreground">{profile.social}</p>
+                                            </div>
+                                            {profile.showIcon && (
+                                                profile.iconUrl ? 
+                                                    <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" /> : 
+                                                    <Twitter className="h-5 w-5 text-blue-500" />
+                                            )}
                                         </div>
-                                         <Twitter className="h-5 w-5 text-blue-500" />
                                     </div>
-                                    <p className="mt-3 text-base">"A única maneira de fazer um ótimo trabalho é amar o que você faz."</p>
                                 </div>
+                                <p className="mt-3 text-base">"A única maneira de fazer um ótimo trabalho é amar o que você faz."</p>
                             </CardHeader>
-                            <CardFooter className="p-4 pt-0 text-xs text-muted-foreground">
-                                <p>10:30 AM · 28 de Maio de 2024</p>
-                            </CardFooter>
+                             {profile.showDate && (
+                                <CardFooter className="p-4 pt-0 text-xs text-muted-foreground">
+                                    <p>10:30 AM · 28 de Maio de 2024</p>
+                                </CardFooter>
+                            )}
                         </Card>
                     </div>
                 </CardContent>

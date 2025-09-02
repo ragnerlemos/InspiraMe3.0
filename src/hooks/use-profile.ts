@@ -9,6 +9,9 @@ export interface ProfileData {
   username: string;
   social: string;
   photo: string | null;
+  iconUrl: string;
+  showIcon: boolean;
+  showDate: boolean;
 }
 
 // Hook para gerenciar os dados do perfil do usuário usando o localStorage.
@@ -17,6 +20,9 @@ export const useProfile = () => {
     username: "Seu Nome",
     social: "@seuusario",
     photo: null,
+    iconUrl: '',
+    showIcon: true,
+    showDate: true,
   });
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -25,7 +31,17 @@ export const useProfile = () => {
     try {
       const storedProfile = localStorage.getItem(PROFILE_KEY);
       if (storedProfile) {
-        setProfile(JSON.parse(storedProfile));
+        // Garante que os novos campos tenham valores padrão se não existirem no localStorage
+        const loadedProfile = JSON.parse(storedProfile);
+        const defaultState: ProfileData = {
+          username: "Seu Nome",
+          social: "@seuusario",
+          photo: null,
+          iconUrl: '',
+          showIcon: true,
+          showDate: true,
+        };
+        setProfile({ ...defaultState, ...loadedProfile });
       }
     } catch (error) {
       console.error("Failed to parse profile from localStorage", error);
