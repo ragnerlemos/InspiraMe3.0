@@ -44,9 +44,4 @@ export const quotes: Quote[] = [
 export const templates = [
   { id: -1, imageUrl: "", dataAiHint: "fundo solido", aspectRatio: "9:16" as const, name: "Modelo Padrão" },
   { id: 1, imageUrl: "https://picsum.photos/id/1018/1080/1920", dataAiHint: "paisagem montanha", aspectRatio: "9:16" as const },
-  { id: 2, imageUrl: "https://picsum.photos/id/1015/1080/1080", dataAiHint: "rio vale", aspectRatio: "1:1" as const },
-  { id: 3, imageUrl: "https://picsum.photos/id/10/1920/1080", dataAiHint: "caminho floresta", aspectRatio: "16:9" as const },
-  { id: 4, imageUrl: "https://picsum.photos/id/1025/1080/1920", dataAiHint: "cachorro filhote", aspectRatio: "9:16" as const },
-  { id: 5, imageUrl: "https://picsum.photos/id/1040/1080/1080", dataAiHint: "castelo arquitetura", aspectRatio: "1:1" as const },
-  { id: 6, imageUrl: "https://picsum.photos/id/1043/1920/1080", dataAiHint: "rua cidade", aspectRatio: "16:9" as const },
 ];
