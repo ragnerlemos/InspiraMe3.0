@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import Link from 'next/link';
@@ -63,11 +64,11 @@ export default function ModelosPage() {
                         </Button>
                     </Link>
                 </div>
-                </div>
-                <CardContent className="p-2 bg-card">
-                <p className="font-normal text-[11px]">{template.name}</p>
-                <p className="text-[11px] text-muted-foreground">Proporção: {template.aspectRatio}</p>
+                 <CardContent className="absolute bottom-0 w-full p-2 bg-black/20 text-primary-foreground">
+                    <p className="font-normal text-[11px] truncate">{template.name}</p>
+                    <p className="text-[11px] text-primary-foreground/80">Proporção: {template.aspectRatio}</p>
                 </CardContent>
+                </div>
             </Card>
           )
         })}
