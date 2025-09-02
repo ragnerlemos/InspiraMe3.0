@@ -5,7 +5,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
-import { VisualizacaoPerfil } from "./visualizacao-perfil";
 
 
 // Mapeia os valores de proporção de tela para as classes CSS correspondentes do Tailwind.
@@ -47,8 +46,6 @@ export function VisualizacaoEditor({
     showSignaturePhoto,
     showSignatureUsername,
     showSignatureSocial,
-    activeTemplateId,
-    profileVerticalPosition,
 }: VisualizacaoEditorProps) {
 
     const renderBackground = () => {
@@ -89,19 +86,6 @@ export function VisualizacaoEditor({
     };
 
      const renderContent = () => {
-        // Se o modelo de perfil (twitter) estiver ativo, renderiza ele.
-        if (activeTemplateId === -2) {
-            return (
-                <VisualizacaoPerfil 
-                    profile={profile}
-                    text={text}
-                    textStyle={textStyle}
-                    textVerticalPosition={textVerticalPosition}
-                    profileVerticalPosition={profileVerticalPosition}
-                />
-            )
-        }
-        
         // Renderização padrão para os outros modelos.
         return (
             <div className="absolute inset-0 bg-black/10 flex items-center justify-center p-8">
@@ -142,7 +126,7 @@ export function VisualizacaoEditor({
     return (
         <div className="lg:col-span-2 flex flex-col items-center gap-4">
             {/* Contêiner da visualização que se ajusta à proporção de tela selecionada. */}
-            <div className={cn("relative w-full max-w-2xl bg-muted rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
+            <div className={cn("relative w-full max-w-2xl bg-muted dark:bg-black rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
                 {renderBackground()}
                 {renderContent()}
             </div>
