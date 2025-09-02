@@ -1,3 +1,4 @@
+
 // Componente que agrupa os painéis de controle para customização do vídeo/imagem.
 // Ele usa um sistema de abas para organizar as opções de "Texto" e "Estilo".
 
@@ -69,23 +70,6 @@ export function PainelControles(props: PainelControlesProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                    {/* Controles de Proporção da Tela - Agora fora das abas */}
-                    <div className="space-y-2 mb-4">
-                        <Label className="flex items-center"><RectangleHorizontal className="mr-2 h-4 w-4" />Proporção da Tela</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                            {proporcoes.map((ar) => (
-                                <Button
-                                    key={ar}
-                                    variant={props.aspectRatio === ar ? "secondary" : "ghost"}
-                                    onClick={() => props.onAspectRatioChange(ar)}
-                                >
-                                    {ar}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-
-
                     <Tabs defaultValue="text">
                         {/* Lista de abas para alternar entre os painéis de texto e estilo. */}
                         <TabsList className="grid w-full grid-cols-3">
