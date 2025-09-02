@@ -1,3 +1,4 @@
+
 // Arquivo para centralizar as definições de tipos compartilhadas entre os componentes do editor.
 import type { ProfileData } from "@/hooks/use-profile";
 
@@ -31,6 +32,15 @@ export interface EditorState {
     aspectRatio: ProporcaoTela;
     activeTemplateId: number | null;
 }
+
+// Tipo para um vídeo salvo pelo usuário.
+export interface SavedVideo {
+    id: string;
+    thumbnail: string; // Um data URL da imagem de preview
+    editorState: EditorState;
+    createdAt: string; // Data no formato ISO
+}
+
 
 // Define as propriedades (props) para o componente de visualização do editor.
 export interface VisualizacaoEditorProps {
@@ -83,11 +93,4 @@ export interface PainelFundoProps {
     onBackgroundStyleChange: (style: EstiloFundo) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
-}
-
-// Props para o componente de visualização do perfil.
-export interface VisualizacaoPerfilProps {
-    profile: ProfileData;
-    text: string;
-    textStyle: EstiloTexto;
 }

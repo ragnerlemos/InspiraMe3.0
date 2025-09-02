@@ -7,11 +7,11 @@ import { useSearchParams } from 'next/navigation';
 import { templates } from '@/lib/dados';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Eye, FilePlus, User } from 'lucide-react';
+import { Eye, FilePlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Página que exibe uma galeria de modelos de vídeo que os usuários podem utilizar.
-export default function TemplatesPage() {
+export default function ModelosPage() {
     const searchParams = useSearchParams();
     const quote = searchParams.get('quote');
 
@@ -51,11 +51,7 @@ export default function TemplatesPage() {
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full bg-muted">
-                        {template.id === -2 ? (
-                            <User className="h-24 w-24 text-muted-foreground/50" />
-                        ) : (
-                            <FilePlus className="h-24 w-24 text-muted-foreground/50" />
-                        )}
+                        <FilePlus className="h-24 w-24 text-muted-foreground/50" />
                     </div>
                 )}
                 
