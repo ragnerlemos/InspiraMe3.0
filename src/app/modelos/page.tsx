@@ -36,11 +36,11 @@ export default function ModelosPage() {
           }
           
           return (
-            <Card key={template.id} className="overflow-hidden group">
-                <div className={cn(
-                    "relative", 
-                    template.aspectRatio === '9:16' ? 'aspect-[9/16]' : 'aspect-square'
-                )}>
+            <Card key={template.id} className="overflow-hidden group flex flex-col">
+              <div className={cn(
+                  "relative", 
+                  template.aspectRatio === '9:16' ? 'aspect-[9/16]' : 'aspect-square'
+              )}>
                 {template.imageUrl ? (
                     <Image
                         src={template.imageUrl}
@@ -56,7 +56,6 @@ export default function ModelosPage() {
                 )}
                 
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {/* Link para o editor, passando o ID do modelo como parâmetro. */}
                     <Link href={`/editor-de-video?${editorUrl.toString()}`} passHref>
                         <Button size="sm">
                             <Eye className="mr-2 h-4 w-4" />
@@ -64,11 +63,11 @@ export default function ModelosPage() {
                         </Button>
                     </Link>
                 </div>
-                 <CardContent className="absolute bottom-0 w-full p-2 bg-black/20 text-primary-foreground">
-                    <p className="font-normal text-[11px]">{template.name}</p>
-                    <p className="text-[11px] text-primary-foreground/80">Proporção: {template.aspectRatio}</p>
-                </CardContent>
-                </div>
+              </div>
+              <CardContent className="p-2 bg-card">
+                  <p className="font-normal text-[11px] truncate">{template.name}</p>
+                  <p className="text-[11px] text-muted-foreground">Proporção: {template.aspectRatio}</p>
+              </CardContent>
             </Card>
           )
         })}
