@@ -10,6 +10,7 @@ import {
   Italic,
   Baseline,
   Paintbrush,
+  User,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,8 @@ export function PainelEstilo({
     textVerticalPosition, onTextVerticalPositionChange,
     textStrokeColor, onTextStrokeColorChange,
     textStrokeWidth, onTextStrokeWidthChange,
+    activeTemplateId,
+    profileVerticalPosition, onProfileVerticalPositionChange,
 }: PainelEstiloProps) {
     return (
         <>
@@ -117,7 +120,29 @@ export function PainelEstilo({
 
              <Separator />
 
-            {/* Controle de Posição Vertical */}
+            {/* Controle de Posição Vertical do Cabeçalho do Perfil (Apenas para o modelo Twitter) */}
+            {activeTemplateId === -2 && (
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <Label htmlFor="profile-vertical-position" className="flex items-center">
+                            <User className="mr-2 h-4 w-4" />
+                            Posição Vertical (Perfil)
+                        </Label>
+                        <span className="text-sm text-muted-foreground">{profileVerticalPosition}%</span>
+                    </div>
+                    <Slider
+                        id="profile-vertical-position"
+                        min={10}
+                        max={80}
+                        step={1}
+                        value={[profileVerticalPosition]}
+                        onValueChange={(value) => onProfileVerticalPositionChange(value[0])}
+                    />
+                     <Separator />
+                </div>
+            )}
+
+            {/* Controle de Posição Vertical do Texto */}
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <Label htmlFor="vertical-position" className="flex items-center">
@@ -128,8 +153,8 @@ export function PainelEstilo({
                 </div>
                 <Slider
                     id="vertical-position"
-                    min={15}
-                    max={85}
+                    min={activeTemplateId === -2 ? 10 : 15}
+                    max={activeTemplateId === -2 ? 90 : 85}
                     step={1}
                     value={[textVerticalPosition]}
                     onValueChange={(value) => onTextVerticalPositionChange(value[0])}

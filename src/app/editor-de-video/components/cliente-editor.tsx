@@ -36,6 +36,7 @@ const getInitialState = (): EditorState => ({
     showSignaturePhoto: true,
     showSignatureUsername: true,
     showSignatureSocial: true,
+    profileVerticalPosition: 25,
 });
 
 
@@ -118,13 +119,15 @@ export function EditorClient() {
             initialState.textAlign = 'center';
             initialState.textColor = '#FFFFFF';
         } else if (template.id === -2) { // Modelo Twitter (do Perfil)
-            initialState.backgroundStyle = { type: 'solid', value: '#FFFFFF' };
-            initialState.textColor = '#0D1419';
+            initialState.backgroundStyle = { type: 'solid', value: 'var(--card)' };
+            initialState.textColor = 'var(--foreground)';
             initialState.fontFamily = 'PT Sans';
             initialState.fontSize = 24;
             initialState.textAlign = 'left';
             initialState.textShadowBlur = 0;
             initialState.textStrokeWidth = 0;
+            initialState.textVerticalPosition = 45;
+            initialState.profileVerticalPosition = 25;
         } else {
             initialState.backgroundStyle = { type: 'media', value: template.imageUrl };
         }
@@ -197,6 +200,7 @@ export function EditorClient() {
             showSignatureUsername={currentState.showSignatureUsername}
             showSignatureSocial={currentState.showSignatureSocial}
             activeTemplateId={currentState.activeTemplateId}
+            profileVerticalPosition={currentState.profileVerticalPosition}
         />
 
         <PainelControles
@@ -241,6 +245,8 @@ export function EditorClient() {
             showSignatureSocial={currentState.showSignatureSocial}
             onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
             activeTemplateId={currentState.activeTemplateId}
+            profileVerticalPosition={currentState.profileVerticalPosition}
+            onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
         />
       </div>
     </div>

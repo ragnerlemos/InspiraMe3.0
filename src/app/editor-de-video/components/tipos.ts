@@ -37,6 +37,7 @@ export interface EditorState {
     showSignaturePhoto: boolean;
     showSignatureUsername: boolean;
     showSignatureSocial: boolean;
+    profileVerticalPosition: number;
 }
 
 // Tipo para um vídeo salvo pelo usuário.
@@ -63,13 +64,13 @@ export interface VisualizacaoEditorProps {
     showSignatureUsername: boolean;
     showSignatureSocial: boolean;
     activeTemplateId: number | null;
+    profileVerticalPosition: number;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
 export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {
     onUndo: () => void;
     canUndo: boolean;
-    activeTemplateId: number | null;
 }
 
 // Define as propriedades para o painel de edição de texto.
@@ -100,6 +101,9 @@ export interface PainelEstiloProps {
     onTextStrokeColorChange: (color: string) => void;
     textStrokeWidth: number;
     onTextStrokeWidthChange: (width: number) => void;
+    activeTemplateId: number | null;
+    profileVerticalPosition: number;
+    onProfileVerticalPositionChange: (position: number) => void;
 }
 
 // Define as propriedades para o painel de upload de fundo.
@@ -127,4 +131,6 @@ export interface VisualizacaoPerfilProps {
   profile: ProfileData;
   text: string;
   textStyle: EstiloTexto;
+  textVerticalPosition: number;
+  profileVerticalPosition: number;
 }

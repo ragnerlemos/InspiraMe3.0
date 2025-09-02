@@ -47,7 +47,8 @@ export function VisualizacaoEditor({
     showSignaturePhoto,
     showSignatureUsername,
     showSignatureSocial,
-    activeTemplateId
+    activeTemplateId,
+    profileVerticalPosition,
 }: VisualizacaoEditorProps) {
 
     const renderBackground = () => {
@@ -95,6 +96,8 @@ export function VisualizacaoEditor({
                     profile={profile}
                     text={text}
                     textStyle={textStyle}
+                    textVerticalPosition={textVerticalPosition}
+                    profileVerticalPosition={profileVerticalPosition}
                 />
             )
         }

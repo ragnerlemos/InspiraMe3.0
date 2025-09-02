@@ -2,30 +2,50 @@ import type { VisualizacaoPerfilProps } from './tipos';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
 
-export function VisualizacaoPerfil({ profile, text, textStyle }: VisualizacaoPerfilProps) {
+export function VisualizacaoPerfil({ 
+    profile, 
+    text, 
+    textStyle,
+    textVerticalPosition,
+    profileVerticalPosition,
+}: VisualizacaoPerfilProps) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-3">
-        {/* Cabeçalho do Perfil */}
-        <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={profile.photo || ''} alt={profile.username} />
-            <AvatarFallback>
-              <User />
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-bold text-lg" style={{ color: textStyle.color }}>{profile.username}</p>
-            <p className="text-muted-foreground text-md">{profile.social}</p>
-          </div>
+    <div className="absolute inset-0 p-6">
+       {/* Container relativo para posicionar os elementos */}
+      <div className="relative w-full h-full">
+
+        {/* Cabeçalho do Perfil (Posicionável) */}
+        <div 
+            className="absolute w-full space-y-3 transition-all duration-200"
+            style={{
+                top: `${profileVerticalPosition}%`,
+                transform: 'translateY(-50%)',
+            }}
+        >
+            <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                    <AvatarImage src={profile.photo || ''} alt={profile.username} />
+                    <AvatarFallback>
+                    <User />
+                    </AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="font-bold text-lg" style={{ color: textStyle.color }}>{profile.username}</p>
+                    <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{profile.social}</p>
+                </div>
+            </div>
         </div>
 
-        {/* Texto da Frase */}
+        {/* Texto da Frase (Posicionável) */}
         <div
-          style={textStyle}
-          className="break-words w-full"
+            style={{
+                ...textStyle,
+                top: `${textVerticalPosition}%`,
+                transform: 'translateY(-50%)',
+            }}
+            className="break-words w-full absolute transition-all duration-200"
         >
-          {text}
+            {text}
         </div>
       </div>
     </div>
