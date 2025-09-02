@@ -51,23 +51,23 @@ export default function ModelosPage() {
                     />
                 ) : (
                     <div className="flex items-center justify-center h-full bg-muted">
-                        <FilePlus className="h-24 w-24 text-muted-foreground/50" />
+                        <FilePlus className="h-16 w-16 text-muted-foreground/50" />
                     </div>
                 )}
                 
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {/* Link para o editor, passando o ID do modelo como parâmetro. */}
                     <Link href={`/editor-de-video?${editorUrl.toString()}`} passHref>
-                        <Button>
+                        <Button size="sm">
                             <Eye className="mr-2 h-4 w-4" />
                             Usar Modelo
                         </Button>
                     </Link>
                 </div>
                 </div>
-                <CardContent className="p-4 bg-card">
-                <p className="font-medium font-headline">{template.name}</p>
-                <p className="text-sm text-muted-foreground">Proporção: {template.aspectRatio}</p>
+                <CardContent className="p-3 bg-card">
+                <p className="font-medium font-headline text-sm truncate">{template.name}</p>
+                <p className="text-xs text-muted-foreground">Proporção: {template.aspectRatio}</p>
                 </CardContent>
             </Card>
           )
