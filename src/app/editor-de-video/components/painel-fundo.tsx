@@ -188,6 +188,8 @@ export function PainelFundo({ backgroundStyle, onBackgroundStyleChange }: Painel
         colors: ['#A06CD5', '#45B8AC'] as [string, string],
         direction: 'to right',
     });
+     // Determina a aba ativa com base no estilo de fundo atual
+    const activeTab = backgroundStyle.type;
 
     const handleTabChange = (tab: TipoFundo) => {
         if (tab === 'solid') {
@@ -196,6 +198,7 @@ export function PainelFundo({ backgroundStyle, onBackgroundStyleChange }: Painel
              const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : ''}${gradient.colors[0]}, ${gradient.colors[1]})`;
              onBackgroundStyleChange({ type: 'gradient', value: gradValue });
         }
+        // Para 'media', a mudança é tratada diretamente no upload
     };
 
     const handleSolidColorChange = (color: string) => {
@@ -214,21 +217,25 @@ export function PainelFundo({ backgroundStyle, onBackgroundStyleChange }: Painel
     }
 
     return (
-        <Tabs defaultValue={backgroundStyle.type} onValueChange={(val) => handleTabChange(val as TipoFundo)}>
-            <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="media"><ImageIcon className="mr-2 h-4 w-4" />Mídia</TabsTrigger>
-                <TabsTrigger value="solid"><Palette className="mr-2 h-4 w-4" />Cor</TabsTrigger>
-                <TabsTrigger value="gradient"><Layers className="mr-2 h-4 w-4" />Gradiente</TabsTrigger>
-            </TabsList>
-            <TabsContent value="media" className="pt-4">
-                <PainelMidia onMediaUpload={handleMediaUpload} />
-            </TabsContent>
-            <TabsContent value="solid" className="pt-4">
-                <PainelCorSolida color={solidColor} onColorChange={handleSolidColorChange} />
-            </TabsContent>
-            <TabsContent value="gradient" className="pt-4">
-                <PainelGradiente gradient={gradient} onGradientChange={handleGradientChange} />
-            </TabsContent>
-        </Tabs>
+        <div className="space-y-4">
+             {/* Painel de seleção de tipo de fundo, estilizado como botões. */}
+            <div className="grid grid-cols-3 gap-2">
+                 <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}>
+                    <ImageIcon className="mr-2 h-4 w-4" /> Mídia
+                </Button>
+                <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}>
+                    <Palette className="mr-2 h-4 w-4" /> Cor
+                </Button>
+                <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}>
+                    <Layers className="mr-2 h-4 w-4" /> Gradiente
+                </Button>
+            </div>
+             {/* Renderiza o conteúdo correspondente à aba ativa. */}
+            <div className='pt-4'>
+                {activeTab === 'media' && <PainelMidia onMediaUpload={handleMediaUpload} />}
+                {activeTab === 'solid' && <PainelCorSolida color={solidColor} onColorChange={handleSolidColorChange} />}
+                {activeTab === 'gradient' && <PainelGradiente gradient={gradient} onGradientChange={handleGradientChange} />}
+            </div>
+        </div>
     );
 }
