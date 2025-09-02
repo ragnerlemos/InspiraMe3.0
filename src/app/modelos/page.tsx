@@ -65,8 +65,8 @@ export default function ModelosPage() {
                     </Link>
                 </div>
                 </div>
-                <CardContent className="p-3 bg-card">
-                <p className="font-medium font-headline text-sm truncate">{template.name}</p>
+                <CardContent className="p-2 bg-card">
+                <p className="font-medium font-headline text-xs truncate">{template.name}</p>
                 <p className="text-xs text-muted-foreground">Proporção: {template.aspectRatio}</p>
                 </CardContent>
             </Card>
