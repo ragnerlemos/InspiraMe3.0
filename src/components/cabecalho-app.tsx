@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/", label: "Frases", icon: Quote },
   { href: "/favoritos", label: "Favoritos", icon: Star },
-  { href: "/galeria", label: "Galeria", icon: GalleryVertical },
+  { href: "/galeria", label: "Modelos", icon: GalleryVertical },
   { href: "/editor-de-video", label: "Editor", icon: Film },
   { href: "/perfil", label: "Perfil", icon: User },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
