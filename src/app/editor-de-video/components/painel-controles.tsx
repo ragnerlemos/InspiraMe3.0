@@ -1,5 +1,3 @@
-
-
 // Componente que agrupa os painéis de controle para customização do vídeo/imagem.
 // Ele usa um sistema de abas para organizar as opções de "Texto" e "Estilo".
 
@@ -18,8 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 const proporcoes: ProporcaoTela[] = ["9:16", "1:1", "16:9"];
 
 export function PainelControles(props: PainelControlesProps) {
-    // Desabilita os controles se o modelo do Twitter estiver ativo
-    const isTwitterTemplate = props.activeTemplateId === -2;
     const { toast } = useToast();
 
     const handleShare = async () => {
@@ -93,9 +89,9 @@ export function PainelControles(props: PainelControlesProps) {
                     <Tabs defaultValue="text">
                         {/* Lista de abas para alternar entre os painéis de texto e estilo. */}
                         <TabsList className="grid w-full grid-cols-3">
-                            <TabsTrigger value="text" disabled={isTwitterTemplate}><Type className="mr-2 h-4 w-4" />Texto</TabsTrigger>
-                            <TabsTrigger value="style" disabled={isTwitterTemplate}><Palette className="mr-2 h-4 w-4" />Estilo</TabsTrigger>
-                            <TabsTrigger value="background" disabled={isTwitterTemplate}><ImagePlus className="mr-2 h-4 w-4" />Fundo</TabsTrigger>
+                            <TabsTrigger value="text"><Type className="mr-2 h-4 w-4" />Texto</TabsTrigger>
+                            <TabsTrigger value="style"><Palette className="mr-2 h-4 w-4" />Estilo</TabsTrigger>
+                            <TabsTrigger value="background"><ImagePlus className="mr-2 h-4 w-4" />Fundo</TabsTrigger>
                         </TabsList>
 
                         {/* Conteúdo da aba de Texto. */}
@@ -118,14 +114,6 @@ export function PainelControles(props: PainelControlesProps) {
                             />
                         </TabsContent>
                     </Tabs>
-                     {isTwitterTemplate && (
-                        <div className="text-center p-4 mt-4 bg-muted rounded-lg">
-                            <p className="text-sm text-muted-foreground">
-                                A customização está desativada para este modelo. A aparência é definida pelo perfil.
-                            </p>
-                        </div>
-                    )}
-
 
                     {/* Botões de ação para baixar ou compartilhar a criação. */}
                     <div className="flex gap-2 mt-6">
