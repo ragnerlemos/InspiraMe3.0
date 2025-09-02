@@ -16,23 +16,21 @@ export function VisualizacaoPerfil({
 
         {/* Cabeçalho do Perfil (Posicionável) */}
         <div 
-            className="absolute w-full space-y-3 transition-all duration-200"
+            className="absolute w-full flex items-start gap-4 transition-all duration-200"
             style={{
                 top: `${profileVerticalPosition}%`,
                 transform: 'translateY(-50%)',
             }}
         >
-            <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                    <AvatarImage src={profile.photo || ''} alt={profile.username} />
-                    <AvatarFallback>
-                    <User />
-                    </AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="font-bold text-lg" style={{ color: textStyle.color }}>{profile.username}</p>
-                    <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{profile.social}</p>
-                </div>
+            <Avatar className="h-12 w-12 flex-shrink-0">
+                <AvatarImage src={profile.photo || ''} alt={profile.username} />
+                <AvatarFallback>
+                <User />
+                </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+                <p className="font-bold text-lg" style={{ color: textStyle.color }}>{profile.username}</p>
+                <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{profile.social}</p>
             </div>
         </div>
 
@@ -45,7 +43,9 @@ export function VisualizacaoPerfil({
             }}
             className="break-words w-full absolute transition-all duration-200"
         >
-            {text}
+            <div className="pl-[68px]"> {/* 56px (avatar) + 12px (gap) */}
+               {text}
+            </div>
         </div>
       </div>
     </div>
