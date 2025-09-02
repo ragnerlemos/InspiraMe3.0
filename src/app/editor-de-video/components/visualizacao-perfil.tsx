@@ -7,21 +7,24 @@ export function VisualizacaoPerfil({
     text, 
     textStyle,
     textVerticalPosition,
-    profileVerticalPosition,
+    // A posição do perfil não é mais usada individualmente, mas mantemos para compatibilidade
+    profileVerticalPosition, 
 }: VisualizacaoPerfilProps) {
   return (
-    <div className="absolute inset-0 p-8">
-       {/* Container relativo para posicionar os elementos */}
-      <div className="relative w-full h-full">
+    <div className="absolute inset-0 p-8 flex items-center justify-center">
+       {/* Container que agrupa a assinatura e o texto para garantir o alinhamento */}
+      <div 
+        className="relative w-full space-y-4 transition-all duration-200"
+        style={{
+            // Posicionamos o bloco inteiro. O valor de textVerticalPosition controlará o bloco.
+            top: `${textVerticalPosition}%`,
+            transform: 'translateY(-50%)',
+            position: 'absolute',
+        }}
+    >
 
-        {/* Cabeçalho do Perfil (Posicionável) */}
-        <div 
-            className="absolute w-full flex items-start gap-3 transition-all duration-200"
-            style={{
-                top: `${profileVerticalPosition}%`,
-                transform: 'translateY(-50%)',
-            }}
-        >
+        {/* Cabeçalho do Perfil */}
+        <div className="w-full flex items-start gap-3">
             <Avatar className="h-12 w-12 flex-shrink-0">
                 <AvatarImage src={profile.photo || ''} alt={profile.username} />
                 <AvatarFallback>
@@ -34,14 +37,10 @@ export function VisualizacaoPerfil({
             </div>
         </div>
 
-        {/* Texto da Frase (Posicionável) */}
+        {/* Texto da Frase */}
         <div
-            style={{
-                ...textStyle,
-                top: `${textVerticalPosition}%`,
-                transform: 'translateY(-50%)',
-            }}
-            className="break-words w-full absolute transition-all duration-200"
+            style={textStyle}
+            className="break-words w-full"
         >
             {text}
         </div>
