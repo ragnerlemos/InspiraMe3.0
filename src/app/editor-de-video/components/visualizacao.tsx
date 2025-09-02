@@ -4,6 +4,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
+import { AssinaturaPerfil } from "./assinatura-perfil";
 
 // Mapeia os valores de proporção de tela para as classes CSS correspondentes do Tailwind.
 const proporcoes: Record<ProporcaoTela, string> = {
@@ -37,6 +38,8 @@ export function VisualizacaoEditor({
     text,
     textStyle,
     textVerticalPosition,
+    showProfileSignature,
+    profile,
 }: VisualizacaoEditorProps) {
 
     const renderBackground = () => {
@@ -92,6 +95,11 @@ export function VisualizacaoEditor({
                         {text}
                     </div>
                 </div>
+                 {showProfileSignature && (
+                    <div className="absolute bottom-4 left-4 right-4">
+                        <AssinaturaPerfil profile={profile} />
+                    </div>
+                )}
             </div>
         );
     };

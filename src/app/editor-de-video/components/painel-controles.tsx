@@ -1,3 +1,4 @@
+
 // Componente que agrupa os painéis de controle para customização do vídeo/imagem.
 // Ele usa um sistema de abas para organizar as opções de "Texto" e "Estilo".
 

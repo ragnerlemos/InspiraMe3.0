@@ -31,6 +31,7 @@ export interface EditorState {
     backgroundStyle: EstiloFundo;
     aspectRatio: ProporcaoTela;
     activeTemplateId: number | null;
+    showProfileSignature: boolean;
 }
 
 // Tipo para um vídeo salvo pelo usuário.
@@ -49,6 +50,8 @@ export interface VisualizacaoEditorProps {
     text: string;
     textStyle: EstiloTexto;
     textVerticalPosition: number;
+    showProfileSignature: boolean;
+    profile: ProfileData;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
@@ -85,6 +88,8 @@ export interface PainelEstiloProps {
     onTextStrokeColorChange: (color: string) => void;
     textStrokeWidth: number;
     onTextStrokeWidthChange: (width: number) => void;
+    showProfileSignature: boolean;
+    onShowProfileSignatureChange: (show: boolean) => void;
 }
 
 // Define as propriedades para o painel de upload de fundo.

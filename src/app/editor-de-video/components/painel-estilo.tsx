@@ -10,6 +10,7 @@ import {
   Italic,
   Baseline,
   Paintbrush,
+  UserCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export function PainelEstilo({
     textVerticalPosition, onTextVerticalPositionChange,
     textStrokeColor, onTextStrokeColorChange,
     textStrokeWidth, onTextStrokeWidthChange,
+    showProfileSignature, onShowProfileSignatureChange,
 }: PainelEstiloProps) {
     return (
         <>
@@ -135,6 +137,22 @@ export function PainelEstilo({
                     onValueChange={(value) => onTextVerticalPositionChange(value[0])}
                 />
             </div>
+
+             <Separator />
+
+             {/* Controle da Assinatura do Perfil */}
+              <div className="space-y-2">
+                <Label>Assinatura</Label>
+                 <Button 
+                    variant={showProfileSignature ? 'secondary' : 'outline'} 
+                    onClick={() => onShowProfileSignatureChange(!showProfileSignature)}
+                    className="w-full"
+                >
+                    <UserCheck className="mr-2 h-4 w-4" />
+                    {showProfileSignature ? 'Ocultar' : 'Mostrar'} Assinatura de Perfil
+                </Button>
+            </div>
+
 
             {/* Controles de Contorno do Texto */}
             <div className="space-y-4 rounded-lg border p-4">

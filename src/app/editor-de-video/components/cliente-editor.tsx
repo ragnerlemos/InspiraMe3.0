@@ -30,6 +30,7 @@ const getInitialState = (): EditorState => ({
     },
     aspectRatio: "9:16",
     activeTemplateId: null,
+    showProfileSignature: false,
 });
 
 
@@ -175,6 +176,8 @@ export function EditorClient() {
             text={currentState.text}
             textStyle={textStyle}
             textVerticalPosition={currentState.textVerticalPosition}
+            showProfileSignature={currentState.showProfileSignature}
+            profile={profile}
         />
 
         <PainelControles
@@ -206,6 +209,8 @@ export function EditorClient() {
             onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
             onUndo={undo}
             canUndo={canUndo}
+            showProfileSignature={currentState.showProfileSignature}
+            onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
         />
       </div>
     </div>
