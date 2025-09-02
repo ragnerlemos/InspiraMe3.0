@@ -8,7 +8,6 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Film, Copy, Trash2, Share2, HeartCrack } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
 
 // Página para exibir as frases favoritas do usuário.
 export default function FavoritesPage() {
@@ -52,17 +51,22 @@ export default function FavoritesPage() {
               key={quote.id}
               className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300"
             >
-              <CardContent className="p-6 pb-4">
+              <CardContent className="p-6 pb-2">
                 <p className="text-xl font-body italic">"{quote.text}"</p>
                 <p className="text-right text-sm font-medium text-muted-foreground mt-4">
                   - {quote.author}
                 </p>
               </CardContent>
-              <div className="px-6 pb-4 flex justify-between items-center">
+              <CardFooter className="px-6 pb-4 flex justify-between items-center">
                 <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">
                   {quote.category}
                 </span>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center">
+                  <Link href={`/editor-de-video?quote=${encodeURIComponent(quote.text)}`} passHref>
+                    <Button variant="ghost" size="icon">
+                        <Film className="h-4 w-4" />
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -81,19 +85,6 @@ export default function FavoritesPage() {
                     <Share2 className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
-              <Separator />
-              <CardFooter className="p-4">
-                <Link
-                  href={`/editor-de-video?quote=${encodeURIComponent(quote.text)}`}
-                  passHref
-                  className="w-full"
-                >
-                  <Button className="w-full" variant="secondary">
-                    <Film className="mr-2 h-4 w-4" />
-                    Criar Vídeo
-                  </Button>
-                </Link>
               </CardFooter>
             </Card>
           ))}
