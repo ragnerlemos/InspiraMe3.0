@@ -61,6 +61,8 @@ export function PainelControles(props: PainelControlesProps) {
                             <PainelFundo 
                                 backgroundStyle={props.backgroundStyle}
                                 onBackgroundStyleChange={props.onBackgroundStyleChange}
+                                aspectRatio={props.aspectRatio}
+                                onAspectRatioChange={props.onAspectRatioChange}
                             />
                         </TabsContent>
                     </Tabs>

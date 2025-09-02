@@ -10,7 +10,6 @@ import {
   Italic,
   Baseline,
   Paintbrush,
-  RectangleHorizontal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -25,13 +24,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import type { PainelEstiloProps, ProporcaoTela } from "./tipos";
+import type { PainelEstiloProps } from "./tipos";
 import { Separator } from "@/components/ui/separator";
 
-const proporcoes: ProporcaoTela[] = ["9:16", "1:1", "16:9"];
 
 export function PainelEstilo({
-    aspectRatio, onAspectRatioChange,
     fontFamily, onFontFamilyChange,
     fontSize, onFontSizeChange,
     fontWeight, onFontWeightChange,
@@ -45,24 +42,6 @@ export function PainelEstilo({
 }: PainelEstiloProps) {
     return (
         <>
-            {/* Controles de Proporção da Tela */}
-             <div className="space-y-2">
-                <Label className="flex items-center"><RectangleHorizontal className="mr-2 h-4 w-4" />Proporção da Tela</Label>
-                <div className="grid grid-cols-3 gap-2">
-                    {proporcoes.map((ar) => (
-                        <Button
-                            key={ar}
-                            variant={aspectRatio === ar ? "secondary" : "ghost"}
-                            onClick={() => onAspectRatioChange(ar)}
-                        >
-                            {ar}
-                        </Button>
-                    ))}
-                </div>
-            </div>
-
-            <Separator />
-
             {/* Seletor de Fonte */}
             <div className="space-y-2">
                 <Label htmlFor="font-family">Fonte</Label>

@@ -53,8 +53,6 @@ export interface PainelTextoProps {
 
 // Define as propriedades para o painel de customização de estilo.
 export interface PainelEstiloProps {
-    aspectRatio: ProporcaoTela;
-    onAspectRatioChange: (ratio: ProporcaoTela) => void;
     fontFamily: string;
     onFontFamilyChange: (font: string) => void;
     fontSize: number;
@@ -81,4 +79,6 @@ export interface PainelEstiloProps {
 export interface PainelFundoProps {
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
+    aspectRatio: ProporcaoTela;
+    onAspectRatioChange: (ratio: ProporcaoTela) => void;
 }
