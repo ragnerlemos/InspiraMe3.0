@@ -6,20 +6,26 @@ export type ProporcaoTela = "1:1" | "9:16" | "16:9";
 // Define o tipo para o objeto de estilo do texto, usando as propriedades CSS do React.
 export type EstiloTexto = React.CSSProperties;
 
+// Tipos para o estilo de fundo
+export type TipoFundo = 'media' | 'solid' | 'gradient';
+export type EstiloFundo = {
+    type: TipoFundo;
+    value: string; // URL da mídia, cor sólida, ou string do gradiente
+};
+
+
 // Define as propriedades (props) para o componente de visualização do editor.
 export interface VisualizacaoEditorProps {
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
-    backgroundImage: string;
+    backgroundStyle: EstiloFundo;
     text: string;
     textStyle: EstiloTexto;
     textVerticalPosition: number;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps {
-    onBackgroundImageChange: (src: string) => void;
-}
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {}
 
 // Define as propriedades para o painel de edição de texto.
 export interface PainelTextoProps {
@@ -53,5 +59,6 @@ export interface PainelEstiloProps {
 
 // Define as propriedades para o painel de upload de fundo.
 export interface PainelFundoProps {
-    onBackgroundImageChange: (src: string) => void;
+    backgroundStyle: EstiloFundo;
+    onBackgroundStyleChange: (style: EstiloFundo) => void;
 }

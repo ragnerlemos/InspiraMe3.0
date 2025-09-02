@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { quotes, templates } from "@/lib/dados";
-import type { EstiloTexto, ProporcaoTela } from "./tipos";
+import type { EstiloTexto, ProporcaoTela, TipoFundo, EstiloFundo } from "./tipos";
 import { VisualizacaoEditor } from "./visualizacao";
 import { PainelControles } from "./painel-controles";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,7 +24,7 @@ function EditorSkeleton() {
                     <Skeleton className="w-full max-w-2xl aspect-[9/16] rounded-lg" />
                 </div>
                 <div className="lg:col-span-1">
-                    <Skeleton className="w-full h-[700px] rounded-lg" />
+                    <Skeleton className="w-full h-[800px] rounded-lg" />
                 </div>
             </div>
         </div>
@@ -46,11 +46,16 @@ export function EditorClient() {
   const [textAlign, setTextAlign] = useState<"left" | "center" | "right">("center");
   const [textShadowBlur, setTextShadowBlur] = useState(0);
   const [aspectRatio, setAspectRatio] = useState<ProporcaoTela>("9:16");
-  const [backgroundImage, setBackgroundImage] = useState("");
   const [isReady, setIsReady] = useState(false); // Estado para controlar quando o editor está pronto.
   const [textVerticalPosition, setTextVerticalPosition] = useState(50); // Posição vertical do texto em porcentagem (50% = centro)
   const [textStrokeColor, setTextStrokeColor] = useState("#000000");
   const [textStrokeWidth, setTextStrokeWidth] = useState(0);
+
+  // Estado para o fundo
+  const [backgroundStyle, setBackgroundStyle] = useState<EstiloFundo>({
+    type: 'media',
+    value: templates[0].imageUrl,
+  });
 
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
@@ -69,14 +74,14 @@ export function EditorClient() {
     if (templateIdParam) {
       const template = templates.find(t => t.id === parseInt(templateIdParam));
       if (template) {
-        setBackgroundImage(template.imageUrl);
+        setBackgroundStyle({ type: 'media', value: template.imageUrl });
         setAspectRatio(template.aspectRatio as ProporcaoTela);
         // Se não houver uma citação específica, escolhe uma aleatória.
         if (!quoteParam) setText(quotes[Math.floor(Math.random() * quotes.length)].text);
       }
     } else {
         // Configurações padrão se nenhum modelo for especificado.
-        setBackgroundImage(templates[0].imageUrl);
+        setBackgroundStyle({ type: 'media', value: templates[0].imageUrl });
         setAspectRatio("9:16");
     }
     // Marca o editor como pronto para ser renderizado.
@@ -132,7 +137,7 @@ export function EditorClient() {
         <VisualizacaoEditor
             aspectRatio={aspectRatio}
             onAspectRatioChange={setAspectRatio}
-            backgroundImage={backgroundImage}
+            backgroundStyle={backgroundStyle}
             text={text}
             textStyle={textStyle}
             textVerticalPosition={textVerticalPosition}
@@ -161,7 +166,8 @@ export function EditorClient() {
             onTextStrokeColorChange={setTextStrokeColor}
             textStrokeWidth={textStrokeWidth}
             onTextStrokeWidthChange={setTextStrokeWidth}
-            onBackgroundImageChange={setBackgroundImage}
+            backgroundStyle={backgroundStyle}
+            onBackgroundStyleChange={setBackgroundStyle}
         />
       </div>
     </div>

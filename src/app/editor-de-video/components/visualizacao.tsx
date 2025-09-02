@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
+import type { VisualizacaoEditorProps, ProporcaoTela, TipoFundo, EstiloFundo } from "./tipos";
 import { useEffect, useState } from "react";
 
 // Mapeia os valores de proporção de tela para as classes CSS correspondentes do Tailwind.
@@ -36,43 +36,45 @@ const getMediaType = (src: string): 'image' | 'video' | 'unknown' => {
 export function VisualizacaoEditor({
     aspectRatio,
     onAspectRatioChange,
-    backgroundImage,
+    backgroundStyle,
     text,
     textStyle,
     textVerticalPosition,
 }: VisualizacaoEditorProps) {
-    const [mediaType, setMediaType] = useState<'image' | 'video' | 'unknown'>('unknown');
-
-    useEffect(() => {
-        setMediaType(getMediaType(backgroundImage));
-    }, [backgroundImage]);
-
 
     const renderBackground = () => {
-        if (mediaType === 'image') {
-            return (
-                <Image
-                    src={backgroundImage}
-                    alt="Background"
-                    fill
-                    className="object-cover"
-                    key={backgroundImage} // Força a recriação quando a imagem muda
-                    data-ai-hint="background scenery"
-                    priority
-                />
-            );
-        }
-        if (mediaType === 'video') {
-            return (
-                <video
-                    src={backgroundImage}
-                    autoPlay
-                    loop
-                    muted
-                    className="absolute inset-0 w-full h-full object-cover"
-                    key={backgroundImage} // Força a recriação quando o vídeo muda
-                />
-            );
+        const { type, value } = backgroundStyle;
+        if (type === 'media') {
+            const mediaType = getMediaType(value);
+            if (mediaType === 'image') {
+                return (
+                    <Image
+                        src={value}
+                        alt="Background"
+                        fill
+                        className="object-cover"
+                        key={value} // Força a recriação quando a imagem muda
+                        data-ai-hint="background scenery"
+                        priority
+                    />
+                );
+            }
+            if (mediaType === 'video') {
+                return (
+                    <video
+                        src={value}
+                        autoPlay
+                        loop
+                        muted
+                        className="absolute inset-0 w-full h-full object-cover"
+                        key={value} // Força a recriação quando o vídeo muda
+                    />
+                );
+            }
+        } else if (type === 'solid') {
+             return <div className="absolute inset-0" style={{ backgroundColor: value }} />;
+        } else if (type === 'gradient') {
+             return <div className="absolute inset-0" style={{ background: value }} />;
         }
         return null; // ou um placeholder de carregamento/erro
     };

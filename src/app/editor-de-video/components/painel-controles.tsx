@@ -43,7 +43,10 @@ export function PainelControles(props: PainelControlesProps) {
 
                         {/* Conteúdo da aba de Fundo. */}
                         <TabsContent value="background" className="space-y-4 pt-4">
-                            <PainelFundo onBackgroundImageChange={props.onBackgroundImageChange} />
+                            <PainelFundo 
+                                backgroundStyle={props.backgroundStyle}
+                                onBackgroundStyleChange={props.onBackgroundStyleChange}
+                            />
                         </TabsContent>
                     </Tabs>
 
