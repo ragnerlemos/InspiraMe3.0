@@ -26,7 +26,7 @@ export default function ModelosPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {templates.map((template) => {
           const editorUrl = new URLSearchParams();
           editorUrl.set('templateId', template.id.toString());
