@@ -1,13 +1,12 @@
 
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, Image as ImageIcon, Check, Palette, Layers, Redo } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, TipoFundo, EstiloFundo } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -178,31 +177,67 @@ function PainelGradiente({
     );
 }
 
+// Função para extrair dados de um gradiente a partir da string CSS
+const parseGradient = (value: string) => {
+    try {
+        const type = value.startsWith('linear') ? 'linear' : 'radial';
+        const parts = value.match(/\((.*)\)/)?.[1].split(', ');
+        if (!parts) throw new Error("Invalid gradient string");
+
+        let direction = 'to right';
+        let colors: [string, string] = ['#A06CD5', '#45B8AC'];
+
+        if (type === 'linear') {
+            if (parts[0].startsWith('to ')) {
+                direction = parts[0];
+                colors = [parts[1], parts[2]] as [string, string];
+            } else {
+                colors = [parts[0], parts[1]] as [string, string];
+            }
+        } else {
+            colors = [parts[0], parts[1]] as [string, string];
+        }
+        return { type, colors, direction };
+    } catch {
+        // Retorna um valor padrão seguro em caso de erro no parsing
+        return { type: 'linear' as 'linear' | 'radial', colors: ['#A06CD5', '#45B8AC'] as [string, string], direction: 'to right' };
+    }
+};
+
 // Componente principal do Painel de Fundo
 export function PainelFundo({ backgroundStyle, onBackgroundStyleChange }: PainelFundoProps) {
     
-    // Estados locais para os painéis de cor e gradiente
-    const [solidColor, setSolidColor] = useState('#A06CD5');
-    const [gradient, setGradient] = useState({
-        type: 'linear' as 'linear' | 'radial',
-        colors: ['#A06CD5', '#45B8AC'] as [string, string],
-        direction: 'to right',
-    });
-     // Determina a aba ativa com base no estilo de fundo atual
-    const activeTab = backgroundStyle.type;
+    // Determina a aba ativa e os valores com base no estilo de fundo atual
+    const { activeTab, solidColor, gradient } = useMemo(() => {
+        const activeTab = backgroundStyle.type;
+        let solidColor = '#A06CD5';
+        let gradient = { type: 'linear' as 'linear'|'radial', colors: ['#A06CD5', '#45B8AC'] as [string,string], direction: 'to right' };
 
+        if (activeTab === 'solid') {
+            solidColor = backgroundStyle.value;
+        } else if (activeTab === 'gradient') {
+            gradient = parseGradient(backgroundStyle.value);
+        }
+        return { activeTab, solidColor, gradient };
+    }, [backgroundStyle]);
+
+    // Função para mudar o TIPO de fundo (mídia, cor, gradiente)
     const handleTabChange = (tab: TipoFundo) => {
         if (tab === 'solid') {
-             onBackgroundStyleChange({ type: 'solid', value: solidColor });
+            onBackgroundStyleChange({ type: 'solid', value: solidColor });
         } else if (tab === 'gradient') {
-             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : ''}${gradient.colors[0]}, ${gradient.colors[1]})`;
-             onBackgroundStyleChange({ type: 'gradient', value: gradValue });
+            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : ''}${gradient.colors[0]}, ${gradient.colors[1]})`;
+            onBackgroundStyleChange({ type: 'gradient', value: gradValue });
+        } else {
+            // Para 'media', a mudança é tratada diretamente no upload,
+            // então apenas mudamos o tipo, o valor será o último usado ou um padrão.
+            // Para evitar voltar para um fundo vazio, não mudamos o valor aqui.
+             onBackgroundStyleChange({ type: 'media', value: backgroundStyle.type === 'media' ? backgroundStyle.value : templates[0].imageUrl });
         }
-        // Para 'media', a mudança é tratada diretamente no upload
     };
 
+    // Funções que propagam as MUDANÇAS de valor para o componente pai
     const handleSolidColorChange = (color: string) => {
-        setSolidColor(color);
         onBackgroundStyleChange({ type: 'solid', value: color });
     };
 
@@ -238,4 +273,10 @@ export function PainelFundo({ backgroundStyle, onBackgroundStyleChange }: Painel
             </div>
         </div>
     );
+}
+
+// Adicionado a importação que faltava
+import { templates } from '@/lib/dados';
+function setGradient(grad: any) {
+    throw new Error('Function not implemented.');
 }
