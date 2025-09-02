@@ -108,7 +108,7 @@ export default function PhrasesPage() {
               <CardFooter className="px-6 pb-4 flex justify-between items-center">
                   <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">{quote.category}</span>
                   <div className="flex items-center">
-                    <Link href={`/galeria?quote=${encodeURIComponent(quote.text)}`} passHref>
+                    <Link href={`/modelos?quote=${encodeURIComponent(quote.text)}`} passHref>
                         <Button variant="ghost" size="icon"><Film className="h-4 w-4"/></Button>
                     </Link>
                     <Button variant="ghost" size="icon" onClick={() => handleCopy(`"${quote.text}" - ${quote.author}`)}><Copy className="h-4 w-4"/></Button>

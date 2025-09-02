@@ -62,7 +62,7 @@ export default function FavoritesPage() {
                   {quote.category}
                 </span>
                 <div className="flex items-center">
-                  <Link href={`/galeria?quote=${encodeURIComponent(quote.text)}`} passHref>
+                  <Link href={`/modelos?quote=${encodeURIComponent(quote.text)}`} passHref>
                     <Button variant="ghost" size="icon">
                         <Film className="h-4 w-4" />
                     </Button>
