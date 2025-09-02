@@ -105,8 +105,8 @@ export function EditorClient() {
       if (template) {
         // Se for o modelo de Perfil (ID -2), usa os dados do perfil
         if (template.id === -2) {
-             initialState.backgroundStyle = { type: 'solid', value: '#FFFFFF' };
-             initialState.textColor = '#0D1419';
+             initialState.backgroundStyle = { type: 'solid', value: 'hsl(var(--card))' }; // Usa cor do tema
+             initialState.textColor = 'hsl(var(--card-foreground))'; // Usa cor do tema
              initialState.textAlign = 'left';
              initialState.fontSize = 20;
              initialState.fontFamily = 'PT Sans';

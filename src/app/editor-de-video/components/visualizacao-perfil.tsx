@@ -16,8 +16,8 @@ export function VisualizacaoPerfil({ profile, text, textStyle }: VisualizacaoPer
   });
 
   return (
-    <div className="flex items-center justify-center p-4 md:p-8 h-full w-full bg-background">
-        <Card className="w-full max-w-md mx-auto overflow-hidden shadow-xl">
+    <div className="flex items-center justify-center p-4 md:p-8 h-full w-full">
+        <Card className="w-full max-w-md mx-auto overflow-hidden shadow-xl bg-card">
             <CardHeader className="p-4">
                 <div className="flex items-start gap-3">
                     <Avatar className="h-12 w-12">
@@ -27,7 +27,7 @@ export function VisualizacaoPerfil({ profile, text, textStyle }: VisualizacaoPer
                     <div className="flex-1">
                             <div className="flex items-center justify-between">
                             <div>
-                                <p className="font-semibold" style={{color: textStyle.color}}>{profile.username}</p>
+                                <p className="font-semibold text-card-foreground">{profile.username}</p>
                                 <p className="text-sm text-muted-foreground">{profile.social}</p>
                             </div>
                             {profile.showIcon && (
