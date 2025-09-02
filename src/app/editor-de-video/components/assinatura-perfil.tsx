@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { ProfileData } from "@/hooks/use-profile";
-import { User, Twitter } from "lucide-react";
+import { User } from "lucide-react";
 
 interface AssinaturaPerfilProps {
   profile: ProfileData;
@@ -34,10 +34,8 @@ export function AssinaturaPerfil({
                         {showUsername && <p className="font-bold">{profile.username}</p>}
                         {showSocial && <p className="text-sm opacity-80">{profile.social}</p>}
                     </div>
-                    {profile.showIcon && (
-                        profile.iconUrl ? 
-                            <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" /> : 
-                            <Twitter className="h-5 w-5 text-blue-500" />
+                    {profile.showIcon && profile.iconUrl && (
+                        <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" />
                     )}
                 </div>
             </div>
