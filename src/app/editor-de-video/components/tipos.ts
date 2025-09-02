@@ -17,7 +17,9 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps {}
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps {
+    onBackgroundImageChange: (src: string) => void;
+}
 
 // Define as propriedades para o painel de edição de texto.
 export interface PainelTextoProps {
@@ -47,4 +49,9 @@ export interface PainelEstiloProps {
     onTextStrokeColorChange: (color: string) => void;
     textStrokeWidth: number;
     onTextStrokeWidthChange: (width: number) => void;
+}
+
+// Define as propriedades para o painel de upload de fundo.
+export interface PainelFundoProps {
+    onBackgroundImageChange: (src: string) => void;
 }

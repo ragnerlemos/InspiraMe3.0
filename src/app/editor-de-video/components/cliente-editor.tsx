@@ -161,6 +161,7 @@ export function EditorClient() {
             onTextStrokeColorChange={setTextStrokeColor}
             textStrokeWidth={textStrokeWidth}
             onTextStrokeWidthChange={setTextStrokeWidth}
+            onBackgroundImageChange={setBackgroundImage}
         />
       </div>
     </div>
