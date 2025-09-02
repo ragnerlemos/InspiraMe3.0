@@ -1,28 +1,38 @@
 
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
 import type { ProfileData } from "@/hooks/use-profile";
 import { User, Twitter } from "lucide-react";
 
 interface AssinaturaPerfilProps {
   profile: ProfileData;
+  showPhoto?: boolean;
+  showUsername?: boolean;
+  showSocial?: boolean;
 }
 
-export function AssinaturaPerfil({ profile }: AssinaturaPerfilProps) {
+export function AssinaturaPerfil({ 
+    profile, 
+    showPhoto = true, 
+    showUsername = true, 
+    showSocial = true 
+}: AssinaturaPerfilProps) {
   return (
-    <Card className="bg-card/80 backdrop-blur-sm p-3">
-        <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 p-3 backdrop-blur-sm bg-black/30 rounded-lg text-white">
+        {showPhoto && (
             <Avatar className="h-10 w-10">
                 <AvatarImage src={profile.photo || ""} alt={profile.username} />
                 <AvatarFallback>
                     <User />
                 </AvatarFallback>
             </Avatar>
+        )}
+        {(showUsername || showSocial) && (
             <div className="flex-1">
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="font-bold text-card-foreground">{profile.username}</p>
-                        <p className="text-sm text-muted-foreground">{profile.social}</p>
+                        {showUsername && <p className="font-bold">{profile.username}</p>}
+                        {showSocial && <p className="text-sm opacity-80">{profile.social}</p>}
                     </div>
                     {profile.showIcon && (
                         profile.iconUrl ? 
@@ -31,7 +41,7 @@ export function AssinaturaPerfil({ profile }: AssinaturaPerfilProps) {
                     )}
                 </div>
             </div>
-        </div>
-    </Card>
+        )}
+    </div>
   );
 }

@@ -31,6 +31,11 @@ const getInitialState = (): EditorState => ({
     aspectRatio: "9:16",
     activeTemplateId: null,
     showProfileSignature: false,
+    signaturePositionX: 50,
+    signaturePositionY: 90,
+    showSignaturePhoto: true,
+    showSignatureUsername: true,
+    showSignatureSocial: true,
 });
 
 
@@ -178,6 +183,11 @@ export function EditorClient() {
             textVerticalPosition={currentState.textVerticalPosition}
             showProfileSignature={currentState.showProfileSignature}
             profile={profile}
+            signaturePositionX={currentState.signaturePositionX}
+            signaturePositionY={currentState.signaturePositionY}
+            showSignaturePhoto={currentState.showSignaturePhoto}
+            showSignatureUsername={currentState.showSignatureUsername}
+            showSignatureSocial={currentState.showSignatureSocial}
         />
 
         <PainelControles
@@ -211,6 +221,16 @@ export function EditorClient() {
             canUndo={canUndo}
             showProfileSignature={currentState.showProfileSignature}
             onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
+            signaturePositionX={currentState.signaturePositionX}
+            onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
+            signaturePositionY={currentState.signaturePositionY}
+            onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
+            showSignaturePhoto={currentState.showSignaturePhoto}
+            onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
+            showSignatureUsername={currentState.showSignatureUsername}
+            onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
+            showSignatureSocial={currentState.showSignatureSocial}
+            onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
         />
       </div>
     </div>

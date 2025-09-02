@@ -32,6 +32,11 @@ export interface EditorState {
     aspectRatio: ProporcaoTela;
     activeTemplateId: number | null;
     showProfileSignature: boolean;
+    signaturePositionX: number;
+    signaturePositionY: number;
+    showSignaturePhoto: boolean;
+    showSignatureUsername: boolean;
+    showSignatureSocial: boolean;
 }
 
 // Tipo para um vídeo salvo pelo usuário.
@@ -52,6 +57,11 @@ export interface VisualizacaoEditorProps {
     textVerticalPosition: number;
     showProfileSignature: boolean;
     profile: ProfileData;
+    signaturePositionX: number;
+    signaturePositionY: number;
+    showSignaturePhoto: boolean;
+    showSignatureUsername: boolean;
+    showSignatureSocial: boolean;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
@@ -88,8 +98,6 @@ export interface PainelEstiloProps {
     onTextStrokeColorChange: (color: string) => void;
     textStrokeWidth: number;
     onTextStrokeWidthChange: (width: number) => void;
-    showProfileSignature: boolean;
-    onShowProfileSignatureChange: (show: boolean) => void;
 }
 
 // Define as propriedades para o painel de upload de fundo.
@@ -98,4 +106,16 @@ export interface PainelFundoProps {
     onBackgroundStyleChange: (style: EstiloFundo) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
+    showProfileSignature: boolean;
+    onShowProfileSignatureChange: (show: boolean) => void;
+    signaturePositionX: number;
+    onSignaturePositionXChange: (x: number) => void;
+    signaturePositionY: number;
+    onSignaturePositionYChange: (y: number) => void;
+    showSignaturePhoto: boolean;
+    onShowSignaturePhotoChange: (show: boolean) => void;
+    showSignatureUsername: boolean;
+    onShowSignatureUsernameChange: (show: boolean) => void;
+    showSignatureSocial: boolean;
+    onShowSignatureSocialChange: (show: boolean) => void;
 }

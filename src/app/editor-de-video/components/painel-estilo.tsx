@@ -10,7 +10,6 @@ import {
   Italic,
   Baseline,
   Paintbrush,
-  UserCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,7 +39,6 @@ export function PainelEstilo({
     textVerticalPosition, onTextVerticalPositionChange,
     textStrokeColor, onTextStrokeColorChange,
     textStrokeWidth, onTextStrokeWidthChange,
-    showProfileSignature, onShowProfileSignatureChange,
 }: PainelEstiloProps) {
     return (
         <>
@@ -124,7 +122,7 @@ export function PainelEstilo({
                 <div className="flex justify-between items-center">
                     <Label htmlFor="vertical-position" className="flex items-center">
                         <MoveVertical className="mr-2 h-4 w-4" />
-                        Posição Vertical
+                        Posição Vertical (Texto)
                     </Label>
                     <span className="text-sm text-muted-foreground">{textVerticalPosition}%</span>
                 </div>
@@ -139,20 +137,6 @@ export function PainelEstilo({
             </div>
 
              <Separator />
-
-             {/* Controle da Assinatura do Perfil */}
-              <div className="space-y-2">
-                <Label>Assinatura</Label>
-                 <Button 
-                    variant={showProfileSignature ? 'secondary' : 'outline'} 
-                    onClick={() => onShowProfileSignatureChange(!showProfileSignature)}
-                    className="w-full"
-                >
-                    <UserCheck className="mr-2 h-4 w-4" />
-                    {showProfileSignature ? 'Ocultar' : 'Mostrar'} Assinatura de Perfil
-                </Button>
-            </div>
-
 
             {/* Controles de Contorno do Texto */}
             <div className="space-y-4 rounded-lg border p-4">

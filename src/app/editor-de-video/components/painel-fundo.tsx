@@ -1,4 +1,5 @@
 
+
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo } from 'react';
@@ -6,12 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, RectangleHorizontal } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, RectangleHorizontal, UserCheck, MoveVertical, MoveHorizontal, Image as UserImage, CaseSensitive, AtSign } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, TipoFundo, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
 import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
 
 const proporcoes: ProporcaoTela[] = ["9:16", "1:1", "16:9"];
 
@@ -209,7 +211,16 @@ const parseGradient = (value: string) => {
 };
 
 // Componente principal do Painel de Fundo
-export function PainelFundo({ backgroundStyle, onBackgroundStyleChange, aspectRatio, onAspectRatioChange }: PainelFundoProps) {
+export function PainelFundo({ 
+    backgroundStyle, onBackgroundStyleChange, 
+    aspectRatio, onAspectRatioChange,
+    showProfileSignature, onShowProfileSignatureChange,
+    signaturePositionX, onSignaturePositionXChange,
+    signaturePositionY, onSignaturePositionYChange,
+    showSignaturePhoto, onShowSignaturePhotoChange,
+    showSignatureUsername, onShowSignatureUsernameChange,
+    showSignatureSocial, onShowSignatureSocialChange,
+}: PainelFundoProps) {
     
     // Determina a aba ativa e os valores com base no estilo de fundo atual
     const { activeTab, solidColor, gradient } = useMemo(() => {
@@ -292,6 +303,61 @@ export function PainelFundo({ backgroundStyle, onBackgroundStyleChange, aspectRa
                 {activeTab === 'solid' && <PainelCorSolida color={solidColor} onColorChange={handleSolidColorChange} />}
                 {activeTab === 'gradient' && <PainelGradiente gradient={gradient} onGradientChange={handleGradientChange} />}
             </div>
+
+             <Separator />
+
+             {/* Controle da Assinatura do Perfil */}
+              <div className="space-y-4 rounded-lg border p-4">
+                <Label className="flex items-center"><UserCheck className="mr-2 h-4 w-4" />Assinatura de Perfil</Label>
+                 <Button 
+                    variant={showProfileSignature ? 'secondary' : 'outline'} 
+                    onClick={() => onShowProfileSignatureChange(!showProfileSignature)}
+                    className="w-full"
+                >
+                    {showProfileSignature ? 'Ocultar' : 'Mostrar'} Assinatura
+                </Button>
+                
+                {showProfileSignature && (
+                    <div className="space-y-4 pt-2">
+                        <div className="grid grid-cols-3 gap-2">
+                             <Button size="sm" variant={showSignaturePhoto ? 'secondary' : 'outline'} onClick={() => onShowSignaturePhotoChange(!showSignaturePhoto)}>
+                                 <UserImage className="mr-2 h-4 w-4" /> Foto
+                            </Button>
+                             <Button size="sm" variant={showSignatureUsername ? 'secondary' : 'outline'} onClick={() => onShowSignatureUsernameChange(!showSignatureUsername)}>
+                                <CaseSensitive className="mr-2 h-4 w-4" /> Nome
+                            </Button>
+                             <Button size="sm" variant={showSignatureSocial ? 'secondary' : 'outline'} onClick={() => onShowSignatureSocialChange(!showSignatureSocial)}>
+                                <AtSign className="mr-2 h-4 w-4" /> Social
+                            </Button>
+                        </div>
+                         <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="signature-position-x" className="text-xs flex items-center"><MoveHorizontal className="mr-2 h-3 w-3" />Posição Horizontal</Label>
+                                <span className="text-xs text-muted-foreground">{signaturePositionX}%</span>
+                            </div>
+                            <Slider
+                                id="signature-position-x"
+                                min={0} max={100} step={1}
+                                value={[signaturePositionX]}
+                                onValueChange={(value) => onSignaturePositionXChange(value[0])}
+                            />
+                        </div>
+                         <div className="space-y-2">
+                             <div className="flex justify-between items-center">
+                                <Label htmlFor="signature-position-y" className="text-xs flex items-center"><MoveVertical className="mr-2 h-3 w-3" />Posição Vertical</Label>
+                                <span className="text-xs text-muted-foreground">{signaturePositionY}%</span>
+                            </div>
+                            <Slider
+                                id="signature-position-y"
+                                min={0} max={100} step={1}
+                                value={[signaturePositionY]}
+                                onValueChange={(value) => onSignaturePositionYChange(value[0])}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+
         </div>
     );
 }

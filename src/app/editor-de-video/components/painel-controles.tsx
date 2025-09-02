@@ -1,4 +1,5 @@
 
+
 // Componente que agrupa os painéis de controle para customização do vídeo/imagem.
 // Ele usa um sistema de abas para organizar as opções de "Texto" e "Estilo".
 
@@ -60,10 +61,7 @@ export function PainelControles(props: PainelControlesProps) {
                         {/* Conteúdo da aba de Fundo. */}
                         <TabsContent value="background" className="space-y-4 pt-4">
                             <PainelFundo 
-                                backgroundStyle={props.backgroundStyle}
-                                onBackgroundStyleChange={props.onBackgroundStyleChange}
-                                aspectRatio={props.aspectRatio}
-                                onAspectRatioChange={props.onAspectRatioChange}
+                                {...props}
                             />
                         </TabsContent>
                     </Tabs>

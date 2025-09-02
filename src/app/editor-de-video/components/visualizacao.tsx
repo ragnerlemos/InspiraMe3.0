@@ -40,6 +40,11 @@ export function VisualizacaoEditor({
     textVerticalPosition,
     showProfileSignature,
     profile,
+    signaturePositionX,
+    signaturePositionY,
+    showSignaturePhoto,
+    showSignatureUsername,
+    showSignatureSocial,
 }: VisualizacaoEditorProps) {
 
     const renderBackground = () => {
@@ -96,8 +101,20 @@ export function VisualizacaoEditor({
                     </div>
                 </div>
                  {showProfileSignature && (
-                    <div className="absolute bottom-4 left-4 right-4">
-                        <AssinaturaPerfil profile={profile} />
+                    <div 
+                        className="absolute"
+                        style={{
+                            top: `${signaturePositionY}%`,
+                            left: `${signaturePositionX}%`,
+                            transform: `translate(-50%, -50%)`,
+                        }}
+                    >
+                        <AssinaturaPerfil 
+                            profile={profile} 
+                            showPhoto={showSignaturePhoto}
+                            showUsername={showSignatureUsername}
+                            showSocial={showSignatureSocial}
+                        />
                     </div>
                 )}
             </div>
