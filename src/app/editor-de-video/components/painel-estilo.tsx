@@ -45,6 +45,11 @@ export function PainelEstilo({
 }: PainelEstiloProps) {
     // Para o modelo Twitter (ID -2), desativamos o controle de posição vertical.
     const isTwitterTemplate = activeTemplateId === -2;
+    
+    // Converte a unidade vw para uma aproximação em px para exibição.
+    // Baseado em uma largura de canvas de referência de ~360px.
+    const getApproximatePx = (vw: number) => Math.round(vw * 3.6);
+
 
     return (
         <>
@@ -77,7 +82,7 @@ export function PainelEstilo({
             <div className="space-y-2">
                 <div className="flex justify-between items-center">
                     <Label htmlFor="font-size">Tamanho da Fonte</Label>
-                    <span className="text-sm text-muted-foreground">{fontSize.toFixed(1)}</span>
+                    <span className="text-sm text-muted-foreground">{getApproximatePx(fontSize)}px</span>
                 </div>
                 <Slider
                     id="font-size"
