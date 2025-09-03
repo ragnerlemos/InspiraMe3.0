@@ -1,3 +1,4 @@
+
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
@@ -100,10 +101,16 @@ export function PainelControles(props: PainelControlesProps) {
                 </div>
             </div>
 
-            <SheetContent side="bottom" className="h-auto max-h-[80vh] flex flex-col" onInteractOutside={(e) => {
-                if(e.target instanceof HTMLInputElement && e.target.type === 'color') return;
-                e.preventDefault()
-            }}>
+            <SheetContent 
+                side="bottom" 
+                className="h-auto max-h-[80vh] flex flex-col" 
+                onInteractOutside={(e) => {
+                    // Impede o fechamento do Sheet ao interagir com o seletor de cores nativo do navegador.
+                    if (e.target instanceof HTMLElement && e.target.getAttribute('type') === 'color') {
+                        e.preventDefault();
+                    }
+                }}
+            >
                  <SheetHeader className="mb-4">
                     <SheetTitle className="flex items-center">
                          <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActiveSheet(null)}>
