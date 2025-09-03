@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, TipoFundo, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,7 +15,11 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { BotaoRecurso } from './botao-recurso';
 import { Separator } from '@/components/ui/separator';
 
-const proporcoes: ProporcaoTela[] = ["9:16", "1:1", "16:9"];
+const proporcoes: { ratio: ProporcaoTela; icon: React.ElementType }[] = [
+    { ratio: "9:16", icon: RectangleVertical },
+    { ratio: "1:1", icon: Square },
+    { ratio: "16:9", icon: RectangleHorizontal },
+];
 
 type ControleAtivo = 'proporcao' | 'tipo' | 'assinatura' | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
@@ -26,15 +30,15 @@ function ControleProporcao({ aspectRatio, onAspectRatioChange }: { aspectRatio: 
         <div className="space-y-2">
             <Label>Proporção da Tela</Label>
             <div className="grid grid-cols-3 gap-2">
-                {proporcoes.map((ar) => (
+                {proporcoes.map(({ ratio, icon: Icon }) => (
                     <Button
-                        key={ar}
-                        variant={aspectRatio === ar ? "secondary" : "ghost"}
-                        onClick={() => onAspectRatioChange(ar)}
+                        key={ratio}
+                        variant={aspectRatio === ratio ? "secondary" : "ghost"}
+                        onClick={() => onAspectRatioChange(ratio)}
                         className="flex flex-col h-16"
                     >
-                        <RectangleHorizontal className="h-6 w-6 mb-1"/>
-                        <span className="text-xs">{ar}</span>
+                        <Icon className="h-6 w-6 mb-1"/>
+                        <span className="text-xs">{ratio}</span>
                     </Button>
                 ))}
             </div>
