@@ -1,8 +1,8 @@
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 import type { EstiloFundo, VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { VisualizacaoPerfil } from "./visualizacao-perfil";
-import { cn } from "@/lib/utils";
 
 const getMediaType = (src: string): 'image' | 'video' | 'unknown' => {
     if (src.startsWith('data:')) {
