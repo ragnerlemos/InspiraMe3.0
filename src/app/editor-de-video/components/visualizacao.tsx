@@ -141,13 +141,15 @@ export function VisualizacaoEditor({
 
 
     return (
-      <div className={cn(
-          "relative w-full max-w-full max-h-full bg-black rounded-lg overflow-hidden shadow-2xl",
-          proporcoes[aspectRatio]
-        )}
-      >
-          {renderBackground()}
-          {renderContent()}
+      <div className="absolute inset-0 flex justify-center items-center p-4 md:p-8">
+        <div className={cn(
+            "relative w-full max-w-full max-h-full bg-black rounded-lg overflow-hidden shadow-2xl",
+            proporcoes[aspectRatio]
+            )}
+        >
+            {renderBackground()}
+            {renderContent()}
+        </div>
       </div>
     );
 }
