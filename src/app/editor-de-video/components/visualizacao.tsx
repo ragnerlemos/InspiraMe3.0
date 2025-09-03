@@ -71,7 +71,7 @@ export function VisualizacaoEditor({
     } else if (type === "gradient") {
       return <div className="absolute inset-0" style={{ background: backgroundStyle.value }} />;
     }
-    return null;
+    return <div className="absolute inset-0 bg-black" />;
   };
 
   const renderContent = () => {
@@ -90,44 +90,45 @@ export function VisualizacaoEditor({
 
     // Padrão
     return (
-      <div className="absolute inset-0 flex items-center justify-center p-8">
-        <div className="relative w-full h-full">
-          <div
-            style={{
-              ...textStyle,
-              top: `${textVerticalPosition}%`,
-              transform: "translateY(-50%)",
-            }}
-            className="break-words w-full absolute transition-all duration-200"
-          >
-            {text}
+      <>
+        <div className="absolute inset-0 flex items-center justify-center p-8">
+          <div className="relative w-full h-full">
+            <div
+              style={{
+                ...textStyle,
+                top: `${textVerticalPosition}%`,
+                transform: "translateY(-50%)",
+              }}
+              className="break-words w-full absolute transition-all duration-200"
+            >
+              {text}
+            </div>
           </div>
         </div>
-
         {showProfileSignature && (
-          <div
-            className="absolute"
-            style={{
-              top: `${signaturePositionY}%`,
-              left: `${signaturePositionX}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <AssinaturaPerfil
-              profile={profile}
-              showPhoto={showSignaturePhoto}
-              showUsername={showSignatureUsername}
-              showSocial={showSignatureSocial}
-            />
-          </div>
-        )}
-      </div>
+            <div
+              className="absolute"
+              style={{
+                top: `${signaturePositionY}%`,
+                left: `${signaturePositionX}%`,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <AssinaturaPerfil
+                profile={profile}
+                showPhoto={showSignaturePhoto}
+                showUsername={showSignatureUsername}
+                showSocial={showSignatureSocial}
+              />
+            </div>
+          )}
+      </>
     );
   };
 
   return (
     <div
-      className="relative @container rounded-lg overflow-hidden shadow-2xl bg-black max-w-full max-h-full"
+      className="relative @container rounded-lg overflow-hidden shadow-2xl h-full"
       style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
     >
       {renderBackground()}
@@ -135,3 +136,4 @@ export function VisualizacaoEditor({
     </div>
   );
 }
+
