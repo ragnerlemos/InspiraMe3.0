@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { EstiloFundo, VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
+import type { EstiloFundo, VisualizacaoEditorProps } from "./tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { VisualizacaoPerfil } from "./visualizacao-perfil";
 
@@ -71,15 +71,17 @@ const renderContent = (props: VisualizacaoEditorProps) => {
     }
     
     return (
-        <div className="absolute inset-0 flex items-center justify-center p-8 @container">
+        <div className="absolute inset-0 flex items-center justify-center p-8">
             <div className="relative w-full h-full">
                 <div
                     style={{
                         ...props.textStyle,
                         top: `${props.textVerticalPosition}%`,
                         transform: 'translateY(-50%)',
+                        wordBreak: 'break-word',
+                        maxWidth: '100%',
                     }}
-                    className="break-words w-full absolute transition-all duration-200"
+                    className="w-full absolute transition-all duration-200"
                 >
                     {props.text}
                 </div>
@@ -111,10 +113,12 @@ export function VisualizacaoEditor(props: VisualizacaoEditorProps) {
   return (
     <div
       className={cn(
-        "relative rounded-lg overflow-hidden shadow-2xl bg-black max-w-full max-h-full",
+        "relative rounded-lg overflow-hidden shadow-2xl bg-black max-w-full max-h-full @container"
       )}
       style={{
         aspectRatio: aspectRatio.replace(":", "/"),
+        width: "auto",
+        height: "auto",
       }}
     >
       {renderBackground(backgroundStyle)}
