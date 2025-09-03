@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, GalleryVertical, Quote, Menu, Star, Settings, User, Clapperboard } from "lucide-react";
+import { Film, GalleryVertical, Quote, Menu, Star, Settings, User, Clapperboard, Download } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,10 +20,37 @@ const navItems = [
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
+function EditorHeader() {
+    return (
+        <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm">
+            <div className="container flex h-16 items-center justify-between">
+                <Link href="/modelos">
+                    <Button variant="ghost">
+                        <Quote className="h-5 w-5 mr-2" />
+                        Voltar
+                    </Button>
+                </Link>
+                <h1 className="text-lg font-bold">Editor</h1>
+                <Button>
+                    <Download className="h-5 w-5 mr-2" />
+                    Exportar
+                </Button>
+            </div>
+        </header>
+    )
+}
+
+
 // Componente do cabeçalho da aplicação.
 export function AppHeader() {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  
+  const isEditorPage = pathname.startsWith('/editor-de-video');
+
+  if (isEditorPage) {
+      return <EditorHeader />;
+  }
 
   // Função que renderiza os links de navegação.
   const navLinks = (className?: string) => (

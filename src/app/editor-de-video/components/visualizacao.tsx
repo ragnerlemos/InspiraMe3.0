@@ -1,3 +1,4 @@
+
 // Componente responsável por renderizar a área de visualização do editor, 
 // incluindo a imagem de fundo, o texto e os controles de proporção de tela.
 
@@ -140,9 +141,9 @@ export function VisualizacaoEditor({
 
 
     return (
-        <div className="lg:col-span-2 flex flex-col items-center gap-4">
+        <div className="flex-1 w-full max-w-4xl flex justify-center items-center">
             {/* Contêiner da visualização que se ajusta à proporção de tela selecionada. */}
-            <div className={cn("relative w-full max-w-2xl bg-muted dark:bg-black rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
+            <div className={cn("relative w-full max-w-md bg-muted dark:bg-black rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
                 {renderBackground()}
                 {renderContent()}
             </div>
