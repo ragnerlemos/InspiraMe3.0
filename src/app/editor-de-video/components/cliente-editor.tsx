@@ -186,7 +186,7 @@ export function EditorClient() {
   return (
     <div className="container mx-auto py-4 md:py-8 h-full">
       <div className="grid md:grid-cols-3 gap-8 items-start h-full">
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 flex justify-center">
             <VisualizacaoEditor
                 aspectRatio={currentState.aspectRatio}
                 backgroundStyle={currentState.backgroundStyle}
