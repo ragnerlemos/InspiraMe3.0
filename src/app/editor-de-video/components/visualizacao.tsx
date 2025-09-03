@@ -141,12 +141,9 @@ export function VisualizacaoEditor({
 
 
     return (
-        <div className="flex-1 w-full flex justify-center items-center">
-            {/* Contêiner da visualização que se ajusta à proporção de tela selecionada. */}
-            <div className={cn("relative w-full max-h-[80vh] bg-muted dark:bg-black rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
-                {renderBackground()}
-                {renderContent()}
-            </div>
-        </div>
+      <div className={cn("relative w-full h-full bg-muted dark:bg-black rounded-lg overflow-hidden shadow-2xl", proporcoes[aspectRatio])}>
+          {renderBackground()}
+          {renderContent()}
+      </div>
     );
 }

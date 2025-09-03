@@ -6,10 +6,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 // Componente que exibe um esqueleto de carregamento enquanto o editor está sendo preparado.
 function EditorSkeleton() {
     return (
-        <div className="container mx-auto py-8">
-            <div className="flex flex-col items-center gap-8">
-                <Skeleton className="w-full max-w-md aspect-[9/16] rounded-lg" />
-                <Skeleton className="w-full max-w-md h-24 rounded-lg" />
+        <div className="container mx-auto py-8 flex flex-col items-center h-full">
+            <Skeleton className="w-full max-w-sm aspect-[9/16] rounded-lg" />
+            <div className="w-full max-w-sm mt-4">
+                <Skeleton className="h-24 w-full rounded-lg" />
             </div>
         </div>
     );
@@ -19,7 +19,7 @@ function EditorSkeleton() {
 // O Suspense aguarda o carregamento dinâmico dos dados (parâmetros da URL) dentro do EditorClient.
 export default function EditorPage() {
     return (
-         <div className="w-full h-[calc(100vh-4rem)]">
+         <div className="w-full h-[calc(100vh-4rem)] bg-muted/40">
             <Suspense fallback={<EditorSkeleton />}>
                 <EditorClient />
             </Suspense>
