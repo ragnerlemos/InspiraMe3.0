@@ -250,7 +250,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
                 {!controleAtivo && <p className="text-muted-foreground text-center pt-8">Selecione uma opção acima para editar.</p>}
             </div>
             <div className="p-4 border-t">
-                 <Button variant="secondary" className="w-full" onClick={() => { setControleAtivo(null); props.onClose(); }}>Concluído</Button>
+                 <Button variant="secondary" className="w-full" onClick={props.onClose}>Concluído</Button>
             </div>
         </div>
     );

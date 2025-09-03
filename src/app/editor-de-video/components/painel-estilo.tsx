@@ -163,7 +163,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                 {renderControle()}
             </div>
             <div className="p-4 border-t">
-                 <Button variant="secondary" className="w-full" onClick={() => { setControleAtivo(null); props.onClose(); }}>Concluído</Button>
+                 <Button variant="secondary" className="w-full" onClick={props.onClose}>Concluído</Button>
             </div>
        </div>
     );
