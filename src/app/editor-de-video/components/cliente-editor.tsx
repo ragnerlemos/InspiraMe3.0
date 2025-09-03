@@ -157,7 +157,6 @@ export function EditorClient() {
     return shadows.join(", ");
   };
   
-  const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
   const shadowBlurCqw = currentState.textShadowBlur * 0.1;
   const mainTextShadow = currentState.textShadowBlur > 0 ? `0.1cqw 0.1cqw ${shadowBlurCqw}cqw rgba(0,0,0,0.8)` : "none";
   
@@ -186,7 +185,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
       {/* Área de visualização */}
-      <div className="flex-1 flex justify-center items-center bg-muted/40 p-4 md:p-8 relative overflow-hidden">
+      <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
