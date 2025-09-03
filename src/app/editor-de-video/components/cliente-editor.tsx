@@ -170,7 +170,7 @@ export function EditorClient() {
   // Estilos CSS para o texto, aplicados dinamicamente.
   const textStyle: EstiloTexto = {
     fontFamily: currentState.fontFamily,
-    fontSize: `clamp(12px, ${currentState.fontSize}cqw, 128px)`,
+    fontSize: `${currentState.fontSize}cqw`,
     fontWeight: currentState.fontWeight,
     fontStyle: currentState.fontStyle,
     color: currentState.textColor,
