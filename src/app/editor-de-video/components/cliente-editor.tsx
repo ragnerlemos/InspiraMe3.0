@@ -15,7 +15,7 @@ import { useProfile } from "@/hooks/use-profile";
 const getInitialState = (): EditorState => ({
     text: "",
     fontFamily: "Poppins",
-    fontSize: 5, // Unidade cqw
+    fontSize: 5, // Agora representa um percentual da largura base
     fontWeight: "normal",
     fontStyle: "normal",
     textColor: "#FFFFFF",
@@ -54,6 +54,17 @@ function EditorSkeleton() {
         </div>
     );
 }
+
+// Helper local
+function getBaseDims(aspectRatio: ProporcaoTela) {
+  switch (aspectRatio) {
+    case "9:16":  return { width: 900,  height: 1600 };
+    case "16:9":  return { width: 1600, height: 900  };
+    case "1:1":   return { width: 1200, height: 1200 };
+    default:      return { width: 900,  height: 1600 };
+  }
+}
+
 
 // Componente principal do cliente do editor de vídeo.
 export function EditorClient() {
@@ -142,14 +153,21 @@ export function EditorClient() {
     setIsReady(true);
   }, [searchParams, isProfileLoaded]);
 
+  const base = getBaseDims(currentState.aspectRatio);
+
+  // Interpreta currentState.fontSize como **percentual da largura do canvas**
+  const rawPx = (currentState.fontSize / 100) * base.width;
+  // Limites de segurança para não ficar ilegível nem gigante
+  const fontSizePx = Math.max(12, Math.min(256, Math.round(rawPx)));
+
   const createTextStrokeShadow = (width: number, color: string): string => {
     if (width === 0) return "none";
-    const responsiveWidth = width / 10;
+    const responsiveWidth = (width / 1000) * base.width; // Proporcional à largura base
     const shadows = [];
     for (let x = -responsiveWidth; x <= responsiveWidth; x += 0.5) {
       for (let y = -responsiveWidth; y <= responsiveWidth; y += 0.5) {
         if (Math.sqrt(x * x + y * y) <= responsiveWidth) {
-          shadows.push(`${x}cqw ${y}cqw 0 ${color}`);
+          shadows.push(`${x}px ${y}px 0 ${color}`);
         }
       }
     }
@@ -157,7 +175,8 @@ export function EditorClient() {
   };
   
   const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
-  const mainTextShadow = currentState.textShadowBlur > 0 ? `0.1cqw 0.1cqw ${currentState.textShadowBlur / 10}cqw rgba(0,0,0,0.8)` : "none";
+  const shadowBlurPx = (currentState.textShadowBlur / 1000) * base.width;
+  const mainTextShadow = currentState.textShadowBlur > 0 ? `1px 1px ${shadowBlurPx}px rgba(0,0,0,0.8)` : "none";
   
   const combinedTextShadow = 
     textStrokeShadow !== "none" && mainTextShadow !== "none"
@@ -168,7 +187,7 @@ export function EditorClient() {
 
   const textStyle: EstiloTexto = {
     fontFamily: currentState.fontFamily,
-    fontSize: `${currentState.fontSize}cqw`,
+    fontSize: `${fontSizePx}px`,
     fontWeight: currentState.fontWeight,
     fontStyle: currentState.fontStyle,
     color: currentState.textColor,
@@ -184,7 +203,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
       {/* Área de visualização */}
-      <div className="flex-1 flex justify-center items-center bg-muted/40 p-4 md:p-8 relative overflow-hidden">
+      <div className="flex-1 flex justify-center items-center bg-muted/40 overflow-hidden relative">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
