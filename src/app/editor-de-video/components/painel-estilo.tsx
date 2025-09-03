@@ -162,9 +162,6 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
             <div className="flex-1 p-4 overflow-y-auto">
                 {renderControle()}
             </div>
-            <div className="p-4 border-t">
-                 <Button variant="secondary" className="w-full" onClick={props.onClose}>Concluído</Button>
-            </div>
        </div>
     );
 }
