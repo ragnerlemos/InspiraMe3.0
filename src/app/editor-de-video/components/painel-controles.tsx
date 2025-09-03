@@ -1,8 +1,7 @@
-
 // Componente que agrupa os painéis de controle para customização do vídeo/imagem.
 // Ele usa um sistema de abas para organizar as opções de "Texto" e "Estilo".
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Type, Palette, Download, Share2, ImagePlus, Undo2 } from "lucide-react";
 import { PainelTexto } from "./painel-texto";
@@ -145,4 +144,3 @@ export function PainelControles(props: PainelControlesProps) {
         </Card>
     );
 }
-
