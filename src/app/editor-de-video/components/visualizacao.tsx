@@ -105,7 +105,7 @@ export function VisualizacaoEditor({
         
         // Renderização padrão para os outros modelos.
         return (
-            <div className="absolute inset-0 bg-black/10 flex items-center justify-center p-8">
+            <div className="absolute inset-0 flex items-center justify-center p-8">
                 <div className="relative w-full h-full">
                     <div
                         style={{
