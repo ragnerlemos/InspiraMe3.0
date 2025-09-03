@@ -1,4 +1,3 @@
-
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
@@ -12,11 +11,14 @@ import { PainelTexto } from "./painel-texto";
 import { PainelEstilo } from "./painel-estilo";
 import { PainelFundo } from "./painel-fundo";
 import { BotaoRecurso } from './botao-recurso';
+import { useWindowSize } from 'react-use';
 
 
 export function PainelControles(props: PainelControlesProps) {
     const { toast } = useToast();
-    const [activeSheet, setActiveSheet] = useState<'text' | 'style' | 'background' | null>(null);
+    const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | null>('text');
+    const { width } = useWindowSize();
+    const isDesktop = width >= 768; // Tailwind's md breakpoint
 
     const handleShare = async () => {
         const shareData = {
@@ -45,13 +47,26 @@ export function PainelControles(props: PainelControlesProps) {
             }
         }
     };
+    
+    const handlePanelChange = (panel: 'text' | 'style' | 'background' | null) => {
+        if (isDesktop) {
+            setActivePanel(panel);
+        } else {
+            // No mobile, se o painel já estiver ativo, não faz nada, 
+            // se for diferente, abre o novo painel.
+            if (activePanel !== panel) {
+                setActivePanel(panel);
+            }
+        }
+    };
 
-    const renderSheetContent = () => {
+
+    const renderPanelContent = () => {
         const commonProps = {
-            onClose: () => setActiveSheet(null),
+            onClose: () => setActivePanel(null),
         };
         
-        switch (activeSheet) {
+        switch (activePanel) {
             case 'text':
                 return <PainelTexto {...props} />;
             case 'style':
@@ -59,12 +74,16 @@ export function PainelControles(props: PainelControlesProps) {
             case 'background':
                  return <PainelFundo {...props} {...commonProps} />;
             default:
+                // No desktop, renderiza um placeholder se nenhum painel estiver ativo
+                if (isDesktop) {
+                    return <div className="p-4 text-center text-muted-foreground">Selecione uma ferramenta para começar a editar.</div>;
+                }
                 return null;
         }
     }
     
-    const getSheetTitle = () => {
-        switch (activeSheet) {
+    const getPanelTitle = () => {
+        switch (activePanel) {
             case 'text': return "Editar Texto";
             case 'style': return "Editar Estilo";
             case 'background': return "Editar Fundo";
@@ -72,40 +91,59 @@ export function PainelControles(props: PainelControlesProps) {
         }
     }
 
+    const mainToolbar = (
+        <div className="flex h-24 items-center justify-around px-2 border-b">
+            <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange('text')} isActive={activePanel === 'text'} />
+            <BotaoRecurso icon={Palette} label="Estilo" onClick={() => handlePanelChange('style')} isActive={activePanel === 'style'} />
+            <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => handlePanelChange('background')} isActive={activePanel === 'background'}/>
+        </div>
+    );
+
+    const actionToolbar = (
+        <div className="flex gap-2 p-2 border-t">
+            <Button className="flex-1"><Download className="mr-2 h-4 w-4" /> Baixar</Button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="secondary" size="icon" onClick={props.onUndo} disabled={!props.canUndo}>
+                            <Undo2 className="h-4 w-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Desfazer</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            <Button variant="secondary" className="flex-1" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Compartilhar</Button>
+        </div>
+    );
+
+
+    // Layout para Desktop
+    if (isDesktop) {
+        return (
+            <div className="flex flex-col h-full">
+                {mainToolbar}
+                <div className="flex-1 overflow-y-auto">
+                    {renderPanelContent()}
+                </div>
+                {actionToolbar}
+            </div>
+        )
+    }
+
+    // Layout para Mobile com Sheet
     return (
-        <Sheet open={!!activeSheet} onOpenChange={(open) => !open && setActiveSheet(null)}>
-            <div className="w-full border-t bg-background flex flex-col fixed bottom-0 left-0">
-                {/* Barra de Ferramentas Principal */}
-                <div className="flex h-24 items-center justify-around px-2">
-                    <BotaoRecurso icon={Type} label="Texto" onClick={() => setActiveSheet('text')} isActive={activeSheet === 'text'} />
-                    <BotaoRecurso icon={Palette} label="Estilo" onClick={() => setActiveSheet('style')} isActive={activeSheet === 'style'} />
-                    <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => setActiveSheet('background')} isActive={activeSheet === 'background'}/>
-                </div>
-                
-                {/* Barra de Ações */}
-                <div className="flex gap-2 p-2 border-t">
-                    <Button className="flex-1"><Download className="mr-2 h-4 w-4" /> Baixar</Button>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="secondary" size="icon" onClick={props.onUndo} disabled={!props.canUndo}>
-                                    <Undo2 className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Desfazer</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                    <Button variant="secondary" className="flex-1" onClick={handleShare}><Share2 className="mr-2 h-4 w-4" /> Compartilhar</Button>
-                </div>
+        <Sheet open={!!activePanel} onOpenChange={(open) => !open && setActivePanel(null)}>
+            <div className="w-full border-t bg-background flex flex-col fixed bottom-0 left-0 md:hidden">
+                {mainToolbar}
+                {actionToolbar}
             </div>
 
             <SheetContent 
                 side="bottom" 
                 className="h-auto max-h-[80vh] flex flex-col" 
                 onInteractOutside={(e) => {
-                    // Impede o fechamento do Sheet ao interagir com o seletor de cores nativo do navegador.
                     if (e.target instanceof HTMLElement && e.target.getAttribute('type') === 'color') {
                         e.preventDefault();
                     }
@@ -113,14 +151,14 @@ export function PainelControles(props: PainelControlesProps) {
             >
                  <SheetHeader className="mb-4">
                     <SheetTitle className="flex items-center">
-                         <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActiveSheet(null)}>
+                         <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActivePanel(null)}>
                              <ArrowLeft className="h-5 w-5" />
                          </Button>
-                         {getSheetTitle()}
+                         {getPanelTitle()}
                     </SheetTitle>
                 </SheetHeader>
                 <div className="overflow-y-auto flex-1">
-                    {renderSheetContent()}
+                    {renderPanelContent()}
                 </div>
             </SheetContent>
         </Sheet>

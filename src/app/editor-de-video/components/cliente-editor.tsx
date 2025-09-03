@@ -185,9 +185,9 @@ export function EditorClient() {
   }
 
   return (
-    <div className="flex flex-col h-full w-full">
-      {/* Área de visualização que ocupa o espaço disponível, menos a altura da barra de ferramentas */}
-      <div className="flex-1 flex justify-center items-center overflow-hidden mb-[152px] p-4">
+    <div className="flex flex-col md:flex-row h-full w-full bg-background">
+      {/* Área de visualização */}
+      <div className="flex-1 flex justify-center items-center overflow-hidden p-4 md:p-8 bg-muted/40 relative">
         <div className="w-full max-w-sm">
             <VisualizacaoEditor
                 aspectRatio={currentState.aspectRatio}
@@ -208,52 +208,54 @@ export function EditorClient() {
         </div>
       </div>
       
-      {/* Painel de Controles fixado na parte inferior */}
-      <PainelControles
-          text={currentState.text}
-          onTextChange={(text) => updateState({ text })}
-          fontFamily={currentState.fontFamily}
-          onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
-          fontSize={currentState.fontSize}
-          onFontSizeChange={(fontSize) => updateState({ fontSize })}
-          fontWeight={currentState.fontWeight}
-          onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
-          fontStyle={currentState.fontStyle}
-          onFontStyleChange={(fontStyle) => updateState({ fontStyle })}
-          textColor={currentState.textColor}
-          onTextColorChange={(textColor) => updateState({ textColor })}
-          textAlign={currentState.textAlign}
-          onTextAlignChange={(textAlign) => updateState({ textAlign })}
-          textShadowBlur={currentState.textShadowBlur}
-          onTextShadowBlurChange={(textShadowBlur) => updateState({ textShadowBlur })}
-          textVerticalPosition={currentState.textVerticalPosition}
-          onTextVerticalPositionChange={(textVerticalPosition) => updateState({ textVerticalPosition })}
-          textStrokeColor={currentState.textStrokeColor}
-          onTextStrokeColorChange={(textStrokeColor) => updateState({ textStrokeColor })}
-          textStrokeWidth={currentState.textStrokeWidth}
-          onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
-          backgroundStyle={currentState.backgroundStyle}
-          onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
-          aspectRatio={currentState.aspectRatio}
-          onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
-          onUndo={undo}
-          canUndo={canUndo}
-          showProfileSignature={currentState.showProfileSignature}
-          onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
-          signaturePositionX={currentState.signaturePositionX}
-          onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
-          signaturePositionY={currentState.signaturePositionY}
-          onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
-          showSignaturePhoto={currentState.showSignaturePhoto}
-          onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
-          showSignatureUsername={currentState.showSignatureUsername}
-          onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
-          showSignatureSocial={currentState.showSignatureSocial}
-          onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
-          activeTemplateId={currentState.activeTemplateId}
-          profileVerticalPosition={currentState.profileVerticalPosition}
-          onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
-      />
+      {/* Painel de Controles */}
+      <div className="w-full md:w-80 lg:w-96 border-t md:border-t-0 md:border-l bg-background">
+        <PainelControles
+            text={currentState.text}
+            onTextChange={(text) => updateState({ text })}
+            fontFamily={currentState.fontFamily}
+            onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
+            fontSize={currentState.fontSize}
+            onFontSizeChange={(fontSize) => updateState({ fontSize })}
+            fontWeight={currentState.fontWeight}
+            onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
+            fontStyle={currentState.fontStyle}
+            onFontStyleChange={(fontStyle) => updateState({ fontStyle })}
+            textColor={currentState.textColor}
+            onTextColorChange={(textColor) => updateState({ textColor })}
+            textAlign={currentState.textAlign}
+            onTextAlignChange={(textAlign) => updateState({ textAlign })}
+            textShadowBlur={currentState.textShadowBlur}
+            onTextShadowBlurChange={(textShadowBlur) => updateState({ textShadowBlur })}
+            textVerticalPosition={currentState.textVerticalPosition}
+            onTextVerticalPositionChange={(textVerticalPosition) => updateState({ textVerticalPosition })}
+            textStrokeColor={currentState.textStrokeColor}
+            onTextStrokeColorChange={(textStrokeColor) => updateState({ textStrokeColor })}
+            textStrokeWidth={currentState.textStrokeWidth}
+            onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
+            backgroundStyle={currentState.backgroundStyle}
+            onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
+            aspectRatio={currentState.aspectRatio}
+            onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
+            onUndo={undo}
+            canUndo={canUndo}
+            showProfileSignature={currentState.showProfileSignature}
+            onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
+            signaturePositionX={currentState.signaturePositionX}
+            onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
+            signaturePositionY={currentState.signaturePositionY}
+            onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
+            showSignaturePhoto={currentState.showSignaturePhoto}
+            onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
+            showSignatureUsername={currentState.showSignatureUsername}
+            onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
+            showSignatureSocial={currentState.showSignatureSocial}
+            onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
+            activeTemplateId={currentState.activeTemplateId}
+            profileVerticalPosition={currentState.profileVerticalPosition}
+            onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
+        />
+      </div>
     </div>
   );
 }

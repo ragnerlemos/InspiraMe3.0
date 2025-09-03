@@ -2,14 +2,22 @@
 import { Suspense } from 'react';
 import { EditorClient } from './components/cliente-editor';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AppHeader } from '@/components/cabecalho-app';
 
 // Componente que exibe um esqueleto de carregamento enquanto o editor está sendo preparado.
 function EditorSkeleton() {
     return (
-        <div className="container mx-auto py-8 flex flex-col items-center h-full">
-            <Skeleton className="w-full max-w-sm aspect-[9/16] rounded-lg" />
-            <div className="w-full max-w-sm mt-4">
-                <Skeleton className="h-24 w-full rounded-lg" />
+        <div className="flex flex-col md:flex-row h-full w-full">
+            <div className="flex-1 flex items-center justify-center p-4 md:p-8 bg-muted/40">
+                <Skeleton className="w-full max-w-sm aspect-[9/16] rounded-lg" />
+            </div>
+            <div className="w-full md:w-80 lg:w-96 bg-background border-l">
+                 <div className="p-4">
+                    <Skeleton className="h-24 w-full" />
+                 </div>
+                 <div className="p-4 border-t">
+                     <Skeleton className="h-20 w-full" />
+                 </div>
             </div>
         </div>
     );
@@ -19,10 +27,13 @@ function EditorSkeleton() {
 // O Suspense aguarda o carregamento dinâmico dos dados (parâmetros da URL) dentro do EditorClient.
 export default function EditorPage() {
     return (
-         <div className="w-full h-screen fixed inset-0 bg-background">
-            <Suspense fallback={<EditorSkeleton />}>
-                <EditorClient />
-            </Suspense>
+         <div className="w-full h-screen flex flex-col">
+            <AppHeader />
+            <main className="flex-1 overflow-hidden">
+                <Suspense fallback={<EditorSkeleton />}>
+                    <EditorClient />
+                </Suspense>
+            </main>
         </div>
     )
 }
