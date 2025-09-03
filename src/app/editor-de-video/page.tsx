@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import { EditorClient } from './components/cliente-editor';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AppHeader } from '@/components/cabecalho-app';
+import { AppHeader } from '@/app/cabecalho-app';
 
 // Componente que exibe um esqueleto de carregamento enquanto o editor está sendo preparado.
 function EditorSkeleton() {
@@ -27,9 +27,9 @@ function EditorSkeleton() {
 // O Suspense aguarda o carregamento dinâmico dos dados (parâmetros da URL) dentro do EditorClient.
 export default function EditorPage() {
     return (
-         <div className="w-full h-screen flex flex-col">
+         <div className="w-full h-full flex flex-col">
             <AppHeader />
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1">
                 <Suspense fallback={<EditorSkeleton />}>
                     <EditorClient />
                 </Suspense>
