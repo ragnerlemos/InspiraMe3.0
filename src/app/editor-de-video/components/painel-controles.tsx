@@ -100,7 +100,10 @@ export function PainelControles(props: PainelControlesProps) {
                 </div>
             </div>
 
-            <SheetContent side="bottom" className="h-auto max-h-[80vh] flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
+            <SheetContent side="bottom" className="h-auto max-h-[80vh] flex flex-col" onInteractOutside={(e) => {
+                if(e.target instanceof HTMLInputElement && e.target.type === 'color') return;
+                e.preventDefault()
+            }}>
                  <SheetHeader className="mb-4">
                     <SheetTitle className="flex items-center">
                          <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActiveSheet(null)}>
