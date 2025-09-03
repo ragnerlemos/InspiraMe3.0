@@ -2,9 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import type { CSSProperties } from "react";
-import { cn } from "@/lib/utils";
-import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
+import type { VisualizacaoEditorProps } from "./tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { VisualizacaoPerfil } from "./visualizacao-perfil";
 
@@ -39,7 +37,7 @@ export function VisualizacaoEditor({
   activeTemplateId,
   profileVerticalPosition,
 }: VisualizacaoEditorProps) {
-
+  
   const renderBackground = () => {
     const { type, value } = backgroundStyle;
     if (type === "media" && value) {
@@ -129,7 +127,7 @@ export function VisualizacaoEditor({
 
   return (
     <div
-      className="relative @container w-full h-full max-w-full max-h-full rounded-lg overflow-hidden shadow-2xl bg-black"
+      className="relative @container rounded-lg overflow-hidden shadow-2xl bg-black max-w-full max-h-full"
       style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
     >
       {renderBackground()}
