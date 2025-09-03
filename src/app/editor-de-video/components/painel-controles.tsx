@@ -47,7 +47,7 @@ export function PainelControles(props: PainelControlesProps) {
     };
     
     return (
-        <Card className="w-full max-w-md sticky-top">
+        <Card className="w-full max-w-lg sticky-top">
              <div className="p-2">
                 <Tabs defaultValue="texto" className="w-full">
                     <TabsList className="grid w-full grid-cols-3">

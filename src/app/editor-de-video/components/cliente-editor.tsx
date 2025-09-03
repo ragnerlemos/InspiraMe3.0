@@ -44,11 +44,11 @@ const getInitialState = (): EditorState => ({
 function EditorSkeleton() {
     return (
         <div className="container mx-auto py-8">
-            <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="grid md:grid-cols-3 gap-8 items-start">
                 <div className="flex justify-center items-start">
-                    <Skeleton className="w-full max-w-md aspect-[9/16] rounded-lg" />
+                    <Skeleton className="w-full max-w-sm aspect-[9/16] rounded-lg" />
                 </div>
-                <div className="w-full max-w-md mx-auto">
+                <div className="w-full max-w-md mx-auto md:col-span-2">
                     <Skeleton className="h-96 w-full rounded-lg" />
                 </div>
             </div>
@@ -185,69 +185,72 @@ export function EditorClient() {
 
   return (
     <div className="container mx-auto py-4 md:py-8 h-full">
-      <div className="grid md:grid-cols-2 gap-8 items-start h-full">
-        <VisualizacaoEditor
-            aspectRatio={currentState.aspectRatio}
-            backgroundStyle={currentState.backgroundStyle}
-            text={currentState.text}
-            textStyle={textStyle}
-            textVerticalPosition={currentState.textVerticalPosition}
-            showProfileSignature={currentState.showProfileSignature}
-            profile={profile}
-            signaturePositionX={currentState.signaturePositionX}
-            signaturePositionY={currentState.signaturePositionY}
-            showSignaturePhoto={currentState.showSignaturePhoto}
-            showSignatureUsername={currentState.showSignatureUsername}
-            showSignatureSocial={currentState.showSignatureSocial}
-            activeTemplateId={currentState.activeTemplateId}
-            profileVerticalPosition={currentState.profileVerticalPosition}
-        />
-
-        <PainelControles
-            text={currentState.text}
-            onTextChange={(text) => updateState({ text })}
-            fontFamily={currentState.fontFamily}
-            onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
-            fontSize={currentState.fontSize}
-            onFontSizeChange={(fontSize) => updateState({ fontSize })}
-            fontWeight={currentState.fontWeight}
-            onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
-            fontStyle={currentState.fontStyle}
-            onFontStyleChange={(fontStyle) => updateState({ fontStyle })}
-            textColor={currentState.textColor}
-            onTextColorChange={(textColor) => updateState({ textColor })}
-            textAlign={currentState.textAlign}
-            onTextAlignChange={(textAlign) => updateState({ textAlign })}
-            textShadowBlur={currentState.textShadowBlur}
-            onTextShadowBlurChange={(textShadowBlur) => updateState({ textShadowBlur })}
-            textVerticalPosition={currentState.textVerticalPosition}
-            onTextVerticalPositionChange={(textVerticalPosition) => updateState({ textVerticalPosition })}
-            textStrokeColor={currentState.textStrokeColor}
-            onTextStrokeColorChange={(textStrokeColor) => updateState({ textStrokeColor })}
-            textStrokeWidth={currentState.textStrokeWidth}
-            onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
-            backgroundStyle={currentState.backgroundStyle}
-            onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
-            aspectRatio={currentState.aspectRatio}
-            onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
-            onUndo={undo}
-            canUndo={canUndo}
-            showProfileSignature={currentState.showProfileSignature}
-            onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
-            signaturePositionX={currentState.signaturePositionX}
-            onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
-            signaturePositionY={currentState.signaturePositionY}
-            onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
-            showSignaturePhoto={currentState.showSignaturePhoto}
-            onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
-            showSignatureUsername={currentState.showSignatureUsername}
-            onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
-            showSignatureSocial={currentState.showSignatureSocial}
-            onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
-            activeTemplateId={currentState.activeTemplateId}
-            profileVerticalPosition={currentState.profileVerticalPosition}
-            onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
-        />
+      <div className="grid md:grid-cols-3 gap-8 items-start h-full">
+        <div className="md:col-span-1">
+            <VisualizacaoEditor
+                aspectRatio={currentState.aspectRatio}
+                backgroundStyle={currentState.backgroundStyle}
+                text={currentState.text}
+                textStyle={textStyle}
+                textVerticalPosition={currentState.textVerticalPosition}
+                showProfileSignature={currentState.showProfileSignature}
+                profile={profile}
+                signaturePositionX={currentState.signaturePositionX}
+                signaturePositionY={currentState.signaturePositionY}
+                showSignaturePhoto={currentState.showSignaturePhoto}
+                showSignatureUsername={currentState.showSignatureUsername}
+                showSignatureSocial={currentState.showSignatureSocial}
+                activeTemplateId={currentState.activeTemplateId}
+                profileVerticalPosition={currentState.profileVerticalPosition}
+            />
+        </div>
+        <div className="md:col-span-2">
+            <PainelControles
+                text={currentState.text}
+                onTextChange={(text) => updateState({ text })}
+                fontFamily={currentState.fontFamily}
+                onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
+                fontSize={currentState.fontSize}
+                onFontSizeChange={(fontSize) => updateState({ fontSize })}
+                fontWeight={currentState.fontWeight}
+                onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
+                fontStyle={currentState.fontStyle}
+                onFontStyleChange={(fontStyle) => updateState({ fontStyle })}
+                textColor={currentState.textColor}
+                onTextColorChange={(textColor) => updateState({ textColor })}
+                textAlign={currentState.textAlign}
+                onTextAlignChange={(textAlign) => updateState({ textAlign })}
+                textShadowBlur={currentState.textShadowBlur}
+                onTextShadowBlurChange={(textShadowBlur) => updateState({ textShadowBlur })}
+                textVerticalPosition={currentState.textVerticalPosition}
+                onTextVerticalPositionChange={(textVerticalPosition) => updateState({ textVerticalPosition })}
+                textStrokeColor={currentState.textStrokeColor}
+                onTextStrokeColorChange={(textStrokeColor) => updateState({ textStrokeColor })}
+                textStrokeWidth={currentState.textStrokeWidth}
+                onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
+                backgroundStyle={currentState.backgroundStyle}
+                onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
+                aspectRatio={currentState.aspectRatio}
+                onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
+                onUndo={undo}
+                canUndo={canUndo}
+                showProfileSignature={currentState.showProfileSignature}
+                onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
+                signaturePositionX={currentState.signaturePositionX}
+                onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
+                signaturePositionY={currentState.signaturePositionY}
+                onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
+                showSignaturePhoto={currentState.showSignaturePhoto}
+                onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
+                showSignatureUsername={currentState.showSignatureUsername}
+                onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
+                showSignatureSocial={currentState.showSignatureSocial}
+                onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
+                activeTemplateId={currentState.activeTemplateId}
+                profileVerticalPosition={currentState.profileVerticalPosition}
+                onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
+            />
+        </div>
       </div>
     </div>
   );
