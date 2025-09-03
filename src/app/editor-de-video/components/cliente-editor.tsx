@@ -44,7 +44,7 @@ const getInitialState = (): EditorState => ({
 function EditorSkeleton() {
     return (
         <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
-            <div className="flex-1 flex justify-center items-center bg-muted/40 p-4 md:p-8 relative overflow-hidden">
+            <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden">
                  <Skeleton className="w-full h-full max-w-sm aspect-[9/16] rounded-lg" />
             </div>
              <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
@@ -157,6 +157,7 @@ export function EditorClient() {
     return shadows.join(", ");
   };
   
+  const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
   const shadowBlurCqw = currentState.textShadowBlur * 0.1;
   const mainTextShadow = currentState.textShadowBlur > 0 ? `0.1cqw 0.1cqw ${shadowBlurCqw}cqw rgba(0,0,0,0.8)` : "none";
   
