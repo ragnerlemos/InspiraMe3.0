@@ -71,7 +71,7 @@ const renderContent = (props: VisualizacaoEditorProps) => {
     }
     
     return (
-        <div className="absolute inset-0 flex items-center justify-center p-8">
+        <div className="absolute inset-0 flex items-center justify-center p-8 @container">
             <div className="relative w-full h-full">
                 <div
                     style={{
@@ -111,14 +111,10 @@ export function VisualizacaoEditor(props: VisualizacaoEditorProps) {
   return (
     <div
       className={cn(
-        "relative rounded-lg overflow-hidden shadow-2xl bg-black m-auto @container",
+        "relative rounded-lg overflow-hidden shadow-2xl bg-black max-w-full max-h-full",
       )}
       style={{
         aspectRatio: aspectRatio.replace(":", "/"),
-        width: "100%",
-        maxWidth: "100%",
-        maxHeight: "100%",
-        objectFit: "contain",
       }}
     >
       {renderBackground(backgroundStyle)}
