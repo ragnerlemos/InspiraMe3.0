@@ -37,7 +37,7 @@ export default function ModelosPage() {
             <Link key={template.id} href={`/editor-de-video?${editorUrl.toString()}`} passHref className="group">
                 <Card className="overflow-hidden flex flex-col h-full">
                 <div className={cn(
-                    "relative", 
+                    "relative w-full", 
                     template.aspectRatio === '9:16' ? 'aspect-[9/16]' : 'aspect-square'
                 )}>
                     {template.imageUrl ? (
