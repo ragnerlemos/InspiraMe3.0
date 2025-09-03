@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { cn } from "@/lib/utils";
 import type { VisualizacaoEditorProps, ProporcaoTela } from "./tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { VisualizacaoPerfil } from "./visualizacao-perfil";
@@ -38,36 +39,6 @@ export function VisualizacaoEditor({
   activeTemplateId,
   profileVerticalPosition,
 }: VisualizacaoEditorProps) {
-
-  const getCanvasStyle = (ratio: ProporcaoTela): CSSProperties => {
-    switch(ratio) {
-        case '9:16':
-            return {
-                aspectRatio: "9 / 16",
-                width: "100%",
-                maxWidth: "min(100%, 56.25vh)",
-                maxHeight: "min(100%, 177.77vw)",
-            };
-        case '16:9':
-            return {
-                aspectRatio: "16 / 9",
-                width: "100%",
-                maxWidth: "min(100%, 177.77vh)",
-                maxHeight: "min(100%, 56.25vw)",
-            };
-        case '1:1':
-            return {
-                aspectRatio: "1 / 1",
-                width: "100%",
-                maxWidth: "min(100%, 100vh)",
-                maxHeight: "min(100%, 100vw)",
-            };
-        default:
-            return {};
-    }
-  }
-  
-  const canvasStyle = getCanvasStyle(aspectRatio);
 
   const renderBackground = () => {
     const { type, value } = backgroundStyle;
@@ -158,11 +129,11 @@ export function VisualizacaoEditor({
 
   return (
     <div
-        className="relative @container rounded-lg overflow-hidden shadow-2xl bg-black"
-        style={canvasStyle}
-      >
-        {renderBackground()}
-        {renderContent()}
+      className="relative @container w-full h-full max-w-full max-h-full rounded-lg overflow-hidden shadow-2xl bg-black"
+      style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
+    >
+      {renderBackground()}
+      {renderContent()}
     </div>
   );
 }
