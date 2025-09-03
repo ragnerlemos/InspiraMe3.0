@@ -185,9 +185,9 @@ export function EditorClient() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] h-full w-full">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_384px] h-full w-full">
       {/* Área de visualização */}
-      <div className="relative flex-1 bg-muted/40 overflow-hidden">
+      <div className="relative bg-muted/40 overflow-hidden">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
@@ -207,7 +207,7 @@ export function EditorClient() {
       </div>
       
       {/* Painel de Controles */}
-      <div className="w-full md:w-80 lg:w-96 border-t md:border-t-0 md:border-l bg-background">
+      <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
         <PainelControles
             text={currentState.text}
             onTextChange={(text) => updateState({ text })}
