@@ -29,7 +29,7 @@ export default function EditorPage() {
     return (
          <div className="w-full h-full flex flex-col">
             <AppHeader />
-            <main className="flex-1">
+            <main className="flex-1 min-h-0">
                 <Suspense fallback={<EditorSkeleton />}>
                     <EditorClient />
                 </Suspense>

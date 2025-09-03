@@ -1,7 +1,6 @@
 
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster";
-import { AppHeader } from '@/app/cabecalho-app';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
