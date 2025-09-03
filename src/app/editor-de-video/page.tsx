@@ -19,7 +19,7 @@ function EditorSkeleton() {
 // O Suspense aguarda o carregamento dinâmico dos dados (parâmetros da URL) dentro do EditorClient.
 export default function EditorPage() {
     return (
-         <div className="w-full h-screen fixed inset-0">
+         <div className="w-full h-screen fixed inset-0 bg-background">
             <Suspense fallback={<EditorSkeleton />}>
                 <EditorClient />
             </Suspense>

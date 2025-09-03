@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Type, Palette, ImagePlus, Undo2, Download, Share2, ArrowLeft } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
@@ -46,13 +46,17 @@ export function PainelControles(props: PainelControlesProps) {
     };
 
     const renderSheetContent = () => {
+        const commonProps = {
+            onClose: () => setActiveSheet(null),
+        };
+        
         switch (activeSheet) {
             case 'text':
-                return <PainelTexto text={props.text} onTextChange={props.onTextChange} />;
+                return <PainelTexto {...props} />;
             case 'style':
-                return <PainelEstilo {...props} />;
+                return <PainelEstilo {...props} {...commonProps} />;
             case 'background':
-                 return <PainelFundo {...props} />;
+                 return <PainelFundo {...props} {...commonProps} />;
             default:
                 return null;
         }
@@ -72,9 +76,9 @@ export function PainelControles(props: PainelControlesProps) {
             <div className="w-full border-t bg-background flex flex-col fixed bottom-0 left-0">
                 {/* Barra de Ferramentas Principal */}
                 <div className="flex h-24 items-center justify-around px-2">
-                    <BotaoRecurso icon={Type} label="Texto" onClick={() => setActiveSheet('text')} />
-                    <BotaoRecurso icon={Palette} label="Estilo" onClick={() => setActiveSheet('style')} />
-                    <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => setActiveSheet('background')} />
+                    <BotaoRecurso icon={Type} label="Texto" onClick={() => setActiveSheet('text')} isActive={activeSheet === 'text'} />
+                    <BotaoRecurso icon={Palette} label="Estilo" onClick={() => setActiveSheet('style')} isActive={activeSheet === 'style'} />
+                    <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => setActiveSheet('background')} isActive={activeSheet === 'background'}/>
                 </div>
                 
                 {/* Barra de Ações */}
@@ -96,7 +100,7 @@ export function PainelControles(props: PainelControlesProps) {
                 </div>
             </div>
 
-            <SheetContent side="bottom" className="h-auto max-h-[70vh]">
+            <SheetContent side="bottom" className="h-auto max-h-[80vh] flex flex-col" onInteractOutside={(e) => e.preventDefault()}>
                  <SheetHeader className="mb-4">
                     <SheetTitle className="flex items-center">
                          <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActiveSheet(null)}>
@@ -105,7 +109,7 @@ export function PainelControles(props: PainelControlesProps) {
                          {getSheetTitle()}
                     </SheetTitle>
                 </SheetHeader>
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto flex-1">
                     {renderSheetContent()}
                 </div>
             </SheetContent>

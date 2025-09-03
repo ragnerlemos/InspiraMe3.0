@@ -1,5 +1,4 @@
 
-
 // Componente para a aba "Estilo", que agrupa todos os controles de customização visual do texto.
 
 import {
@@ -18,12 +17,13 @@ import { Slider } from "@/components/ui/slider";
 import type { PainelEstiloProps } from "./tipos";
 import { BotaoRecurso } from "./botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 
 type ControleAtivo = 'fonte' | 'tamanho' | 'cor' | 'alinhamento' | 'estilo' | 'posicao' | 'contorno' | 'sombra' | null;
 
 
-export function PainelEstilo(props: PainelEstiloProps) {
+export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void }) {
     const [controleAtivo, setControleAtivo] = useState<ControleAtivo>(null);
     
     // Para o modelo Twitter (ID -2), desativamos o controle de posição vertical.
@@ -37,7 +37,7 @@ export function PainelEstilo(props: PainelEstiloProps) {
         if (!controleAtivo) return null;
 
         return (
-             <div className="p-4 space-y-4 h-[200px] bg-background">
+             <div className="space-y-4">
                 {controleAtivo === 'fonte' && (
                     <div className="space-y-2">
                         <Label htmlFor="font-family">Fonte</Label>
@@ -139,25 +139,32 @@ export function PainelEstilo(props: PainelEstiloProps) {
         )
     }
 
+    const subMenu = (
+         <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex h-24 items-center justify-start px-2 gap-2">
+                <BotaoRecurso icon={Type} label="Fonte" onClick={() => setControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
+                <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
+                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
+                <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
+                <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
+                <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
+                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
+                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+    )
+
     return (
-       <div className="w-full">
-            {controleAtivo ? (
-                renderControle()
-            ) : (
-                <ScrollArea className="w-full whitespace-nowrap bg-background border-t">
-                    <div className="flex h-24 items-center justify-start px-2 gap-2">
-                        <BotaoRecurso icon={Type} label="Fonte" onClick={() => setControleAtivo('fonte')} />
-                        <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setControleAtivo('tamanho')} />
-                        <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setControleAtivo('cor')} />
-                        <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setControleAtivo('alinhamento')} />
-                        <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setControleAtivo('estilo')} />
-                        <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setControleAtivo('posicao')} />
-                        <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setControleAtivo('contorno')} />
-                        <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setControleAtivo('sombra')} />
-                    </div>
-                    <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-            )}
+       <div className="w-full h-full flex flex-col">
+           {subMenu}
+           <Separator/>
+            <div className="flex-1 p-4 overflow-y-auto">
+                {renderControle()}
+            </div>
+            <div className="p-4 border-t">
+                 <Button variant="secondary" className="w-full" onClick={() => { setControleAtivo(null); props.onClose(); }}>Concluído</Button>
+            </div>
        </div>
     );
 }
