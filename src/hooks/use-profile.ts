@@ -12,6 +12,7 @@ export interface ProfileData {
   iconUrl: string;
   showIcon: boolean;
   showDate: boolean;
+  logo: string | null;
 }
 
 // Hook para gerenciar os dados do perfil do usuário usando o localStorage.
@@ -23,6 +24,7 @@ export const useProfile = () => {
     iconUrl: '',
     showIcon: true,
     showDate: true,
+    logo: null,
   });
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -40,6 +42,7 @@ export const useProfile = () => {
           iconUrl: '',
           showIcon: true,
           showDate: true,
+          logo: null,
         };
         setProfile({ ...defaultState, ...loadedProfile });
       }

@@ -37,6 +37,11 @@ export function VisualizacaoEditor({
   showSignatureSocial,
   activeTemplateId,
   profileVerticalPosition,
+  showLogo,
+  logoPositionX,
+  logoPositionY,
+  logoScale,
+  logoOpacity,
 }: VisualizacaoEditorProps) {
   
   const renderBackground = () => {
@@ -124,13 +129,27 @@ export function VisualizacaoEditor({
               />
             </div>
           )}
+           {showLogo && profile.logo && (
+            <div
+              className="absolute"
+              style={{
+                top: `${logoPositionY}%`,
+                left: `${logoPositionX}%`,
+                transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
+                opacity: logoOpacity / 100,
+                transformOrigin: 'center center',
+              }}
+            >
+                <img src={profile.logo} alt="Logomarca" className="max-w-[150px] max-h-[150px]" />
+            </div>
+          )}
       </>
     );
   };
 
   return (
     <div
-      className="relative @container mx-auto my-auto max-w-full max-h-full rounded-lg overflow-hidden shadow-2xl"
+      className="relative @container mx-auto my-auto w-full h-full max-w-full max-h-full rounded-lg overflow-hidden shadow-2xl"
       style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
     >
       {renderBackground()}

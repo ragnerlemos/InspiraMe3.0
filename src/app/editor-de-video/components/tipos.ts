@@ -39,6 +39,11 @@ export interface EditorState {
     showSignatureUsername: boolean;
     showSignatureSocial: boolean;
     profileVerticalPosition: number;
+    showLogo: boolean;
+    logoPositionX: number;
+    logoPositionY: number;
+    logoScale: number;
+    logoOpacity: number;
 }
 
 // Tipo para um vídeo salvo pelo usuário.
@@ -67,6 +72,11 @@ export interface VisualizacaoEditorProps {
     showSignatureSocial: boolean;
     activeTemplateId: number | null;
     profileVerticalPosition: number;
+    showLogo: boolean;
+    logoPositionX: number;
+    logoPositionY: number;
+    logoScale: number;
+    logoOpacity: number;
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
@@ -128,6 +138,16 @@ export interface PainelFundoProps {
     onShowSignatureUsernameChange: (show: boolean) => void;
     showSignatureSocial: boolean;
     onShowSignatureSocialChange: (show: boolean) => void;
+    showLogo: boolean;
+    onShowLogoChange: (show: boolean) => void;
+    logoPositionX: number;
+    onLogoPositionXChange: (x: number) => void;
+    logoPositionY: number;
+    onLogoPositionYChange: (y: number) => void;
+    logoScale: number;
+    onLogoScaleChange: (scale: number) => void;
+    logoOpacity: number;
+    onLogoOpacityChange: (opacity: number) => void;
 }
 
 // Propriedades para o componente de visualização de perfil

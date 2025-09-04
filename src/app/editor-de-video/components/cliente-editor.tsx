@@ -39,6 +39,11 @@ const getInitialState = (): EditorState => ({
     showSignatureUsername: true,
     showSignatureSocial: true,
     profileVerticalPosition: 25,
+    showLogo: false,
+    logoPositionX: 85,
+    logoPositionY: 10,
+    logoScale: 40,
+    logoOpacity: 100,
 });
 
 
@@ -46,7 +51,7 @@ const getInitialState = (): EditorState => ({
 function EditorSkeleton() {
     return (
         <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
-            <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden">
+            <div className="flex-1 flex justify-center items-center bg-muted/40 p-4">
                  <Skeleton className="w-full h-full max-w-sm aspect-[9/16] rounded-lg" />
             </div>
              <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
@@ -208,7 +213,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
       {/* Área de visualização */}
-      <div className="flex-1 justify-center bg-muted/40 relative overflow-hidden p-4">
+      <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden p-4">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
@@ -225,6 +230,11 @@ export function EditorClient() {
             showSignatureSocial={currentState.showSignatureSocial}
             activeTemplateId={currentState.activeTemplateId}
             profileVerticalPosition={currentState.profileVerticalPosition}
+            showLogo={currentState.showLogo}
+            logoPositionX={currentState.logoPositionX}
+            logoPositionY={currentState.logoPositionY}
+            logoScale={currentState.logoScale}
+            logoOpacity={currentState.logoOpacity}
         />
       </div>
       
@@ -265,7 +275,7 @@ export function EditorClient() {
             onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
             signaturePositionY={currentState.signaturePositionY}
             onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
-signatureScale={currentState.signatureScale}
+            signatureScale={currentState.signatureScale}
             onSignatureScaleChange={(scale) => updateState({ signatureScale: scale })}
             showSignaturePhoto={currentState.showSignaturePhoto}
             onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
@@ -276,6 +286,16 @@ signatureScale={currentState.signatureScale}
             activeTemplateId={currentState.activeTemplateId}
             profileVerticalPosition={currentState.profileVerticalPosition}
             onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
+            showLogo={currentState.showLogo}
+            onShowLogoChange={(show) => updateState({ showLogo: show })}
+            logoPositionX={currentState.logoPositionX}
+            onLogoPositionXChange={(x) => updateState({ logoPositionX: x })}
+            logoPositionY={currentState.logoPositionY}
+            onLogoPositionYChange={(y) => updateState({ logoPositionY: y })}
+            logoScale={currentState.logoScale}
+            onLogoScaleChange={(scale) => updateState({ logoScale: scale })}
+            logoOpacity={currentState.logoOpacity}
+            onLogoOpacityChange={(opacity) => updateState({ logoOpacity: opacity })}
         />
       </div>
     </div>

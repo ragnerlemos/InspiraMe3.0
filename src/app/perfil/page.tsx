@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar } from 'lucide-react';
+import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar, ImageUp } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -37,18 +37,15 @@ function ProfileSkeleton() {
 export default function ProfilePage() {
   const { profile, updateProfile, isLoaded } = useProfile();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const photoFileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
 
   const handleProfileChange = (field: keyof typeof profile, value: string | boolean) => {
     updateProfile({ [field]: value });
   };
 
 
-  const handlePhotoUpload = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'photo' | 'logo') => {
     const file = e.target.files?.[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
@@ -61,10 +58,10 @@ export default function ProfilePage() {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        updateProfile({ photo: reader.result as string });
+        updateProfile({ [field]: reader.result as string });
          toast({
-          title: 'Foto Atualizada!',
-          description: 'Sua foto de perfil foi alterada com sucesso.',
+          title: `${field === 'photo' ? 'Foto' : 'Logomarca'} Atualizada!`,
+          description: `Sua ${field === 'photo' ? 'foto de perfil' : 'logomarca'} foi alterada com sucesso.`,
         });
       };
       reader.readAsDataURL(file);
@@ -112,44 +109,45 @@ export default function ProfilePage() {
                           placeholder="@seuusuario..."
                       />
                   </div>
-                  <div className="space-y-2">
+                   <div className="space-y-2">
                       <Label className="flex items-center gap-2"><Upload />Foto de Perfil</Label>
                       <input
                           type="file"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
+                          ref={photoFileInputRef}
+                          onChange={(e) => handleFileUpload(e, 'photo')}
                           className="hidden"
                           accept="image/*"
                       />
-                      <Button onClick={handlePhotoUpload} variant="outline" className="w-full">
+                      <Button onClick={() => photoFileInputRef.current?.click()} variant="outline" className="w-full">
                           Carregar Nova Foto
                       </Button>
-                      <p className="text-xs text-muted-foreground text-center pt-1">
-                          Recomendado: imagem quadrada (1:1).
-                      </p>
                   </div>
+
                   <Separator />
-                  <div>
-                    <Label className="text-base font-medium">Customizar Prévia</Label>
-                    <div className="space-y-4 mt-2">
-                      <div className="space-y-2">
-                          <Label htmlFor="icon-url">URL do Ícone</Label>
-                          <Input
-                              id="icon-url"
-                              value={profile.iconUrl}
-                              onChange={(e) => handleProfileChange('iconUrl', e.target.value)}
-                              placeholder="https://... (JPG, PNG, GIF)"
-                          />
+
+                  <div className="space-y-2">
+                      <Label className="flex items-center gap-2"><ImageUp />Logomarca</Label>
+                       <input
+                          type="file"
+                          ref={logoFileInputRef}
+                          onChange={(e) => handleFileUpload(e, 'logo')}
+                          className="hidden"
+                          accept="image/*"
+                      />
+                       <Button onClick={() => logoFileInputRef.current?.click()} variant="outline" className="w-full">
+                          Carregar Logomarca
+                      </Button>
+                      <div className="relative">
+                        <Input
+                            id="logo-url"
+                            value={profile.logo || ''}
+                            onChange={(e) => handleProfileChange('logo', e.target.value)}
+                            placeholder="Ou cole o link da imagem aqui"
+                        />
                       </div>
-                      <div className="flex gap-2">
-                          <Button variant={profile.showIcon ? 'secondary' : 'outline'} className="flex-1" onClick={() => handleProfileChange('showIcon', !profile.showIcon)}>
-                              {profile.showIcon ? <EyeOff /> : <Eye />} {profile.showIcon ? 'Desativar' : 'Ativar'} Ícone
-                          </Button>
-                          <Button variant={profile.showDate ? 'secondary' : 'outline'} className="flex-1" onClick={() => handleProfileChange('showDate', !profile.showDate)}>
-                              {profile.showDate ? <EyeOff /> : <Eye />} {profile.showDate ? 'Desativar' : 'Ativar'} Data
-                          </Button>
-                      </div>
-                    </div>
+                       <p className="text-xs text-muted-foreground text-center pt-1">
+                          Use uma imagem com fundo transparente (PNG) para melhores resultados.
+                      </p>
                   </div>
               </CardContent>
           </Card>
@@ -158,7 +156,11 @@ export default function ProfilePage() {
           <div>
               <h3 className="text-xl font-headline mb-4 text-center">Pré-visualização</h3>
               <Card className="max-w-sm mx-auto overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                  <div className="bg-muted h-24" />
+                  <div className="bg-muted h-24 relative">
+                    {profile.logo && (
+                        <Image src={profile.logo} alt="Pré-visualização da logomarca" layout="fill" objectFit="contain" className="p-4" />
+                    )}
+                  </div>
                   <CardContent className="relative text-center -mt-14 pt-0">
                       <Avatar className="w-24 h-24 mx-auto border-4 border-card shadow-lg">
                           <AvatarImage src={profile.photo || ''} alt={profile.username} />
@@ -181,7 +183,7 @@ export default function ProfilePage() {
                                                   <p className="font-semibold">{profile.username}</p>
                                                   <p className="text-sm text-muted-foreground">{profile.social}</p>
                                               </div>
-                                              {profile.showIcon && (
+                                               {profile.showIcon && (
                                                   profile.iconUrl ? 
                                                       <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" /> : 
                                                       <Twitter className="h-5 w-5 text-blue-500" />
@@ -191,7 +193,7 @@ export default function ProfilePage() {
                                   </div>
                                   <p className="mt-3 text-base">"A única maneira de fazer um ótimo trabalho é amar o que você faz."</p>
                               </CardHeader>
-                              {profile.showDate && (
+                               {profile.showDate && (
                                   <CardFooter className="p-4 pt-0 text-xs text-muted-foreground">
                                       <p>10:30 AM · 28 de Maio de 2024</p>
                                   </CardFooter>
