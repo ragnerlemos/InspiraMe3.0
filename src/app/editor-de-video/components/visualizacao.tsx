@@ -121,7 +121,6 @@ export function VisualizacaoEditor({
                 showPhoto={showSignaturePhoto}
                 showUsername={showSignatureUsername}
                 showSocial={showSignatureSocial}
-                textShadow={textStyle.textShadow}
               />
             </div>
           )}

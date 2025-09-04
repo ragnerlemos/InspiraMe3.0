@@ -9,7 +9,6 @@ interface AssinaturaPerfilProps {
   showPhoto?: boolean;
   showUsername?: boolean;
   showSocial?: boolean;
-  textShadow?: string;
 }
 
 export function AssinaturaPerfil({ 
@@ -17,10 +16,9 @@ export function AssinaturaPerfil({
     showPhoto = true, 
     showUsername = true, 
     showSocial = true,
-    textShadow,
 }: AssinaturaPerfilProps) {
   return (
-    <div className="flex items-center gap-3 p-2 text-white" style={{ textShadow }}>
+    <div className="flex items-center gap-3 p-2 text-white">
         {showPhoto && (
             <Avatar className="h-10 w-10">
                 <AvatarImage src={profile.photo || ""} alt={profile.username} />
