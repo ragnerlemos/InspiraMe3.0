@@ -62,7 +62,7 @@ export function PainelControles(props: PainelControlesProps) {
     }
 
     const mainToolbar = (
-        <div className="flex h-24 items-center justify-around px-2 border-b">
+        <div className="flex h-20 items-center justify-around px-2 border-b">
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange('text')} isActive={activePanel === 'text'} />
             <BotaoRecurso icon={Palette} label="Estilo" onClick={() => handlePanelChange('style')} isActive={activePanel === 'style'} />
             <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => handlePanelChange('background')} isActive={activePanel === 'background'}/>

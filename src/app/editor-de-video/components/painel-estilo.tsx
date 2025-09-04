@@ -141,7 +141,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     const subMenu = (
          <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-20 items-center justify-start">
+            <div className="flex h-16 items-center justify-start">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => setControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
