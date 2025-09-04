@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
+import { AppHeader } from './cabecalho-app';
 
 
 // Metadados da página, como título e descrição, para SEO.
@@ -26,13 +27,14 @@ export default function RootLayout({
         {/* Importação das fontes utilizadas no projeto. */}
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=PT+Sans:wght@400;700&family=Lobster&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased h-full">
+      <body className="font-body antialiased h-full flex flex-col">
         <ThemeProvider
         attribute="class"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
         >
+            <AppHeader />
             {/* O Toaster é usado para exibir notificações no aplicativo. */}
             <Toaster />
             {children}
