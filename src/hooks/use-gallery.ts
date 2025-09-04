@@ -11,6 +11,7 @@ const GALLERY_SELECTED_CATEGORY_KEY = "quotevid_gallery_selected_category";
 export interface GalleryCategory {
   id: string;
   name: string;
+  isDefault?: boolean;
 }
 
 export interface MediaItem {
@@ -24,8 +25,8 @@ export interface MediaItem {
 }
 
 const defaultCategories: GalleryCategory[] = [
-    { id: 'geral', name: 'Geral' },
-    { id: 'favoritos', name: 'Favoritos' },
+    { id: 'geral', name: 'Geral', isDefault: true },
+    { id: 'favoritos', name: 'Favoritos', isDefault: true },
 ];
 
 export const useGallery = () => {
@@ -41,14 +42,14 @@ export const useGallery = () => {
             const storedMedia = localStorage.getItem(GALLERY_MEDIA_ITEMS_KEY);
             const storedSelected = localStorage.getItem(GALLERY_SELECTED_CATEGORY_KEY);
 
-            const loadedCategories = storedCategories ? JSON.parse(storedCategories) : defaultCategories;
+            const customCategories = storedCategories ? JSON.parse(storedCategories) : [];
+            const loadedCategories = [...defaultCategories, ...customCategories];
             setCategories(loadedCategories);
 
             if (storedMedia) {
                 setMediaItems(JSON.parse(storedMedia));
             }
             
-            // Define a categoria selecionada (a primeira da lista, se existir)
             const initialSelected = storedSelected ? JSON.parse(storedSelected) : (loadedCategories[0]?.id || null);
             setSelectedCategory(initialSelected);
 
@@ -61,14 +62,19 @@ export const useGallery = () => {
         }
     }, []);
 
+    const getCustomCategories = useCallback((allCategories: GalleryCategory[]) => {
+        return allCategories.filter(c => !c.isDefault);
+    }, []);
+
     // Salvar categorias
     const saveCategories = useCallback((items: GalleryCategory[]) => {
         try {
-            localStorage.setItem(GALLERY_CATEGORIES_KEY, JSON.stringify(items));
+            const customCategories = getCustomCategories(items);
+            localStorage.setItem(GALLERY_CATEGORIES_KEY, JSON.stringify(customCategories));
         } catch (error) {
             console.error("Failed to save categories to localStorage", error);
         }
-    }, []);
+    }, [getCustomCategories]);
 
     // Salvar itens de mídia
     const saveMediaItems = useCallback((items: MediaItem[]) => {
@@ -104,11 +110,40 @@ export const useGallery = () => {
             return updated;
         });
     }, [saveCategories, handleSetSelectedCategory]);
+    
+    const renameCategory = useCallback((id: string, newName: string) => {
+        setCategories(prev => {
+            const updated = prev.map(c => c.id === id ? { ...c, name: newName } : c);
+            saveCategories(updated);
+            return updated;
+        });
+    }, [saveCategories]);
+
+    const deleteCategory = useCallback((id: string) => {
+        // Move as mídias da categoria excluída para 'Geral'
+        setMediaItems(prevMedia => {
+            const updatedMedia = prevMedia.map(item => 
+                item.categoryId === id ? { ...item, categoryId: 'geral' } : item
+            );
+            saveMediaItems(updatedMedia);
+            return updatedMedia;
+        });
+        
+        // Remove a categoria
+        setCategories(prevCategories => {
+            const updatedCategories = prevCategories.filter(c => c.id !== id);
+            saveCategories(updatedCategories);
+            handleSetSelectedCategory('geral'); // Volta para a categoria geral
+            return updatedCategories;
+        });
+    }, [saveCategories, saveMediaItems, handleSetSelectedCategory]);
 
     return { 
         isLoaded,
         categories, 
         addCategory,
+        renameCategory,
+        deleteCategory,
         mediaItems,
         selectedCategory,
         setSelectedCategory: handleSetSelectedCategory,

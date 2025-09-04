@@ -8,20 +8,67 @@ import { useGallery } from "@/hooks/use-gallery";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
 // Página para exibir e gerenciar a galeria de mídias do usuário.
 export default function GalleryPage() {
-    const { categories, addCategory, mediaItems, selectedCategory, setSelectedCategory } = useGallery();
-    const [isAdding, setIsAdding] = useState(false);
-    const [newCategoryName, setNewCategoryName] = useState("");
-
+    const { 
+        categories, 
+        addCategory, 
+        renameCategory,
+        deleteCategory,
+        mediaItems, 
+        selectedCategory, 
+        setSelectedCategory 
+    } = useGallery();
+    const { toast } = useToast();
+    
+    const [categoryName, setCategoryName] = useState("");
+    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+    const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    
     const handleAddCategory = () => {
-        if (newCategoryName.trim()) {
-            addCategory(newCategoryName.trim());
-            setNewCategoryName("");
-            setIsAdding(false);
+        if (categoryName.trim()) {
+            addCategory(categoryName.trim());
+            toast({ title: "Categoria Criada!", description: `A categoria "${categoryName.trim()}" foi adicionada.` });
+            setCategoryName("");
+            setIsAddDialogOpen(false);
         }
     };
+    
+    const handleRenameCategory = () => {
+        if (categoryName.trim() && selectedCategory) {
+            renameCategory(selectedCategory, categoryName.trim());
+            toast({ title: "Categoria Renomeada!", description: `A categoria foi renomeada para "${categoryName.trim()}".` });
+            setCategoryName("");
+            setIsRenameDialogOpen(false);
+        }
+    };
+
+    const handleDeleteCategory = () => {
+        if (selectedCategory) {
+            deleteCategory(selectedCategory);
+            toast({ title: "Categoria Excluída!", description: "A categoria foi removida com sucesso." });
+            setIsDeleteDialogOpen(false);
+        }
+    }
+    
+    const selectedCategoryDetails = categories.find(c => c.id === selectedCategory);
+    const isDefaultCategorySelected = selectedCategoryDetails?.isDefault ?? false;
 
     const mediaForSelectedCategory = mediaItems.filter(item => item.categoryId === selectedCategory);
 
@@ -52,10 +99,31 @@ export default function GalleryPage() {
                             </Select>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button onClick={() => setIsAdding(true)}>
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Nova Categoria
-                            </Button>
+                             <AlertDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                                <AlertDialogTrigger asChild>
+                                    <Button onClick={() => setCategoryName('')}>
+                                        <PlusCircle className="mr-2 h-4 w-4" />
+                                        Nova Categoria
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Criar Nova Categoria</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Digite um nome para a sua nova categoria de mídia.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <div className="py-2">
+                                        <Label htmlFor="category-name" className="sr-only">Nome da Categoria</Label>
+                                        <Input id="category-name" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="Ex: Vídeos de Natureza" />
+                                    </div>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleAddCategory}>Criar</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+
                              <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" disabled={!selectedCategory}>
@@ -63,14 +131,48 @@ export default function GalleryPage() {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem>
-                                        <Edit className="mr-2 h-4 w-4" />
-                                        Renomear
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem className="text-destructive">
-                                        <Trash2 className="mr-2 h-4 w-4" />
-                                        Excluir Categoria
-                                    </DropdownMenuItem>
+                                    <AlertDialog open={isRenameDialogOpen} onOpenChange={setIsRenameDialogOpen}>
+                                        <AlertDialogTrigger asChild>
+                                             <button className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 w-full disabled:cursor-not-allowed" disabled={isDefaultCategorySelected} onClick={() => setCategoryName(selectedCategoryDetails?.name || '')}>
+                                                <Edit className="mr-2 h-4 w-4" />
+                                                Renomear
+                                            </button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Renomear Categoria</AlertDialogTitle>
+                                                <AlertDialogDescription>Digite o novo nome para a categoria "{selectedCategoryDetails?.name}".</AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <div className="py-2">
+                                                <Label htmlFor="rename-category-name" className="sr-only">Novo Nome</Label>
+                                                <Input id="rename-category-name" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="Novo nome..." />
+                                            </div>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                <AlertDialogAction onClick={handleRenameCategory}>Salvar</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                     <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                                        <AlertDialogTrigger asChild>
+                                            <button className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 w-full text-destructive" disabled={isDefaultCategorySelected}>
+                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                Excluir Categoria
+                                            </button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Esta ação não pode ser desfeita. Todos os itens de mídia nesta categoria serão movidos para "Geral".
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                <AlertDialogAction onClick={handleDeleteCategory}>Excluir</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
@@ -88,7 +190,7 @@ export default function GalleryPage() {
                         <p className="text-muted-foreground mb-6">
                             Adicione imagens ou vídeos para começar a organizar sua galeria.
                         </p>
-                        <Button variant="outline">
+                        <Button variant="outline" disabled={!selectedCategory}>
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Adicionar Mídia
                         </Button>
