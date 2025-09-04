@@ -3,11 +3,12 @@
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -234,19 +235,32 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
         showSignaturePhoto, onShowSignaturePhotoChange,
         showSignatureUsername, onShowSignatureUsernameChange,
         showSignatureSocial, onShowSignatureSocialChange,
+        profile,
     } = props;
     
+    const isProfileConfigured = profile.username && profile.username !== 'Seu Nome' && profile.social && profile.social !== '@seuusario';
+
      return (
         <div className="space-y-4">
             <Button 
                 variant={showProfileSignature ? 'secondary' : 'outline'} 
                 onClick={() => onShowProfileSignatureChange(!showProfileSignature)}
                 className="w-full"
+                disabled={!isProfileConfigured && !showProfileSignature}
             >
                 {showProfileSignature ? <Check className="mr-2 h-4 w-4" /> : <Edit className="mr-2 h-4 w-4" />}
                 {showProfileSignature ? 'Assinatura Ativada' : 'Ativar Assinatura'}
             </Button>
             
+            {!isProfileConfigured && !showProfileSignature && (
+                <Link href="/perfil" passHref>
+                    <Button variant="link" className="w-full text-center">
+                        <User className="mr-2 h-4 w-4" />
+                        Configurar Assinatura no Perfil
+                    </Button>
+                </Link>
+            )}
+
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
                     <Label>Elementos Visíveis</Label>
@@ -288,14 +302,17 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
      )
 }
 
-function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange'>) {
+function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' | 'profile'>) {
     const {
         showLogo, onShowLogoChange,
         logoPositionX, onLogoPositionXChange,
         logoPositionY, onLogoPositionYChange,
         logoScale, onLogoScaleChange,
         logoOpacity, onLogoOpacityChange,
+        profile
     } = props;
+    
+    const isLogoConfigured = !!profile.logo;
 
     return (
         <div className="space-y-4">
@@ -303,10 +320,20 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
                 variant={showLogo ? 'secondary' : 'outline'}
                 onClick={() => onShowLogoChange(!showLogo)}
                 className="w-full"
+                disabled={!isLogoConfigured && !showLogo}
             >
                 {showLogo ? <Check className="mr-2 h-4 w-4" /> : <Edit className="mr-2 h-4 w-4" />}
                 {showLogo ? 'Logomarca Ativada' : 'Ativar Logomarca'}
             </Button>
+            
+             {!isLogoConfigured && !showLogo && (
+                <Link href="/perfil" passHref>
+                    <Button variant="link" className="w-full text-center">
+                        <ImageUp className="mr-2 h-4 w-4" />
+                        Adicionar Logomarca no Perfil
+                    </Button>
+                </Link>
+            )}
 
             {showLogo && (
                 <div className="space-y-4 pt-2 border-t mt-4">

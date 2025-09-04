@@ -296,6 +296,7 @@ export function EditorClient() {
             onLogoScaleChange={(scale) => updateState({ logoScale: scale })}
             logoOpacity={currentState.logoOpacity}
             onLogoOpacityChange={(opacity) => updateState({ logoOpacity: opacity })}
+            profile={profile}
         />
       </div>
     </div>

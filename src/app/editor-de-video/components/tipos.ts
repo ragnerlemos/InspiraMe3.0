@@ -148,6 +148,7 @@ export interface PainelFundoProps {
     onLogoScaleChange: (scale: number) => void;
     logoOpacity: number;
     onLogoOpacityChange: (opacity: number) => void;
+    profile: ProfileData;
 }
 
 // Propriedades para o componente de visualização de perfil
