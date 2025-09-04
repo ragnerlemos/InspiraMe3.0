@@ -96,11 +96,19 @@ export function EditorClient() {
     }
   }, [currentStateIndex]);
 
+  // Função para refazer a última ação.
+  const redo = useCallback(() => {
+    if (currentStateIndex < history.length - 1) {
+      setCurrentStateIndex(currentStateIndex + 1);
+    }
+  }, [currentStateIndex, history.length]);
+
   const canUndo = currentStateIndex > 0;
+  const canRedo = currentStateIndex < history.length - 1;
   
   useEffect(() => {
-    setUndoState({ canUndo, undo });
-  }, [canUndo, undo, setUndoState]);
+    setUndoState({ canUndo, undo, canRedo, redo });
+  }, [canUndo, undo, canRedo, redo, setUndoState]);
 
   const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
@@ -366,5 +374,3 @@ export function EditorClient() {
     </div>
   );
 }
-
-    

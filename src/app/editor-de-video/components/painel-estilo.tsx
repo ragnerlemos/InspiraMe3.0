@@ -81,9 +81,9 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                     <div className="space-y-2">
                         <Label>Alinhamento do Texto</Label>
                         <div className="grid grid-cols-3 gap-2">
-                            <Button variant={props.textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('left')}><AlignLeft /></Button>
-                            <Button variant={props.textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('center')}><AlignCenter /></Button>
-                            <Button variant={props.textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('right')}><AlignRight /></Button>
+                            <Button variant={props.textAlign === 'left' ? 'secondary' : 'ghost'} className="justify-center" size="icon" onClick={() => props.onTextAlignChange('left')}><AlignLeft /></Button>
+                            <Button variant={props.textAlign === 'center' ? 'secondary' : 'ghost'} className="justify-center" size="icon" onClick={() => props.onTextAlignChange('center')}><AlignCenter /></Button>
+                            <Button variant={props.textAlign === 'right' ? 'secondary' : 'ghost'} className="justify-center" size="icon" onClick={() => props.onTextAlignChange('right')}><AlignRight /></Button>
                         </div>
                     </div>
                  )}
@@ -140,7 +140,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     }
 
     const subMenu = (
-         <ScrollArea className="w-full whitespace-nowrap border-t">
+         <ScrollArea className="w-full whitespace-nowrap border-t bg-background/90 backdrop-blur-sm">
             <div className="flex h-14 items-center justify-start">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => setControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>

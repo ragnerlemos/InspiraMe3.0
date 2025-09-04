@@ -7,6 +7,8 @@ import { createContext, useContext, useState, ReactNode, useCallback } from 'rea
 interface UndoState {
   canUndo: boolean;
   undo: () => void;
+  canRedo: boolean;
+  redo: () => void;
 }
 
 interface SaveActions {
@@ -30,6 +32,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const [undoState, setUndoState] = useState<UndoState>({
     canUndo: false,
     undo: () => {},
+    canRedo: false,
+    redo: () => {},
   });
   const [saveActions, setSaveActions] = useState<SaveActions>({
     onSaveAsTemplate: () => {},

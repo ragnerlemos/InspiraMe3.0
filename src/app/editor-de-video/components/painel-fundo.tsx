@@ -1,5 +1,4 @@
 
-
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
@@ -8,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, GalleryHorizontal } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -154,6 +153,12 @@ function ControleTipoFundo(props: {
                 <div className="space-y-4">
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
                     <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
+                     <Link href="/galeria?fromEditor=true" passHref>
+                        <Button className="w-full" variant="outline">
+                            <GalleryHorizontal className="mr-2 h-4 w-4" />
+                            Carregar da Galeria
+                        </Button>
+                    </Link>
                 </div>
             )}
 
@@ -391,7 +396,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
 
     const subMenu = (
-        <ScrollArea className="w-full whitespace-nowrap border-t">
+        <ScrollArea className="w-full whitespace-nowrap border-t bg-background/90 backdrop-blur-sm">
             <div className="flex h-14 items-center justify-center">
                 <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => setControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => setControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>

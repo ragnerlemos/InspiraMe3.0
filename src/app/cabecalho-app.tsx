@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,7 +30,7 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    const { canUndo, undo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
+    const { canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
 
     return (
         <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background">
@@ -43,6 +43,10 @@ export function EditorHeader() {
                 <Button variant="ghost" size="icon" onClick={undo} disabled={!canUndo}>
                     <Undo className="h-5 w-5" />
                     <span className="sr-only">Desfazer</span>
+                </Button>
+                 <Button variant="ghost" size="icon" onClick={redo} disabled={!canRedo}>
+                    <Redo className="h-5 w-5" />
+                    <span className="sr-only">Refazer</span>
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
