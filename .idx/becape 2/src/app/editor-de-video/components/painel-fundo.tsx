@@ -93,7 +93,7 @@ function ControleTipoFundo(props: {
         if (tab === 'solid') {
             newStyle = { type: 'solid' as const, value: solidColor };
         } else if (tab === 'gradient') {
-            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : 'circle, '}${gradient.colors[0]}, ${gradient.colors[1]})`;
+            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : ''}${gradient.colors[0]}, ${gradient.colors[1]})`;
             newStyle = { type: 'gradient' as const, value: gradValue };
         } else {
             const mediaValue = templates.find(t => t.id === 1)?.imageUrl ?? '';
@@ -119,24 +119,10 @@ function ControleTipoFundo(props: {
     
     const handleSolidColorChange = (color: string) => onBackgroundStyleChange({ type: 'solid', value: color });
     
-    const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
-        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : 'circle, '}${grad.colors[0]}, ${grad.colors[1]})`;
+    const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction?: string }) => {
+        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' && grad.direction ? `${grad.direction}, ` : ''}${grad.colors[0]}, ${grad.colors[1]})`;
         onBackgroundStyleChange({ type: 'gradient', value: gradValue });
     };
-
-    const handleGradientColorChange = (index: 0 | 1, color: string) => {
-        const newColors = [...gradient.colors] as [string, string];
-        newColors[index] = color;
-        handleGradientChange({ ...gradient, colors: newColors });
-    };
-
-    const handleGradientDirectionChange = (direction: string) => {
-        handleGradientChange({ ...gradient, direction });
-    };
-
-    const handleGradientTypeChange = (type: 'linear' | 'radial') => {
-        handleGradientChange({ ...gradient, type });
-    }
 
     return (
         <div className="space-y-4">
@@ -167,54 +153,7 @@ function ControleTipoFundo(props: {
             
             {activeTab === 'gradient' && (
                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <Label>Tipo de Gradiente</Label>
-                        <div className="grid grid-cols-2 gap-2">
-                            <Button variant={gradient.type === 'linear' ? 'secondary' : 'outline'} onClick={() => handleGradientTypeChange('linear')}>
-                                Linear
-                            </Button>
-                            <Button variant={gradient.type === 'radial' ? 'secondary' : 'outline'} onClick={() => handleGradientTypeChange('radial')}>
-                                Radial
-                            </Button>
-                        </div>
-                    </div>
-
-                    {gradient.type === 'linear' && (
-                        <div className="space-y-2">
-                            <Label htmlFor="gradient-direction">Direção</Label>
-                            <Select value={gradient.direction} onValueChange={handleGradientDirectionChange}>
-                                <SelectTrigger id="gradient-direction">
-                                    <SelectValue placeholder="Selecione a direção" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="to right">Para Direita</SelectItem>
-                                    <SelectItem value="to left">Para Esquerda</SelectItem>
-                                    <SelectItem value="to bottom">Para Baixo</SelectItem>
-                                    <SelectItem value="to top">Para Cima</SelectItem>
-                                    <SelectItem value="to bottom right">Diagonal (↓→)</SelectItem>
-                                    <SelectItem value="to top left">Diagonal (↑←)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    )}
-
-                    <div className="space-y-2">
-                        <Label>Cores do Gradiente</Label>
-                        <div className="flex items-center gap-2">
-                            <Input id="gradient-color-1" type="text" value={gradient.colors[0]} onChange={(e) => handleGradientColorChange(0, e.target.value)} className="w-full h-10"/>
-                            <Popover>
-                                <PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: gradient.colors[0] }} className="h-10 w-10 border-2" /></PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 border-none"><input type="color" value={gradient.colors[0]} onChange={e => handleGradientColorChange(0, e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent>
-                            </Popover>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Input id="gradient-color-2" type="text" value={gradient.colors[1]} onChange={(e) => handleGradientColorChange(1, e.target.value)} className="w-full h-10"/>
-                            <Popover>
-                                <PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: gradient.colors[1] }} className="h-10 w-10 border-2" /></PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 border-none"><input type="color" value={gradient.colors[1]} onChange={e => handleGradientColorChange(1, e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
+                    {/* Gradient controls */}
                 </div>
             )}
         </div>
