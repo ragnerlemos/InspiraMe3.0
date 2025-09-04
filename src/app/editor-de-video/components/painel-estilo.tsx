@@ -81,9 +81,9 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                     <div className="space-y-2">
                         <Label>Alinhamento do Texto</Label>
                         <div className="grid grid-cols-3 gap-2">
-                            <Button variant={props.textAlign === 'left' ? 'secondary' : 'ghost'} className="flex justify-center" size="icon" onClick={() => props.onTextAlignChange('left')}><AlignLeft /></Button>
-                            <Button variant={props.textAlign === 'center' ? 'secondary' : 'ghost'} className="flex justify-center" size="icon" onClick={() => props.onTextAlignChange('center')}><AlignCenter /></Button>
-                            <Button variant={props.textAlign === 'right' ? 'secondary' : 'ghost'} className="flex justify-center" size="icon" onClick={() => props.onTextAlignChange('right')}><AlignRight /></Button>
+                            <Button variant={props.textAlign === 'left' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('left')}><AlignLeft /></Button>
+                            <Button variant={props.textAlign === 'center' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('center')}><AlignCenter /></Button>
+                            <Button variant={props.textAlign === 'right' ? 'secondary' : 'ghost'} size="icon" onClick={() => props.onTextAlignChange('right')}><AlignRight /></Button>
                         </div>
                     </div>
                  )}
