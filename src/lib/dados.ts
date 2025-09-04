@@ -41,9 +41,5 @@ export const quotes: Quote[] = [
   { id: 18, text: "Por que os cientistas não confiam nos átomos? Porque eles compõem tudo!", author: "Desconhecido", category: "Humor" },
 ];
 
-// Array de modelos de vídeo, cada um com um ID, URL de imagem, dica de IA para a imagem e proporção de tela.
-export const templates = [
-  { id: -2, imageUrl: null, dataAiHint: "fundo perfil", aspectRatio: "1:1" as const, name: "Modelo Twitter (do Perfil)" },
-  { id: -1, imageUrl: null, dataAiHint: "fundo solido", aspectRatio: "9:16" as const, name: "Modelo Padrão" },
-  { id: 1, imageUrl: "https://picsum.photos/id/1018/1080/1920", dataAiHint: "paisagem montanha", aspectRatio: "9:16" as const, name: "Paisagem na Montanha" },
-];
+// O array de modelos foi movido para o hook useTemplates.ts para permitir a personalização.
+export const templates = [];

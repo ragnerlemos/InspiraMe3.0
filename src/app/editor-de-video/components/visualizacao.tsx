@@ -153,6 +153,7 @@ export function VisualizacaoEditor({
 
   return (
     <div
+      id="editor-preview"
       className="relative @container mx-auto my-auto rounded-lg overflow-hidden shadow-2xl"
       style={{ 
         aspectRatio: aspectRatio.replace(":", " / "),

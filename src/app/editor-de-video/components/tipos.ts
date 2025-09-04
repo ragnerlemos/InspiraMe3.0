@@ -30,7 +30,7 @@ export interface EditorState {
     textStrokeWidth: number;
     backgroundStyle: EstiloFundo;
     aspectRatio: ProporcaoTela;
-    activeTemplateId: number | null;
+    activeTemplateId: number | string | null;
     showProfileSignature: boolean;
     signaturePositionX: number;
     signaturePositionY: number;

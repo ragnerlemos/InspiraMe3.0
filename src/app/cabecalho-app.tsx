@@ -4,10 +4,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useEditor } from "./editor-de-video/contexts/editor-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 // Itens de navegação exibidos no cabeçalho.
 const navItems = [
@@ -22,9 +29,35 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    // Este componente agora é renderizado diretamente na página do editor
-    // para garantir que ele esteja dentro do EditorProvider.
-    return null;
+    const { canUndo, undo, onSaveAsTemplate } = useEditor();
+
+    return (
+        <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background">
+            <Link href="/" className="flex items-center gap-2">
+                <Quote className="h-6 w-6 text-primary" />
+                <span className="font-headline text-xl font-bold">QuoteVid</span>
+            </Link>
+
+            <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" onClick={undo} disabled={!canUndo}>
+                    <Undo className="h-5 w-5" />
+                    <span className="sr-only">Desfazer</span>
+                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button>
+                            <Save className="mr-2 h-4 w-4" />
+                            Salvar
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>Exportar Vídeo</DropdownMenuItem>
+                        <DropdownMenuItem onClick={onSaveAsTemplate}>Salvar como Modelo</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+    );
 }
 
 // Componente do cabeçalho da aplicação.

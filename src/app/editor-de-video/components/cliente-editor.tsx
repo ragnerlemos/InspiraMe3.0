@@ -4,13 +4,14 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { quotes, templates } from "@/lib/dados";
+import { quotes } from "@/lib/dados";
 import type { EstiloTexto, ProporcaoTela, EditorState } from "./tipos";
 import { VisualizacaoEditor } from "./visualizacao";
 import { PainelControles } from "./painel-controles";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "../contexts/editor-context";
+import { useTemplates } from "@/hooks/use-templates";
 
 // Estado inicial para o editor.
 const getInitialState = (): EditorState => ({
@@ -67,7 +68,8 @@ export function EditorClient() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { profile, isLoaded: isProfileLoaded } = useProfile();
-  const { setUndoState } = useEditor();
+  const { setUndoState, setSaveActions } = useEditor();
+  const { templates: allTemplates, isLoaded: areTemplatesLoaded, addTemplate } = useTemplates();
 
 
   // Histórico de estados para a funcionalidade de desfazer.
@@ -98,9 +100,48 @@ export function EditorClient() {
     setUndoState({ canUndo, undo });
   }, [canUndo, undo, setUndoState]);
 
+  const handleSaveAsTemplate = useCallback(async () => {
+        const templateName = prompt("Digite um nome para o novo modelo:");
+        if (!templateName) return;
+
+        // Precisamos de uma thumbnail. Vamos gerar uma a partir do estado atual.
+        // (Isso é uma simplificação. Na prática, usaríamos uma biblioteca como html2canvas)
+        const previewElement = document.getElementById('editor-preview');
+        if (previewElement) {
+            try {
+                const html2canvas = (await import('html2canvas')).default;
+                const canvas = await html2canvas(previewElement, {
+                    scale: 0.5, // Reduz a escala para uma thumbnail menor
+                    useCORS: true,
+                });
+                const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+                
+                addTemplate(templateName, currentState, thumbnail);
+
+                toast({
+                    title: "Modelo Salvo!",
+                    description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
+                });
+            } catch (error) {
+                console.error("Erro ao criar thumbnail:", error);
+                toast({
+                    variant: "destructive",
+                    title: "Erro ao Salvar",
+                    description: "Não foi possível gerar a pré-visualização do modelo.",
+                });
+            }
+        }
+    }, [addTemplate, currentState, toast]);
+    
+    useEffect(() => {
+        setSaveActions({
+            onSaveAsTemplate: handleSaveAsTemplate,
+        });
+    }, [handleSaveAsTemplate, setSaveActions]);
+
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
-    if (!isProfileLoaded) return; // Aguarda o perfil ser carregado
+    if (!isProfileLoaded || !areTemplatesLoaded) return; // Aguarda o perfil e os templates serem carregados
 
     const quoteParam = searchParams.get("quote");
     const templateIdParam = searchParams.get("templateId");
@@ -116,33 +157,12 @@ export function EditorClient() {
     
     // Configura o editor com base em um modelo, se um 'templateId' for fornecido.
     if (templateIdParam) {
-      const templateId = parseInt(templateIdParam);
-      const template = templates.find(t => t.id === templateId);
+      const template = allTemplates.find(t => t.id === templateIdParam);
 
       if (template) {
-        initialState.activeTemplateId = templateId;
-        initialState.aspectRatio = template.aspectRatio as ProporcaoTela;
-        
-        if (template.id === -1) { // Se for o modelo padrão (ID -1), aplica estilos específicos.
-            initialState.backgroundStyle = { type: 'solid', value: '#000000' };
-            initialState.textStrokeWidth = 0.2;
-            initialState.textShadowBlur = 1;
-            initialState.textVerticalPosition = 50;
-            initialState.textAlign = 'center';
-            initialState.textColor = '#FFFFFF';
-        } else if (template.id === -2) { // Modelo Twitter (do Perfil)
-            initialState.backgroundStyle = { type: 'solid', value: 'var(--card)' };
-            initialState.textColor = 'var(--foreground)';
-            initialState.fontFamily = 'PT Sans';
-            initialState.fontSize = 4;
-            initialState.textAlign = 'left';
-            initialState.textShadowBlur = 0;
-            initialState.textStrokeWidth = 0;
-            initialState.textVerticalPosition = 45;
-            initialState.profileVerticalPosition = 25;
-        } else {
-            initialState.backgroundStyle = { type: 'media', value: template.imageUrl || '' };
-        }
+        // Aplica o estado salvo no template
+        initialState = { ...initialState, ...template.editorState };
+        initialState.activeTemplateId = template.id === 'template-twitter' ? -2 : template.id === 'template-default' ? -1 : null;
       }
     } else {
          // Se nenhum template for selecionado, usa um fundo preto como padrão.
@@ -153,7 +173,7 @@ export function EditorClient() {
     setCurrentStateIndex(0);
     // Marca o editor como pronto para ser renderizado.
     setIsReady(true);
-  }, [searchParams, isProfileLoaded]);
+  }, [searchParams, isProfileLoaded, areTemplatesLoaded, allTemplates]);
 
   const createTextStrokeShadow = useCallback((width: number, color: string): string => {
     if (width === 0) return "none";
@@ -228,7 +248,7 @@ export function EditorClient() {
             showSignaturePhoto={currentState.showSignaturePhoto}
             showSignatureUsername={currentState.showSignatureUsername}
             showSignatureSocial={currentState.showSignatureSocial}
-            activeTemplateId={currentState.activeTemplateId}
+            activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
             profileVerticalPosition={currentState.profileVerticalPosition}
             showLogo={currentState.showLogo}
             logoPositionX={currentState.logoPositionX}
@@ -283,7 +303,7 @@ export function EditorClient() {
             onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
             showSignatureSocial={currentState.showSignatureSocial}
             onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
-            activeTemplateId={currentState.activeTemplateId}
+            activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
             profileVerticalPosition={currentState.profileVerticalPosition}
             onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
             showLogo={currentState.showLogo}

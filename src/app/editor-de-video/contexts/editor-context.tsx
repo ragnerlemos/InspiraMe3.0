@@ -9,11 +9,17 @@ interface UndoState {
   undo: () => void;
 }
 
+interface SaveActions {
+  onSaveAsTemplate: () => void;
+}
+
 // Define a interface para o valor do contexto.
 interface EditorContextType {
   canUndo: boolean;
   undo: () => void;
   setUndoState: (state: UndoState) => void;
+  onSaveAsTemplate: () => void;
+  setSaveActions: (actions: SaveActions) => void;
 }
 
 // Cria o contexto com valores padrão.
@@ -25,14 +31,23 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     canUndo: false,
     undo: () => {},
   });
+  const [saveActions, setSaveActions] = useState<SaveActions>({
+    onSaveAsTemplate: () => {},
+  })
   
   const handleSetUndoState = useCallback((state: UndoState) => {
     setUndoState(state);
+  }, []);
+
+  const handleSetSaveActions = useCallback((actions: SaveActions) => {
+    setSaveActions(actions);
   }, []);
   
   const value = {
     ...undoState,
     setUndoState: handleSetUndoState,
+    ...saveActions,
+    setSaveActions: handleSetSaveActions,
   };
 
   return (
