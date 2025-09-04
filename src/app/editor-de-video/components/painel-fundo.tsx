@@ -349,8 +349,7 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-position-y" className="text-xs flex items-center"><MoveVertical className="mr-2 h-3 w-3" />Posição Vertical</Label>
-                            <span className="text-xs text-muted-foreground">{logoPositionY}%</span>
+                            <Label htmlFor="logo-position-y" className="text-xs flex items-center"><MoveVertical className="mr-2 h-3 w-3" />Posição Vertical</Label>                            <span className="text-xs text-muted-foreground">{logoPositionY}%</span>
                         </div>
                         <Slider id="logo-position-y" min={0} max={100} step={1} value={[logoPositionY]} onValueChange={(v) => onLogoPositionYChange(v[0])} />
                     </div>
