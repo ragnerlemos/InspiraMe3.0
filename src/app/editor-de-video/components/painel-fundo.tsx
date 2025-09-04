@@ -246,7 +246,6 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
                 variant={showProfileSignature ? 'secondary' : 'outline'} 
                 onClick={() => onShowProfileSignatureChange(!showProfileSignature)}
                 className="w-full"
-                disabled={!isProfileConfigured && !showProfileSignature}
             >
                 {showProfileSignature ? <Check className="mr-2 h-4 w-4" /> : <Edit className="mr-2 h-4 w-4" />}
                 {showProfileSignature ? 'Assinatura Ativada' : 'Ativar Assinatura'}
@@ -320,7 +319,6 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
                 variant={showLogo ? 'secondary' : 'outline'}
                 onClick={() => onShowLogoChange(!showLogo)}
                 className="w-full"
-                disabled={!isLogoConfigured && !showLogo}
             >
                 {showLogo ? <Check className="mr-2 h-4 w-4" /> : <Edit className="mr-2 h-4 w-4" />}
                 {showLogo ? 'Logomarca Ativada' : 'Ativar Logomarca'}
