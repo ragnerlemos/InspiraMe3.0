@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -29,7 +30,7 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    const { canUndo, undo, onSaveAsTemplate } = useEditor();
+    const { canUndo, undo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
 
     return (
         <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background">
@@ -51,7 +52,19 @@ export function EditorHeader() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        <DropdownMenuItem>Exportar Vídeo</DropdownMenuItem>
+                        <DropdownMenuItem onClick={onExportJPG}>
+                            <FileImage className="mr-2 h-4 w-4" />
+                            Exportar como JPG
+                        </DropdownMenuItem>
+                         <DropdownMenuItem onClick={onExportPNG}>
+                            <FileImage className="mr-2 h-4 w-4" />
+                            Exportar como PNG
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={onExportMP4}>
+                           <Video className="mr-2 h-4 w-4" />
+                           Exportar Vídeo (MP4)
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={onSaveAsTemplate}>Salvar como Modelo</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

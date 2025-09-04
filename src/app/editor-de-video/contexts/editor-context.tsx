@@ -11,14 +11,14 @@ interface UndoState {
 
 interface SaveActions {
   onSaveAsTemplate: () => void;
+  onExportJPG: () => void;
+  onExportPNG: () => void;
+  onExportMP4: () => void;
 }
 
 // Define a interface para o valor do contexto.
-interface EditorContextType {
-  canUndo: boolean;
-  undo: () => void;
+interface EditorContextType extends UndoState, SaveActions {
   setUndoState: (state: UndoState) => void;
-  onSaveAsTemplate: () => void;
   setSaveActions: (actions: SaveActions) => void;
 }
 
@@ -33,6 +33,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   });
   const [saveActions, setSaveActions] = useState<SaveActions>({
     onSaveAsTemplate: () => {},
+    onExportJPG: () => {},
+    onExportPNG: () => {},
+    onExportMP4: () => {},
   })
   
   const handleSetUndoState = useCallback((state: UndoState) => {
@@ -43,7 +46,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     setSaveActions(actions);
   }, []);
   
-  const value = {
+  const value: EditorContextType = {
     ...undoState,
     setUndoState: handleSetUndoState,
     ...saveActions,

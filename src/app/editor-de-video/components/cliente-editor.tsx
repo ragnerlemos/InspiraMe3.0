@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "../contexts/editor-context";
 import { useTemplates } from "@/hooks/use-templates";
+import html2canvas from 'html2canvas';
+
 
 // Estado inicial para o editor.
 const getInitialState = (): EditorState => ({
@@ -103,16 +105,13 @@ export function EditorClient() {
   const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
         if (!templateName) return;
-
-        // Precisamos de uma thumbnail. Vamos gerar uma a partir do estado atual.
-        // (Isso é uma simplificação. Na prática, usaríamos uma biblioteca como html2canvas)
         const previewElement = document.getElementById('editor-preview');
         if (previewElement) {
             try {
-                const html2canvas = (await import('html2canvas')).default;
                 const canvas = await html2canvas(previewElement, {
-                    scale: 0.5, // Reduz a escala para uma thumbnail menor
+                    scale: 0.5,
                     useCORS: true,
+                    backgroundColor: null, 
                 });
                 const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
                 
@@ -132,12 +131,57 @@ export function EditorClient() {
             }
         }
     }, [addTemplate, currentState, toast]);
+
+    const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
+        const previewElement = document.getElementById('editor-preview');
+        if (!previewElement) {
+            toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
+            return;
+        }
+
+        toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+
+        try {
+            const canvas = await html2canvas(previewElement, {
+                useCORS: true,
+                backgroundColor: null, 
+                scale: 2, // Aumenta a resolução para melhor qualidade
+            });
+
+            const image = canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
+            
+            // Cria um link para download
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = `quotevid-export.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+
+        } catch (error) {
+            console.error('Erro ao exportar imagem:', error);
+            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+        }
+    }, [toast]);
+    
+    const handleExportJPG = () => captureCanvas('jpeg');
+    const handleExportPNG = () => captureCanvas('png');
+    const handleExportMP4 = () => {
+        // Lógica de exportação de vídeo será implementada aqui
+        toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
+    };
+
     
     useEffect(() => {
         setSaveActions({
             onSaveAsTemplate: handleSaveAsTemplate,
+            onExportJPG: handleExportJPG,
+            onExportPNG: handleExportPNG,
+            onExportMP4: handleExportMP4,
         });
-    }, [handleSaveAsTemplate, setSaveActions]);
+    }, [handleSaveAsTemplate, setSaveActions, captureCanvas]);
 
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
