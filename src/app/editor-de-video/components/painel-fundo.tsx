@@ -244,7 +244,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
 
     const subMenu = (
         <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-20 items-center justify-start px-1">
+            <div className="flex h-20 items-center justify-start">
                 <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => setControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => setControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
                 <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => setControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
