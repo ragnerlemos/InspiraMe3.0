@@ -1,4 +1,5 @@
 
+
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
@@ -168,7 +169,7 @@ function ControleTipoFundo(props: {
             {activeTab === 'gradient' && (
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label>Tipo de Gradiente</Label>
+                        <Label>Tipo</Label>
                         <div className="grid grid-cols-2 gap-2">
                             <Button variant={gradient.type === 'linear' ? 'secondary' : 'outline'} onClick={() => handleGradientTypeChange('linear')}>
                                 Linear
@@ -199,20 +200,23 @@ function ControleTipoFundo(props: {
                     )}
 
                     <div className="space-y-2">
-                        <Label>Cores do Gradiente</Label>
-                        <div className="flex items-center gap-2">
-                            <Input id="gradient-color-1" type="text" value={gradient.colors[0]} onChange={(e) => handleGradientColorChange(0, e.target.value)} className="w-full h-10"/>
-                            <Popover>
-                                <PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: gradient.colors[0] }} className="h-10 w-10 border-2" /></PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 border-none"><input type="color" value={gradient.colors[0]} onChange={e => handleGradientColorChange(0, e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent>
-                            </Popover>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Input id="gradient-color-2" type="text" value={gradient.colors[1]} onChange={(e) => handleGradientColorChange(1, e.target.value)} className="w-full h-10"/>
-                            <Popover>
-                                <PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: gradient.colors[1] }} className="h-10 w-10 border-2" /></PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 border-none"><input type="color" value={gradient.colors[1]} onChange={e => handleGradientColorChange(1, e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent>
-                            </Popover>
+                        <Label>Cores</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                            {[0, 1].map(index => (
+                                <Popover key={index}>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="w-full h-10 border-2" style={{ background: gradient.colors[index as 0 | 1] }}/>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 border-none">
+                                        <input 
+                                            type="color" 
+                                            value={gradient.colors[index as 0 | 1]} 
+                                            onChange={e => handleGradientColorChange(index as 0 | 1, e.target.value)} 
+                                            className="w-16 h-16 cursor-pointer" 
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            ))}
                         </div>
                     </div>
                 </div>
