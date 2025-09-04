@@ -121,6 +121,7 @@ export function VisualizacaoEditor({
                 showPhoto={showSignaturePhoto}
                 showUsername={showSignatureUsername}
                 showSocial={showSignatureSocial}
+                textShadow={textStyle.textShadow}
               />
             </div>
           )}
@@ -130,7 +131,7 @@ export function VisualizacaoEditor({
 
   return (
     <div
-      className="relative @container rounded-lg overflow-hidden shadow-2xl h-full"
+      className="relative @container rounded-lg overflow-hidden shadow-2xl h-full w-full"
       style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
     >
       {renderBackground()}
