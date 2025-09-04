@@ -11,7 +11,6 @@ import { Search, Film, Copy, Heart, Share2 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/use-favorites";
-import { QuoteIcon } from "@/components/ui/quote-icon";
 
 // Página principal que exibe uma lista de frases que podem ser filtradas e selecionadas.
 export default function PhrasesPage() {
@@ -101,13 +100,12 @@ export default function PhrasesPage() {
           {filteredQuotes.map((quote) => {
             const isFavorited = favorites.includes(quote.id);
             return (
-              <Card key={quote.id} className="group relative overflow-hidden flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
-                <QuoteIcon className="absolute -top-2 -right-4 w-24 h-24 text-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
                 <CardContent className="p-6 pb-2">
                   <p className="text-xl font-body italic">"{quote.text}"</p>
                   <p className="text-right text-sm font-medium text-muted-foreground mt-4">- {quote.author}</p>
                 </CardContent>
-                <CardFooter className="px-6 pb-4 flex justify-between items-center z-10">
+                <CardFooter className="px-6 pb-4 flex justify-between items-center">
                     <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">{quote.category}</span>
                     <div className="flex items-center">
                       <Link href={`/modelos?quote=${encodeURIComponent(quote.text)}`} passHref>
