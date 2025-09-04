@@ -142,7 +142,6 @@ export function EditorClient() {
     setIsReady(true);
   }, [searchParams, isProfileLoaded]);
 
-
   const createTextStrokeShadow = (width: number, color: string): string => {
     if (width === 0) return "none";
     const step = width * 0.1; // Ajusta o espaçamento dos pontos
@@ -157,9 +156,26 @@ export function EditorClient() {
     return shadows.join(', ');
   };
   
+  const createMainShadow = (blur: number): string => {
+    if (blur === 0) return "none";
+    const step = blur * 0.1; // Espaçamento dos pontos
+    const shadows = [];
+    const numPoints = 8; // Menos pontos para um efeito mais sutil
+    const opacity = 0.5; // Opacidade da sombra
+
+    for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * 2 * Math.PI;
+        // Adiciona um pequeno desfoque (blur radius) para suavizar os pontos
+        const blurRadius = step * 0.5; 
+        const x = Math.cos(angle) * step;
+        const y = Math.sin(angle) * step;
+        shadows.push(`${x.toFixed(2)}cqw ${y.toFixed(2)}cqw ${blurRadius.toFixed(2)}cqw rgba(0,0,0,${opacity})`);
+    }
+    return shadows.join(', ');
+  };
+  
   const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
-  const shadowBlurCqw = currentState.textShadowBlur * 0.1;
-  const mainTextShadow = currentState.textShadowBlur > 0 ? `0.1cqw 0.1cqw ${shadowBlurCqw}cqw rgba(0,0,0,0.8)` : "none";
+  const mainTextShadow = createMainShadow(currentState.textShadowBlur);
   
   const combinedTextShadow = 
     textStrokeShadow !== "none" && mainTextShadow !== "none"
@@ -256,3 +272,5 @@ export function EditorClient() {
     </div>
   );
 }
+
+    
