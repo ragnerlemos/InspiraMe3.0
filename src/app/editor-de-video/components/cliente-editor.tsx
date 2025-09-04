@@ -208,7 +208,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
       {/* Área de visualização */}
-      <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden p-4">
+      <div className="flex-1 justify-center bg-muted/40 relative overflow-hidden p-4">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
@@ -265,7 +265,7 @@ export function EditorClient() {
             onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
             signaturePositionY={currentState.signaturePositionY}
             onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
-            signatureScale={currentState.signatureScale}
+signatureScale={currentState.signatureScale}
             onSignatureScaleChange={(scale) => updateState({ signatureScale: scale })}
             showSignaturePhoto={currentState.showSignaturePhoto}
             onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
