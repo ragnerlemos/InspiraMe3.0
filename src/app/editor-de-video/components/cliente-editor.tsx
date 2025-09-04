@@ -34,8 +34,8 @@ const getInitialState = (): EditorState => ({
     showProfileSignature: false,
     signaturePositionX: 50,
     signaturePositionY: 90,
-    signatureScale: 100,
-    showSignaturePhoto: true,
+    signatureScale: 63,
+    showSignaturePhoto: false,
     showSignatureUsername: true,
     showSignatureSocial: true,
     profileVerticalPosition: 25,
@@ -281,5 +281,7 @@ export function EditorClient() {
     </div>
   );
 }
+
+    
 
     
