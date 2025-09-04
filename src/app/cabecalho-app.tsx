@@ -23,7 +23,7 @@ const navItems = [
   { href: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
-function EditorHeader() {
+export function EditorHeader() {
     const { canUndo, undo } = useEditor();
 
     return (
@@ -61,9 +61,9 @@ export function AppHeader() {
   
   const isEditorPage = pathname.startsWith('/editor-de-video');
 
-  // Renderiza um cabeçalho específico para a página do editor.
+  // Não renderiza o cabeçalho principal na página do editor
   if (isEditorPage) {
-      return <EditorHeader />;
+      return null;
   }
 
   // Função que renderiza os links de navegação.

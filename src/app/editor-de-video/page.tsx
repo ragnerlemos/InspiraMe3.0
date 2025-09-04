@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import { EditorClient } from './components/cliente-editor';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AppHeader } from '@/app/cabecalho-app';
+import { EditorHeader } from '@/app/cabecalho-app';
 import { EditorProvider } from './contexts/editor-context';
 
 
@@ -30,7 +30,7 @@ export default function EditorPage() {
     return (
         <EditorProvider>
             <div className="flex flex-col h-screen w-full bg-background">
-                <AppHeader />
+                <EditorHeader />
                 <main className="flex-1 min-h-0">
                     <Suspense fallback={<EditorSkeleton />}>
                         <EditorClient />
