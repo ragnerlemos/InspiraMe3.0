@@ -172,6 +172,9 @@ export default function ModelosPage() {
                         </div>
                         <CardContent className="p-2 bg-card">
                             <p className="font-normal text-sm">{template.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                                Proporção: {template.editorState.aspectRatio}
+                            </p>
                         </CardContent>
                         </Card>
                     </Link>
