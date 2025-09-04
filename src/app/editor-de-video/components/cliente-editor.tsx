@@ -44,7 +44,7 @@ const getInitialState = (): EditorState => ({
 function EditorSkeleton() {
     return (
         <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
-            <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden">
+            <div className="flex-1 flex justify-center items-center bg-muted/40 relative overflow-hidden p-4 md:p-8">
                  <Skeleton className="w-full h-full max-w-sm aspect-[9/16] rounded-lg" />
             </div>
              <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
@@ -145,16 +145,16 @@ export function EditorClient() {
 
   const createTextStrokeShadow = (width: number, color: string): string => {
     if (width === 0) return "none";
-    const responsiveWidth = width * 0.1; // Ajustado para cqw
+    const step = width * 0.1; // Ajusta o espaçamento dos pontos
     const shadows = [];
-    for (let x = -responsiveWidth; x <= responsiveWidth; x += 0.05) {
-      for (let y = -responsiveWidth; y <= responsiveWidth; y += 0.05) {
-        if (Math.sqrt(x * x + y * y) <= responsiveWidth) {
-          shadows.push(`${x}cqw ${y}cqw 0 ${color}`);
-        }
-      }
+    const numPoints = 12; // Número de pontos ao redor
+    for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * 2 * Math.PI;
+        const x = Math.cos(angle) * step;
+        const y = Math.sin(angle) * step;
+        shadows.push(`${x.toFixed(2)}cqw ${y.toFixed(2)}cqw 0 ${color}`);
     }
-    return shadows.join(", ");
+    return shadows.join(', ');
   };
   
   const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
