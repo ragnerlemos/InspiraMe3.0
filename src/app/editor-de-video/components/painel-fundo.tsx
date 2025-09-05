@@ -383,18 +383,26 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     const renderControle = () => {
         if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
-        switch(controleAtivo) {
-            case 'proporcao':
-                return <ControleProporcao aspectRatio={props.aspectRatio} onAspectRatioChange={props.onAspectRatioChange} />
-            case 'tipo':
-                return <ControleTipoFundo backgroundStyle={props.backgroundStyle} onBackgroundStyleChange={props.onBackgroundStyleChange} />
-            case 'assinatura':
-                return <ControleAssinatura {...props} />
-             case 'logo':
-                return <ControleLogo {...props} />
-            default:
-                return null;
+        const Content = () => {
+            switch(controleAtivo) {
+                case 'proporcao':
+                    return <ControleProporcao aspectRatio={props.aspectRatio} onAspectRatioChange={props.onAspectRatioChange} />
+                case 'tipo':
+                    return <ControleTipoFundo backgroundStyle={props.backgroundStyle} onBackgroundStyleChange={props.onBackgroundStyleChange} />
+                case 'assinatura':
+                    return <ControleAssinatura {...props} />
+                 case 'logo':
+                    return <ControleLogo {...props} />
+                default:
+                    return null;
+            }
         }
+
+        return (
+            <div className="p-4 bg-background border rounded-lg" onClick={(e) => e.stopPropagation()}>
+                <Content />
+            </div>
+        )
     }
 
     const subMenu = (
@@ -411,7 +419,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
 
     return (
         <div className="w-full h-full flex flex-col">
-            <div className="flex-1 p-4 overflow-y-auto">
+            <div className="flex-1 p-4 overflow-y-auto" onClick={() => setControleAtivo(null)}>
                 {renderControle()}
             </div>
             {subMenu}

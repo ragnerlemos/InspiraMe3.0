@@ -36,7 +36,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
         if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
         return (
-             <div className="space-y-4">
+             <div className="space-y-4 p-4 bg-background border rounded-lg" onClick={(e) => e.stopPropagation()}>
                 {controleAtivo === 'fonte' && (
                     <div className="space-y-2">
                         <Label htmlFor="font-family">Fonte</Label>
@@ -156,7 +156,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     return (
        <div className="w-full h-full flex flex-col">
-            <div className="flex-1 p-4 overflow-y-auto">
+            <div className="flex-1 p-4 overflow-y-auto" onClick={() => setControleAtivo(null)}>
                 {renderControle()}
             </div>
             {subMenu}
