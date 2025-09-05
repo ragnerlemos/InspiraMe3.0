@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, GalleryHorizontal } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, GalleryHorizontal, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -376,6 +376,16 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
 export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     const [controleAtivo, setControleAtivo] = useState<ControleAtivo>(null);
 
+    const getPanelTitle = () => {
+        switch (controleAtivo) {
+            case 'proporcao': return "Proporção da Tela";
+            case 'tipo': return "Tipo de Fundo";
+            case 'assinatura': return "Assinatura de Perfil";
+            case 'logo': return "Logomarca";
+            default: return "Editar Fundo";
+        }
+    }
+
     const renderControle = () => {
         if (!controleAtivo) return null;
 
@@ -407,6 +417,12 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
 
     return (
         <div className="w-full h-full flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="font-semibold">{getPanelTitle()}</h3>
+                <Button variant="ghost" size="icon" onClick={props.onClose}>
+                    <X className="h-4 w-4" />
+                </Button>
+            </div>
             <div className="flex-1 p-4 overflow-y-auto">
                 {renderControle()}
                 {!controleAtivo && <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>}

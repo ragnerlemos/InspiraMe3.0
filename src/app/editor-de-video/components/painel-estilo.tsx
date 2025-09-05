@@ -2,7 +2,7 @@
 
 import {
   AlignCenter, AlignLeft, AlignRight, MoveVertical, Bold, Italic,
-  Baseline, Paintbrush, Text, Pipette, Type, CaseSensitive
+  Baseline, Paintbrush, Text, Pipette, Type, CaseSensitive, X
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import { Slider } from "@/components/ui/slider";
 import type { PainelEstiloProps } from "./tipos";
 import { BotaoRecurso } from "./botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 
 
 type ControleAtivo = 'fonte' | 'tamanho' | 'cor' | 'alinhamento' | 'estilo' | 'posicao' | 'contorno' | 'sombra' | null;
@@ -28,8 +27,19 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     // Para o modelo Twitter (ID -2), desativamos o controle de posição vertical.
     const isTwitterTemplate = props.activeTemplateId === -2;
     
-    // Converte a unidade vw para uma aproximação em px para exibição.
-    const getApproximatePx = (vw: number) => Math.round(vw * 3.6);
+    const getPanelTitle = () => {
+        switch (controleAtivo) {
+            case 'fonte': return "Fonte";
+            case 'tamanho': return "Tamanho";
+            case 'cor': return "Cor";
+            case 'alinhamento': return "Alinhamento";
+            case 'estilo': return "Estilo";
+            case 'posicao': return "Posição Vertical";
+            case 'contorno': return "Contorno do Texto";
+            case 'sombra': return "Sombra do Texto";
+            default: return "Editar Estilo";
+        }
+    }
 
 
     const renderControle = () => {
@@ -156,6 +166,12 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     return (
        <div className="w-full h-full flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="font-semibold">{getPanelTitle()}</h3>
+                <Button variant="ghost" size="icon" onClick={props.onClose}>
+                    <X className="h-4 w-4" />
+                </Button>
+            </div>
             <div className="flex-1 p-4 overflow-y-auto">
                 {renderControle()}
                 {!controleAtivo && <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>}
