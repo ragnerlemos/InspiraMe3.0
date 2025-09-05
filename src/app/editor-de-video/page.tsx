@@ -31,7 +31,7 @@ export default function EditorPage() {
         <EditorProvider>
             <div className="flex flex-col min-h-screen w-full bg-background">
                 <EditorHeader />
-                <main className="flex-1 min-h-0 overflow-hidden">
+                <main className="flex-1 min-h-0 overflow-hidden md:h-[calc(100vh-4rem)]">
                     <Suspense fallback={<EditorSkeleton />}>
                         <EditorClient />
                     </Suspense>
