@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -379,7 +379,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     const handleSetControleAtivo = (controle: ControleAtivo) => {
         setControleAtivo(prev => prev === controle ? null : controle);
     }
-
+    
     const renderControle = () => {
         if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
@@ -397,7 +397,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
                     return null;
             }
         }
-
+        
         return (
             <div className="w-full h-full" onClick={() => setControleAtivo(null)}>
                 <div className="p-4" onClick={(e) => e.stopPropagation()}>
