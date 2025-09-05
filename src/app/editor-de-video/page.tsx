@@ -29,9 +29,9 @@ function EditorSkeleton() {
 export default function EditorPage() {
     return (
         <EditorProvider>
-            <div className="flex flex-col min-h-screen w-full bg-background">
+            <div className="flex flex-col h-screen w-full bg-background">
                 <EditorHeader />
-                <main className="flex-1">
+                <main className="flex-1 flex flex-col min-h-0">
                     <Suspense fallback={<EditorSkeleton />}>
                         <EditorClient />
                     </Suspense>
