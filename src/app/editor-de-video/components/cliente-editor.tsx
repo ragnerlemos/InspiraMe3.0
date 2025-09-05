@@ -285,7 +285,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row w-full h-full">
       {/* Área de visualização */}
-      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/40 p-4 md:p-8 pb-16 md:pb-8">
+      <div className="w-full flex flex-col items-center justify-center bg-muted/40 p-4 md:p-8 md:h-full h-[calc(100%-4rem)]">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
@@ -374,5 +374,7 @@ logoPositionY={currentState.logoPositionY}
     </div>
   );
 }
+
+    
 
     
