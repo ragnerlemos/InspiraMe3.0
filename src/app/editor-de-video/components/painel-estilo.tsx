@@ -2,7 +2,7 @@
 
 import {
   AlignCenter, AlignLeft, AlignRight, MoveVertical, Bold, Italic,
-  Baseline, Paintbrush, Text, Pipette, Type, CaseSensitive, X
+  Baseline, Paintbrush, Text, Pipette, Type, CaseSensitive
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -15,28 +15,23 @@ import {
 import { Slider } from "@/components/ui/slider";
 import type { PainelEstiloProps } from "./tipos";
 import { BotaoRecurso } from "./botao-recurso";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-
 
 type ControleAtivo = 'fonte' | 'tamanho' | 'cor' | 'alinhamento' | 'estilo' | 'posicao' | 'contorno' | 'sombra' | null;
-
 
 export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void }) {
     const [controleAtivo, setControleAtivo] = useState<ControleAtivo>(null);
     
-    // Para o modelo Twitter (ID -2), desativamos o controle de posição vertical.
     const isTwitterTemplate = props.activeTemplateId === -2;
     
     const handleSetControleAtivo = (controle: ControleAtivo) => {
         setControleAtivo(prev => prev === controle ? null : controle);
     }
 
-
     const renderControle = () => {
         if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
         return (
-             <div className="space-y-4 p-4 bg-background border rounded-lg" onClick={(e) => e.stopPropagation()}>
+             <div className="space-y-4 p-4">
                 {controleAtivo === 'fonte' && (
                     <div className="space-y-2">
                         <Label htmlFor="font-family">Fonte</Label>
@@ -139,8 +134,8 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     }
 
     const subMenu = (
-         <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-start bg-background/90 backdrop-blur-sm px-2">
+         <div className="w-full whitespace-nowrap border-t">
+            <div className="flex h-14 items-center justify-start flex-wrap bg-background/90 backdrop-blur-sm px-2">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => handleSetControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
@@ -150,13 +145,12 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                 <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => handleSetControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
                 <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => handleSetControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
             </div>
-            <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        </div>
     )
 
     return (
        <div className="w-full h-full flex flex-col">
-            <div className="flex-1 p-4 overflow-y-auto" onClick={() => setControleAtivo(null)}>
+            <div className="flex-1 overflow-y-auto">
                 {renderControle()}
             </div>
             {subMenu}

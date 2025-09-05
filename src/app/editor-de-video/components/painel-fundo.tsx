@@ -6,13 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, GalleryHorizontal, X } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
 import { Slider } from '@/components/ui/slider';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { BotaoRecurso } from './botao-recurso';
 import { Separator } from '@/components/ui/separator';
 
@@ -154,7 +153,7 @@ function ControleTipoFundo(props: {
                     <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
                      <Link href="/galeria?fromEditor=true" passHref>
                         <Button className="w-full" variant="outline">
-                            <GalleryHorizontal className="mr-2 h-4 w-4" />
+                            <ImageIcon className="mr-2 h-4 w-4" />
                             Carregar da Galeria
                         </Button>
                     </Link>
@@ -399,27 +398,26 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
         }
 
         return (
-            <div className="p-4 bg-background border rounded-lg" onClick={(e) => e.stopPropagation()}>
+            <div className="p-4">
                 <Content />
             </div>
         )
     }
 
     const subMenu = (
-        <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-center bg-background/90 backdrop-blur-sm px-2">
+        <div className="w-full whitespace-nowrap border-t">
+            <div className="flex h-14 items-center justify-start flex-wrap bg-background/90 backdrop-blur-sm px-2">
                 <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
                 <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
                  <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
             </div>
-            <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        </div>
     );
 
     return (
         <div className="w-full h-full flex flex-col">
-            <div className="flex-1 p-4 overflow-y-auto" onClick={() => setControleAtivo(null)}>
+            <div className="flex-1 overflow-y-auto">
                 {renderControle()}
             </div>
             {subMenu}
