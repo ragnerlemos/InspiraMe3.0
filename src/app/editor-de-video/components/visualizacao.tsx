@@ -157,6 +157,7 @@ export function VisualizacaoEditor({
           "aspect-square": aspectRatio === "1:1",
           "aspect-video": aspectRatio === "16:9",
           "aspect-[9/16]": aspectRatio === "9:16",
+          "max-h-[90%]": aspectRatio === "9:16",
         }
       )}
     >
