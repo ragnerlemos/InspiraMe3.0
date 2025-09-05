@@ -287,7 +287,7 @@ export function EditorClient() {
   }
 
   const editorLayout = (
-    <>
+    <div className="flex-1 flex flex-col w-full h-full">
         {/* Área de visualização */}
         <div className="flex-1 flex justify-center items-center bg-muted/40 p-4 md:p-8 overflow-hidden py-4">
             <VisualizacaoEditor
@@ -315,7 +315,7 @@ export function EditorClient() {
         </div>
         
         {/* Painel de Controles */}
-        <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
+        <div className="w-full h-auto md:hidden">
             <PainelControles
                 text={currentState.text}
                 onTextChange={(text) => updateState({ text })}
@@ -375,7 +375,7 @@ export function EditorClient() {
                 profile={profile}
             />
         </div>
-    </>
+    </div>
   );
 
   if (!isDesktop) {
@@ -389,8 +389,7 @@ export function EditorClient() {
   return (
     <PanelGroup direction="horizontal" className="h-full w-full">
         <Panel defaultSize={65} minSize={40}>
-           {/* Área de visualização */}
-            <div className="flex-1 flex h-full justify-center items-center bg-muted/40 p-4 md:p-8 overflow-hidden py-4">
+            <div className="flex h-full justify-center items-center bg-muted/40 p-4 md:p-8 overflow-hidden py-4">
                 <VisualizacaoEditor
                     aspectRatio={currentState.aspectRatio}
                     backgroundStyle={currentState.backgroundStyle}
@@ -417,7 +416,6 @@ export function EditorClient() {
         </Panel>
         <PanelResizeHandle />
         <Panel defaultSize={35} minSize={30} maxSize={45}>
-             {/* Painel de Controles */}
             <div className="h-full w-full border-l bg-background">
                  <PainelControles
                     text={currentState.text}
