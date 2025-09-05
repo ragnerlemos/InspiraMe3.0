@@ -148,21 +148,28 @@ export function VisualizacaoEditor({
     );
   };
   
+    const getPaddingForAspectRatio = () => {
+        switch (aspectRatio) {
+            case '1:1': return '100%';
+            case '9:16': return '177.77%';
+            case '16:9': return '56.25%';
+            default: return '100%';
+        }
+    };
+  
   return (
     <div 
         id="editor-preview"
-        className={cn(
-            "w-full max-w-full rounded-lg overflow-hidden shadow-2xl @container bg-black relative",
-            {
-                'aspect-square': aspectRatio === '1:1',
-                'aspect-[9/16]': aspectRatio === '9:16',
-                'aspect-[16/9]': aspectRatio === '16:9',
-            }
-        )}
+        className="w-full max-w-full rounded-lg overflow-hidden shadow-2xl @container bg-black"
     >
-        <div className="absolute inset-0">
-            {renderBackground()}
-            {renderContent()}
+        <div 
+            className="relative w-full"
+            style={{ paddingBottom: getPaddingForAspectRatio() }}
+        >
+            <div className="absolute inset-0">
+                {renderBackground()}
+                {renderContent()}
+            </div>
         </div>
     </div>
   );
