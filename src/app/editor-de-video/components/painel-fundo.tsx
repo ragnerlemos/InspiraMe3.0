@@ -376,18 +376,12 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
 export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     const [controleAtivo, setControleAtivo] = useState<ControleAtivo>(null);
 
-    const getPanelTitle = () => {
-        switch (controleAtivo) {
-            case 'proporcao': return "Proporção da Tela";
-            case 'tipo': return "Tipo de Fundo";
-            case 'assinatura': return "Assinatura de Perfil";
-            case 'logo': return "Logomarca";
-            default: return "Editar Fundo";
-        }
+    const handleSetControleAtivo = (controle: ControleAtivo) => {
+        setControleAtivo(prev => prev === controle ? null : controle);
     }
 
     const renderControle = () => {
-        if (!controleAtivo) return null;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
         switch(controleAtivo) {
             case 'proporcao':
@@ -405,11 +399,11 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
 
     const subMenu = (
         <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-center bg-background/90 backdrop-blur-sm">
-                <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => setControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
-                <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => setControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
-                <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => setControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
-                 <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => setControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
+            <div className="flex h-14 items-center justify-center bg-background/90 backdrop-blur-sm px-2">
+                <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
+                <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
+                <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
+                 <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
             </div>
             <ScrollBar orientation="horizontal" />
         </ScrollArea>
@@ -417,15 +411,8 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
 
     return (
         <div className="w-full h-full flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="font-semibold">{getPanelTitle()}</h3>
-                <Button variant="ghost" size="icon" onClick={props.onClose}>
-                    <X className="h-4 w-4" />
-                </Button>
-            </div>
             <div className="flex-1 p-4 overflow-y-auto">
                 {renderControle()}
-                {!controleAtivo && <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>}
             </div>
             {subMenu}
         </div>

@@ -27,23 +27,13 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     // Para o modelo Twitter (ID -2), desativamos o controle de posição vertical.
     const isTwitterTemplate = props.activeTemplateId === -2;
     
-    const getPanelTitle = () => {
-        switch (controleAtivo) {
-            case 'fonte': return "Fonte";
-            case 'tamanho': return "Tamanho";
-            case 'cor': return "Cor";
-            case 'alinhamento': return "Alinhamento";
-            case 'estilo': return "Estilo";
-            case 'posicao': return "Posição Vertical";
-            case 'contorno': return "Contorno do Texto";
-            case 'sombra': return "Sombra do Texto";
-            default: return "Editar Estilo";
-        }
+    const handleSetControleAtivo = (controle: ControleAtivo) => {
+        setControleAtivo(prev => prev === controle ? null : controle);
     }
 
 
     const renderControle = () => {
-        if (!controleAtivo) return null;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
 
         return (
              <div className="space-y-4">
@@ -150,15 +140,15 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     const subMenu = (
          <ScrollArea className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-start bg-background/90 backdrop-blur-sm">
-                <BotaoRecurso icon={Type} label="Fonte" onClick={() => setControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
-                <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
-                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
-                <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
-                <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
-                <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
-                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
-                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
+            <div className="flex h-14 items-center justify-start bg-background/90 backdrop-blur-sm px-2">
+                <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
+                <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
+                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => handleSetControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
+                <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => handleSetControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
+                <BotaoRecurso icon={Bold} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
+                <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => handleSetControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
+                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => handleSetControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
+                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => handleSetControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
             </div>
             <ScrollBar orientation="horizontal" />
         </ScrollArea>
@@ -166,15 +156,8 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     return (
        <div className="w-full h-full flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="font-semibold">{getPanelTitle()}</h3>
-                <Button variant="ghost" size="icon" onClick={props.onClose}>
-                    <X className="h-4 w-4" />
-                </Button>
-            </div>
             <div className="flex-1 p-4 overflow-y-auto">
                 {renderControle()}
-                {!controleAtivo && <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>}
             </div>
             {subMenu}
        </div>
