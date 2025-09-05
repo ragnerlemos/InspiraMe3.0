@@ -156,7 +156,7 @@ export function VisualizacaoEditor({
       <div
         id="editor-preview-content"
         className={cn(
-          "relative rounded-lg overflow-hidden shadow-2xl @container bg-black w-full h-full",
+          "relative rounded-lg overflow-hidden shadow-2xl @container bg-black w-full",
           {
             "aspect-square": aspectRatio === "1:1",
             "aspect-[9/16]": aspectRatio === "9:16",
