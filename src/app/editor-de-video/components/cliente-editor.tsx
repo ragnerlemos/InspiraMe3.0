@@ -113,7 +113,7 @@ export function EditorClient() {
   const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
         if (!templateName) return;
-        const previewElement = document.getElementById('editor-preview');
+        const previewElement = document.getElementById('editor-preview-content');
         if (previewElement) {
             try {
                 const canvas = await html2canvas(previewElement, {
@@ -141,7 +141,7 @@ export function EditorClient() {
     }, [addTemplate, currentState, toast]);
 
     const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
-        const previewElement = document.getElementById('editor-preview');
+        const previewElement = document.getElementById('editor-preview-content');
         if (!previewElement) {
             toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
             return;
@@ -285,7 +285,7 @@ export function EditorClient() {
   return (
     <div className="flex flex-col md:flex-row w-full h-full">
       {/* Área de visualização */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-muted/40 md:h-full md:py-8">
+      <div className="flex-1 flex flex-col items-center justify-center bg-muted/40 p-4 md:p-8">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
             backgroundStyle={currentState.backgroundStyle}
@@ -374,5 +374,3 @@ logoPositionY={currentState.logoPositionY}
     </div>
   );
 }
-
-    
