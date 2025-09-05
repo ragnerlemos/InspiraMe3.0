@@ -380,7 +380,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
     
     const renderControle = () => {
-        if (!controleAtivo) return <p className="text-muted-foreground text-center pt-8">Selecione uma opção abaixo para editar.</p>;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção abaixo para editar.</p>;
 
         const Content = () => {
             switch(controleAtivo) {
@@ -398,8 +398,8 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
         }
         
         return (
-            <div className="w-full h-full" onClick={() => setControleAtivo(null)}>
-                <div className="p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full" onClick={(e) => e.stopPropagation()}>
+                <div className="p-4">
                     <Content />
                 </div>
             </div>
@@ -418,10 +418,9 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     );
 
     return (
-        <div className="w-full h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto">
-                {renderControle()}
-            </div>
+        <div className="w-full h-full flex flex-col" onClick={() => setControleAtivo(null)}>
+            <div className="flex-1" />
+            {renderControle()}
             {subMenu}
         </div>
     );
