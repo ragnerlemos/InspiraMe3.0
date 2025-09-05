@@ -135,7 +135,7 @@ export function VisualizacaoEditor({
               className="absolute"
               style={{
                 top: `${logoPositionY}%`,
-                left: `${logoX}%`,
+                left: `${logoPositionX}%`,
                 transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
                 opacity: logoOpacity / 100,
                 transformOrigin: 'center center',
@@ -152,7 +152,7 @@ export function VisualizacaoEditor({
     <div
       id="editor-preview"
       className={cn(
-        "relative w-full rounded-lg overflow-hidden shadow-2xl @container bg-black max-h-full",
+        "relative w-full rounded-lg overflow-hidden shadow-2xl @container bg-black",
         {
           "aspect-square": aspectRatio === "1:1",
           "aspect-video": aspectRatio === "16:9",
@@ -165,8 +165,5 @@ export function VisualizacaoEditor({
     </div>
   );
 }
-
-    
-
 
     
