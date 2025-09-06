@@ -90,7 +90,7 @@ export function AppHeader() {
   const isProporcaoPage = pathname.startsWith('/editor-de-video/modulos-editor/proporcao');
 
   // Não renderiza o cabeçalho principal em páginas especiais
-  if (isEditorPage || isProporcaoPage) {
+  if (isEditorPage && !isProporcaoPage) {
       return null;
   }
 
