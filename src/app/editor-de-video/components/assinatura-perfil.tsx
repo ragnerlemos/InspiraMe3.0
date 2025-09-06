@@ -28,7 +28,7 @@ export function AssinaturaPerfil({
             </Avatar>
         )}
         {(showUsername || showSocial) && (
-            <div className="flex flex-col space-y-0">
+            <div className="flex flex-col">
                 {showUsername && <div className="font-bold leading-none">{profile.username}</div>}
                 {showSocial && <div className="text-sm opacity-80 leading-none">{profile.social}</div>}
             </div>

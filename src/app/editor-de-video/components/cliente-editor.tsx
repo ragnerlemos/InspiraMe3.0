@@ -159,29 +159,32 @@ export function EditorClient() {
         const originalStyles = { signature: signatureElement?.style.cssText, logo: logoElement?.style.cssText };
 
         try {
-            // Aplica estilos temporários para garantir a renderização correta pelo html2canvas
+            // Assinatura
             if (signatureElement && currentState.showProfileSignature) {
                 const rect = previewElement.getBoundingClientRect();
-                const left = ((rect.width * currentState.signaturePositionX) / 100) - (signatureElement.offsetWidth / 2);
-                const top = ((rect.height * currentState.signaturePositionY) / 100) - (signatureElement.offsetHeight / 2);
+                const left = (rect.width * currentState.signaturePositionX) / 100;
+                const top = (rect.height * currentState.signaturePositionY) / 100;
 
+                signatureElement.style.position = 'absolute';
                 signatureElement.style.left = `${left}px`;
                 signatureElement.style.top = `${top}px`;
-                signatureElement.style.transform = `scale(${currentState.signatureScale / 100})`;
+                signatureElement.style.transform = `translate(-50%, -50%) scale(${currentState.signatureScale / 100})`;
                 signatureElement.style.transformOrigin = 'center center';
             }
+
+            // Logo
             if (logoElement && currentState.showLogo) {
                 const rect = previewElement.getBoundingClientRect();
-                 const left = ((rect.width * currentState.logoPositionX) / 100) - (logoElement.offsetWidth / 2);
-                const top = ((rect.height * currentState.logoPositionY) / 100) - (logoElement.offsetHeight / 2);
+                const left = (rect.width * currentState.logoPositionX) / 100;
+                const top = (rect.height * currentState.logoPositionY) / 100;
 
+                logoElement.style.position = 'absolute';
                 logoElement.style.left = `${left}px`;
                 logoElement.style.top = `${top}px`;
-                logoElement.style.transform = `scale(${currentState.logoScale / 100})`;
+                logoElement.style.transform = `translate(-50%, -50%) scale(${currentState.logoScale / 100})`;
                 logoElement.style.opacity = `${currentState.logoOpacity / 100}`;
                 logoElement.style.transformOrigin = 'center center';
             }
-
 
             const canvas = await html2canvas(previewElement, {
                 useCORS: true,
