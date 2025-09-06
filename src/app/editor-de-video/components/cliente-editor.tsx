@@ -289,7 +289,7 @@ export function EditorClient() {
   const editorLayout = (
     <div className="flex-1 flex flex-col w-full h-full">
         {/* Área de visualização */}
-        <div className="flex-1 bg-muted/40 w-full flex items-center justify-center p-4">
+        <div className="flex-1 bg-muted/40 w-full flex items-start justify-center p-4 overflow-auto">
             <VisualizacaoEditor
                 aspectRatio={currentState.aspectRatio}
                 backgroundStyle={currentState.backgroundStyle}
@@ -389,7 +389,7 @@ export function EditorClient() {
   return (
     <PanelGroup direction="horizontal" className="h-full w-full">
         <Panel defaultSize={65} minSize={40}>
-             <div className="bg-muted/40 w-full h-full flex items-center justify-center p-4">
+             <div className="bg-muted/40 w-full h-full flex items-start justify-center p-4 overflow-auto">
                 <VisualizacaoEditor
                     aspectRatio={currentState.aspectRatio}
                     backgroundStyle={currentState.backgroundStyle}

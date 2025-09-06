@@ -152,7 +152,7 @@ export function VisualizacaoEditor({
     <div
       id="editor-preview-content"
       className={cn(
-        "relative transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden",
+        "relative transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden max-w-full max-h-full",
         aspectRatio === '9 / 16' ? 'h-[95%]' : 'w-full'
       )}
       style={{
