@@ -289,31 +289,29 @@ export function EditorClient() {
   const editorLayout = (
     <div className="flex-1 flex flex-col w-full h-full">
         {/* Área de visualização */}
-        <div className="flex-1 bg-muted/40 w-full relative">
-            <div className="absolute inset-0 p-4">
-                <VisualizacaoEditor
-                    aspectRatio={currentState.aspectRatio}
-                    backgroundStyle={currentState.backgroundStyle}
-                    text={currentState.text}
-                    textStyle={textStyle}
-                    textVerticalPosition={currentState.textVerticalPosition}
-                    showProfileSignature={currentState.showProfileSignature}
-                    profile={profile}
-                    signaturePositionX={currentState.signaturePositionX}
-                    signaturePositionY={currentState.signaturePositionY}
-                    signatureScale={currentState.signatureScale}
-                    showSignaturePhoto={currentState.showSignaturePhoto}
-                    showSignatureUsername={currentState.showSignatureUsername}
-                    showSignatureSocial={currentState.showSignatureSocial}
-                    activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
-                    profileVerticalPosition={currentState.profileVerticalPosition}
-                    showLogo={currentState.showLogo}
-                    logoPositionX={currentState.logoPositionX}
-                    logoPositionY={currentState.logoPositionY}
-                    logoScale={currentState.logoScale}
-                    logoOpacity={currentState.logoOpacity}
-                />
-            </div>
+        <div className="flex-1 bg-muted/40 w-full flex items-center justify-center p-4">
+            <VisualizacaoEditor
+                aspectRatio={currentState.aspectRatio}
+                backgroundStyle={currentState.backgroundStyle}
+                text={currentState.text}
+                textStyle={textStyle}
+                textVerticalPosition={currentState.textVerticalPosition}
+                showProfileSignature={currentState.showProfileSignature}
+                profile={profile}
+                signaturePositionX={currentState.signaturePositionX}
+                signaturePositionY={currentState.signaturePositionY}
+                signatureScale={currentState.signatureScale}
+                showSignaturePhoto={currentState.showSignaturePhoto}
+                showSignatureUsername={currentState.showSignatureUsername}
+                showSignatureSocial={currentState.showSignatureSocial}
+                activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
+                profileVerticalPosition={currentState.profileVerticalPosition}
+                showLogo={currentState.showLogo}
+                logoPositionX={currentState.logoPositionX}
+                logoPositionY={currentState.logoPositionY}
+                logoScale={currentState.logoScale}
+                logoOpacity={currentState.logoOpacity}
+            />
         </div>
         
         {/* Painel de Controles */}
@@ -391,31 +389,29 @@ export function EditorClient() {
   return (
     <PanelGroup direction="horizontal" className="h-full w-full">
         <Panel defaultSize={65} minSize={40}>
-            <div className="bg-muted/40 w-full h-full relative">
-                <div className="absolute inset-0 p-4">
-                    <VisualizacaoEditor
-                        aspectRatio={currentState.aspectRatio}
-                        backgroundStyle={currentState.backgroundStyle}
-                        text={currentState.text}
-                        textStyle={textStyle}
-                        textVerticalPosition={currentState.textVerticalPosition}
-                        showProfileSignature={currentState.showProfileSignature}
-                        profile={profile}
-                        signaturePositionX={currentState.signaturePositionX}
-                        signaturePositionY={currentState.signaturePositionY}
-                        signatureScale={currentState.signatureScale}
-                        showSignaturePhoto={currentState.showSignaturePhoto}
-                        showSignatureUsername={currentState.showSignatureUsername}
-                        showSignatureSocial={currentState.showSignatureSocial}
-                        activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
-                        profileVerticalPosition={currentState.profileVerticalPosition}
-                        showLogo={currentState.showLogo}
-                        logoPositionX={currentState.logoPositionX}
-                        logoPositionY={currentState.logoPositionY}
-                        logoScale={currentState.logoScale}
-                        logoOpacity={currentState.logoOpacity}
-                    />
-                </div>
+             <div className="bg-muted/40 w-full h-full flex items-center justify-center p-4">
+                <VisualizacaoEditor
+                    aspectRatio={currentState.aspectRatio}
+                    backgroundStyle={currentState.backgroundStyle}
+                    text={currentState.text}
+                    textStyle={textStyle}
+                    textVerticalPosition={currentState.textVerticalPosition}
+                    showProfileSignature={currentState.showProfileSignature}
+                    profile={profile}
+                    signaturePositionX={currentState.signaturePositionX}
+                    signaturePositionY={currentState.signaturePositionY}
+                    signatureScale={currentState.signatureScale}
+                    showSignaturePhoto={currentState.showSignaturePhoto}
+                    showSignatureUsername={currentState.showSignatureUsername}
+                    showSignatureSocial={currentState.showSignatureSocial}
+                    activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
+                    profileVerticalPosition={currentState.profileVerticalPosition}
+                    showLogo={currentState.showLogo}
+                    logoPositionX={currentState.logoPositionX}
+                    logoPositionY={currentState.logoPositionY}
+                    logoScale={currentState.logoScale}
+                    logoOpacity={currentState.logoOpacity}
+                />
             </div>
         </Panel>
         <PanelResizeHandle />
@@ -426,7 +422,7 @@ export function EditorClient() {
                     onTextChange={(text) => updateState({ text })}
                     fontFamily={currentState.fontFamily}
                     onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
-                    fontSize={currentState.fontSize}
+fontSize={currentState.fontSize}
                     onFontSizeChange={(fontSize) => updateState({ fontSize })}
                     fontWeight={currentState.fontWeight}
                     onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
@@ -469,7 +465,7 @@ export function EditorClient() {
                     onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
                     showLogo={currentState.showLogo}
                     onShowLogoChange={(show) => updateState({ showLogo: show })}
-                    logoPositionX={currentState.logoPositionX}
+logoPositionX={currentState.logoPositionX}
                     onLogoPositionXChange={(x) => updateState({ logoPositionX: x })}
                     logoPositionY={currentState.logoPositionY}
                     onLogoPositionYChange={(y) => updateState({ logoPositionY: y })}
@@ -484,7 +480,3 @@ logoScale={currentState.logoScale}
     </PanelGroup>
   );
 }
-
-    
-
-    

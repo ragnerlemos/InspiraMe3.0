@@ -151,7 +151,7 @@ export function VisualizacaoEditor({
   return (
     <div
         id="editor-preview-content"
-        className="relative mx-auto my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden"
+        className="relative max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden"
         style={{
           aspectRatio: aspectRatio,
           backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : undefined,
