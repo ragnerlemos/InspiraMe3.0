@@ -30,7 +30,7 @@ export function AssinaturaPerfil({
         {(showUsername || showSocial) && (
             <div className="flex-1">
                 <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex flex-col">
                         {showUsername && <div className="font-bold">{profile.username}</div>}
                         {showSocial && <div className="text-sm opacity-80">{profile.social}</div>}
                     </div>
