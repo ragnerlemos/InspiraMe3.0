@@ -151,7 +151,7 @@ export function VisualizacaoEditor({
   return (
     <div
       id="editor-preview"
-      className="w-full max-w-md mx-auto flex items-center justify-center"
+      className="w-full mx-auto flex items-center justify-center"
     >
       <div
         id="editor-preview-content"
