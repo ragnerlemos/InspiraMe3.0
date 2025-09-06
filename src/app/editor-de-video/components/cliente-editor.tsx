@@ -162,6 +162,7 @@ export function EditorClient() {
             logo: logoElement?.style.cssText
         };
 
+        // Aplica estilos temporários para garantir a captura correta
         if (previewElement && (signatureElement || logoElement)) {
             const rect = previewElement.getBoundingClientRect();
 
@@ -211,7 +212,7 @@ export function EditorClient() {
             console.error('Erro ao exportar imagem:', error);
             toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         } finally {
-             // Restaura os estilos originais
+             // Restaura os estilos originais para continuar a edição fluida
             if (signatureElement && originalStyles.signature !== undefined) {
                 signatureElement.style.cssText = originalStyles.signature;
             }
