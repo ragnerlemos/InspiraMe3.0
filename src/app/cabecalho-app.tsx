@@ -87,7 +87,7 @@ export function AppHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   
   const isEditorPage = pathname.startsWith('/editor-de-video');
-  const isProporcaoPage = pathname.startsWith('/proporcao');
+  const isProporcaoPage = pathname.startsWith('/editor-de-video/modulos-editor/proporcao');
 
   // Não renderiza o cabeçalho principal em páginas especiais
   if (isEditorPage || isProporcaoPage) {
@@ -161,7 +161,7 @@ export function AppHeader() {
                   </DropdownMenuSubTrigger>
                   <DropdownMenuPortal>
                     <DropdownMenuSubContent>
-                      <Link href="/proporcao" passHref>
+                      <Link href="/editor-de-video/modulos-editor/proporcao" passHref>
                          <DropdownMenuItem>
                             Proporção
                          </DropdownMenuItem>
@@ -188,7 +188,7 @@ export function AppHeader() {
                 <nav className="grid gap-2 text-lg font-medium pt-8">
                     {navLinks("text-base")}
                      {/* Menu de Teste Mobile */}
-                    <Link href="/proporcao" onClick={() => setIsSheetOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
+                    <Link href="/editor-de-video/modulos-editor/proporcao" onClick={() => setIsSheetOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
                       <TestTube2 className="h-4 w-4" />
                       Proporção
                     </Link>
