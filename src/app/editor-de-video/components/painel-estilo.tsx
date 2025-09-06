@@ -152,8 +152,10 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     )
 
     return (
-       <div className="w-full h-full flex flex-col" onClick={() => setControleAtivo(null)}>
-            {renderControle()}
+       <div className="w-full h-full flex flex-col" onClick={props.onClose}>
+            <div className="flex-1 overflow-y-auto">
+                {renderControle()}
+            </div>
             {subMenu}
        </div>
     );

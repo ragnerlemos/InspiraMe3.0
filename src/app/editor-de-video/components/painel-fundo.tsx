@@ -1,3 +1,4 @@
+
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
@@ -218,7 +219,7 @@ function ControleTipoFundo(props: {
 type ControleAtivo = 'proporcao' | 'tipo' | 'assinatura' | 'logo' | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'onBackgroundStyleChange' | 'aspectRatio' | 'onAspectRatioChange' | 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' >) {
+function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'onBackgroundStyleChange' | 'aspectRatio' | 'onAspectRatioChange' | 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' > & { onClose: () => void }) {
     const { 
         showProfileSignature, onShowProfileSignatureChange,
         signaturePositionX, onSignaturePositionXChange,
@@ -228,6 +229,7 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
         showSignatureUsername, onShowSignatureUsernameChange,
         showSignatureSocial, onShowSignatureSocialChange,
         profile,
+        onClose,
     } = props;
     
     const isProfileConfigured = profile.username && profile.username !== 'Seu Nome' && profile.social && profile.social !== '@seuusario';
@@ -245,7 +247,7 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
             
             {!isProfileConfigured && !showProfileSignature && (
                 <Link href="/perfil" passHref>
-                    <Button variant="link" className="w-full text-center">
+                    <Button variant="link" className="w-full text-center" onClick={onClose}>
                         <User className="mr-2 h-4 w-4" />
                         Configurar Assinatura no Perfil
                     </Button>
@@ -253,7 +255,7 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
             )}
 
             {showProfileSignature && (
-                <div className="space-y-4 pt-2 border-t mt-4">
+                <div className="space-y-4 pt-2 border-t mt-4" onClick={(e) => e.stopPropagation()}>
                     <Label>Elementos Visíveis</Label>
                     <div className="grid grid-cols-3 gap-2">
                          <Button size="sm" variant={showSignaturePhoto ? 'secondary' : 'outline'} onClick={() => onShowSignaturePhotoChange(!showSignaturePhoto)}>
@@ -293,14 +295,15 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
      )
 }
 
-function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' | 'profile'>) {
+function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' | 'profile'> & { onClose: () => void }) {
     const {
         showLogo, onShowLogoChange,
         logoPositionX, onLogoPositionXChange,
         logoPositionY, onLogoPositionYChange,
         logoScale, onLogoScaleChange,
         logoOpacity, onLogoOpacityChange,
-        profile
+        profile,
+        onClose,
     } = props;
     
     const isLogoConfigured = !!profile.logo;
@@ -318,7 +321,7 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
             
              {!isLogoConfigured && !showLogo && (
                 <Link href="/perfil" passHref>
-                    <Button variant="link" className="w-full text-center">
+                    <Button variant="link" className="w-full text-center" onClick={onClose}>
                         <ImageUp className="mr-2 h-4 w-4" />
                         Adicionar Logomarca no Perfil
                     </Button>
@@ -326,7 +329,7 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
             )}
 
             {showLogo && (
-                <div className="space-y-4 pt-2 border-t mt-4">
+                <div className="space-y-4 pt-2 border-t mt-4" onClick={(e) => e.stopPropagation()}>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
                             <Label htmlFor="logo-position-x" className="text-xs flex items-center"><MoveHorizontal className="mr-2 h-3 w-3" />Posição Horizontal</Label>
@@ -387,7 +390,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
         }
         
         return (
-            <div className="w-full p-4">
+            <div className="w-full p-4" onClick={(e) => e.stopPropagation()}>
                  <Content />
             </div>
         )
@@ -405,7 +408,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     );
 
     return (
-       <div className="w-full h-full flex flex-col">
+       <div className="w-full h-full flex flex-col" onClick={props.onClose}>
             <div className="flex-1 overflow-y-auto">
                  {renderControle()}
             </div>
