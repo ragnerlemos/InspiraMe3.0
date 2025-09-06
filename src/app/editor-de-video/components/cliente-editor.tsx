@@ -104,7 +104,7 @@ export function EditorClient() {
   // Função para refazer a última ação.
   const redo = useCallback(() => {
     if (currentStateIndex < history.length - 1) {
-      setCurrentStateIndex(currentStateIndex + 1);
+      setCurrentStateIndex(currentStateIndex - 1);
     }
   }, [currentStateIndex, history.length]);
 
@@ -154,6 +154,37 @@ export function EditorClient() {
 
         toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
 
+        // --- Início da Correção ---
+        const signatureElement = document.getElementById('signature-wrapper') as HTMLElement | null;
+        const logoElement = document.getElementById('logo-wrapper') as HTMLElement | null;
+        
+        const originalStyles = {
+            signature: signatureElement?.style.cssText,
+            logo: logoElement?.style.cssText
+        };
+
+        if (previewElement && (signatureElement || logoElement)) {
+            const rect = previewElement.getBoundingClientRect();
+
+            if (signatureElement && currentState.showProfileSignature) {
+                signatureElement.style.position = 'absolute';
+                signatureElement.style.left = `${(rect.width * currentState.signaturePositionX) / 100}px`;
+                signatureElement.style.top = `${(rect.height * currentState.signaturePositionY) / 100}px`;
+                signatureElement.style.transform = `scale(${currentState.signatureScale / 100})`;
+                signatureElement.style.transformOrigin = 'top left';
+            }
+
+            if (logoElement && currentState.showLogo) {
+                logoElement.style.position = 'absolute';
+                logoElement.style.left = `${(rect.width * currentState.logoPositionX) / 100}px`;
+                logoElement.style.top = `${(rect.height * currentState.logoPositionY) / 100}px`;
+                logoElement.style.transform = `scale(${currentState.logoScale / 100})`;
+                logoElement.style.opacity = `${currentState.logoOpacity / 100}`;
+                logoElement.style.transformOrigin = 'top left';
+            }
+        }
+        // --- Fim da Correção ---
+
         try {
             const canvas = await html2canvas(previewElement, {
                 useCORS: true,
@@ -163,7 +194,6 @@ export function EditorClient() {
 
             const image = canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
             
-            // Cria um link para download
             const link = document.createElement('a');
             link.href = image;
             link.download = `quotevid-export.${format}`;
@@ -176,8 +206,16 @@ export function EditorClient() {
         } catch (error) {
             console.error('Erro ao exportar imagem:', error);
             toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+        } finally {
+             // Restaura os estilos originais
+            if (signatureElement && originalStyles.signature !== undefined) {
+                signatureElement.style.cssText = originalStyles.signature;
+            }
+            if (logoElement && originalStyles.logo !== undefined) {
+                logoElement.style.cssText = originalStyles.logo;
+            }
         }
-    }, [toast]);
+    }, [toast, currentState]);
     
     const handleExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
     const handleExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
@@ -292,13 +330,7 @@ export function EditorClient() {
         {/* Área de visualização */}
         <div className="flex-1 bg-muted/40 w-full flex items-start justify-center p-4 overflow-auto">
              <div 
-                className={cn("max-h-full max-w-full", {
-                    "h-[85%] md:h-[85%]": currentState.aspectRatio === "9 / 16",
-                    "w-full": currentState.aspectRatio !== "9 / 16",
-                })}
-                style={{
-                    aspectRatio: currentState.aspectRatio,
-                }}
+                className="aspect-[9/16] h-[85%] max-h-full"
             >
                 <VisualizacaoEditor
                     backgroundStyle={currentState.backgroundStyle}
@@ -401,13 +433,7 @@ export function EditorClient() {
         <Panel defaultSize={65} minSize={40}>
             <div className="bg-muted/40 w-full h-full flex items-start justify-center p-4 overflow-auto">
                  <div
-                    className={cn("max-h-full max-w-full", {
-                        "h-[85%] md:h-[85%]": currentState.aspectRatio === "9 / 16",
-                        "w-full": currentState.aspectRatio !== "9 / 16",
-                    })}
-                    style={{
-                        aspectRatio: currentState.aspectRatio,
-                    }}
+                    className="aspect-[9/16] h-[85%] max-h-full"
                 >
                     <VisualizacaoEditor
                         backgroundStyle={currentState.backgroundStyle}

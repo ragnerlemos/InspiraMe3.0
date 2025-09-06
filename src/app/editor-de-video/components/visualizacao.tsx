@@ -117,12 +117,13 @@ export function VisualizacaoEditor({
         </div>
         {showProfileSignature && (
             <div
+              id="signature-wrapper"
               className="absolute"
               style={{
                 top: `${signaturePositionY}%`,
                 left: `${signaturePositionX}%`,
                 transform: `scale(${signatureScale / 100})`,
-                transformOrigin: 'top left', // Muda a origem para ser mais previsível
+                transformOrigin: 'top left',
               }}
             >
               <AssinaturaPerfil
@@ -135,13 +136,14 @@ export function VisualizacaoEditor({
           )}
            {showLogo && profile.logo && (
             <div
+              id="logo-wrapper"
               className="absolute"
               style={{
                 top: `${logoPositionY}%`,
                 left: `${logoPositionX}%`,
                 transform: `scale(${logoScale / 100})`,
                 opacity: logoOpacity / 100,
-                transformOrigin: 'top left', // Muda a origem para ser mais previsível
+                transformOrigin: 'top left',
               }}
             >
                 <img src={profile.logo} alt="Logomarca" className="max-w-[150px] max-h-[150px]" />
