@@ -76,7 +76,7 @@ export default function AspectWeaverPage() {
   );
 
   return (
-    <div className="h-[calc(100vh-4rem)] w-full bg-background text-foreground">
+    <div className="h-full w-full bg-background text-foreground">
       {/* Layout para telas médias e maiores (desktop) */}
       <div className="hidden md:grid md:grid-cols-[288px_1fr] h-full">
         <aside className="border-r">
