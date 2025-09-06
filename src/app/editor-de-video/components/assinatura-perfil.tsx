@@ -31,8 +31,8 @@ export function AssinaturaPerfil({
             <div className="flex-1">
                 <div className="flex items-center justify-between">
                     <div>
-                        {showUsername && <p className="font-bold">{profile.username}</p>}
-                        {showSocial && <p className="text-sm opacity-80">{profile.social}</p>}
+                        {showUsername && <div className="font-bold">{profile.username}</div>}
+                        {showSocial && <div className="text-sm opacity-80">{profile.social}</div>}
                     </div>
                     {profile.showIcon && profile.iconUrl && (
                         <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" />
