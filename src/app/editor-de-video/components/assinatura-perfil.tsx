@@ -30,9 +30,9 @@ export function AssinaturaPerfil({
         {(showUsername || showSocial) && (
             <div className="flex-1">
                 <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                        {showUsername && <div className="font-bold">{profile.username}</div>}
-                        {showSocial && <div className="text-sm opacity-80">{profile.social}</div>}
+                    <div className="space-y-0">
+                        {showUsername && <div className="font-bold leading-tight">{profile.username}</div>}
+                        {showSocial && <div className="text-sm opacity-80 leading-tight">{profile.social}</div>}
                     </div>
                     {profile.showIcon && profile.iconUrl && (
                         <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" />
