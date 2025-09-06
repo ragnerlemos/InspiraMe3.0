@@ -151,7 +151,13 @@ export function VisualizacaoEditor({
   return (
     <div
       id="editor-preview-content"
-      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden max-w-full max-h-full"
+      className={cn(
+        "relative transition-all duration-300 ease-in-out shadow-2xl rounded-lg @container overflow-hidden max-w-full max-h-full",
+        {
+          "h-[90%] md:h-[85%]": aspectRatio === "9 / 16",
+          "w-full": aspectRatio !== "9 / 16",
+        }
+      )}
       style={{
         aspectRatio: aspectRatio,
         backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : undefined,
