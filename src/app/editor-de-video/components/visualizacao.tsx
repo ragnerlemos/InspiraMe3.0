@@ -151,22 +151,22 @@ export function VisualizacaoEditor({
   return (
     <div
       id="editor-preview"
-      className="flex items-center justify-center w-full"
+      className="flex items-center justify-center w-full h-full"
     >
-      <div
-        id="editor-preview-content"
-        className={cn(
-          "relative overflow-hidden shadow-2xl @container bg-black rounded-lg w-full",
-          {
-            "aspect-square": aspectRatio === "1:1",
-            "aspect-[9/16]": aspectRatio === "9:16",
-            "aspect-[16/9]": aspectRatio === "16:9",
-          }
-        )}
-      >
-        {renderBackground()}
-        {renderContent()}
-      </div>
+        <div
+            id="editor-preview-content"
+            className={cn(
+            "relative overflow-hidden shadow-2xl @container bg-black rounded-lg max-w-full max-h-full",
+            {
+                "aspect-square": aspectRatio === "1:1",
+                "aspect-[9/16]": aspectRatio === "9:16",
+                "aspect-[16/9]": aspectRatio === "16:9",
+            }
+            )}
+        >
+            {renderBackground()}
+            {renderContent()}
+        </div>
     </div>
   );
 }
