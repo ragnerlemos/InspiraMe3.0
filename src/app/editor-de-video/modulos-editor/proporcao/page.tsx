@@ -80,7 +80,7 @@ export default function AspectWeaverPage() {
       {/* Layout para telas médias e maiores (desktop) */}
       <div className="hidden md:grid md:grid-cols-[288px_1fr] h-full">
         <aside className="border-r">
-          <div className="flex items-center gap-2 border-b p-4">
+          <div className="flex items-center gap-2 border-b p-4 h-16">
             <Wand2 className="h-6 w-6" />
             <h1 className="text-xl font-bold tracking-tight">Aspect Weaver</h1>
           </div>
@@ -112,11 +112,11 @@ export default function AspectWeaverPage() {
 
       {/* Layout para telas pequenas (mobile) */}
       <div className="md:hidden flex flex-col h-full">
-        <header className="flex items-center gap-2 border-b p-4 fixed top-0 left-0 w-full bg-background z-10">
+        <header className="flex items-center gap-2 border-b p-4 fixed top-16 left-0 w-full bg-background z-10 h-16">
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full h-full p-4 pt-20 pb-40 overflow-auto">
+        <main className="flex-1 w-full h-full p-4 pt-16 pb-20 overflow-auto">
           <div
             className="relative mx-auto my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
             style={{
@@ -139,7 +139,7 @@ export default function AspectWeaverPage() {
           </div>
         </main>
         <footer className="border-t p-2 fixed bottom-0 left-0 w-full bg-background z-10">
-           <div className="flex justify-around items-center">
+           <div className="flex justify-around items-center h-14">
              <div className="flex items-center gap-1 overflow-x-auto pr-2">
                 {aspectRatios.map((ratio) => (
                   <Button
