@@ -6,7 +6,6 @@ import { Wand2, Ratio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
 
 // Tipos de proporção e seus valores correspondentes
 const aspectRatios = [
@@ -26,7 +25,7 @@ export default function AspectWeaverPage() {
 
   // Componente da barra lateral para desktop
   const Controls = () => (
-    <div className="flex flex-col gap-6 p-4">
+    <div className="flex flex-col gap-6 p-4 overflow-y-auto">
       <div>
         <h2 className="text-lg font-semibold tracking-tight mb-3">Aspect Ratio</h2>
         <div className="grid grid-cols-2 gap-2">
@@ -76,7 +75,7 @@ export default function AspectWeaverPage() {
   );
 
   return (
-    <div className="w-screen h-screen bg-background text-foreground flex flex-col overflow-hidden">
+    <div className="h-full w-full bg-background text-foreground flex flex-col overflow-hidden">
       {/* Layout para telas médias e maiores (desktop) */}
       <div className="hidden md:grid md:grid-cols-[288px_1fr] flex-1 min-h-0">
         <aside className="border-r flex flex-col bg-card overflow-hidden">
@@ -88,7 +87,7 @@ export default function AspectWeaverPage() {
         </aside>
         <main className="w-full h-full p-4 flex items-center justify-center overflow-hidden">
           <div
-            className="relative max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+            className="relative w-full h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
             style={{
               aspectRatio: aspectRatio,
               backgroundColor: bgColor,
@@ -118,7 +117,7 @@ export default function AspectWeaverPage() {
         </header>
         <main className="flex-1 w-full p-4 flex items-center justify-center min-h-0">
           <div
-            className="relative max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+            className="relative w-full h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
             style={{
               aspectRatio: aspectRatio,
               backgroundColor: bgColor,
