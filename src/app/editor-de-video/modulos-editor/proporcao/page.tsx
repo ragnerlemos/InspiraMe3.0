@@ -86,7 +86,7 @@ export default function AspectWeaverPage() {
           <Controls />
         </aside>
         <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-          <div className="w-full h-full flex items-start justify-center">
+           <div className="w-full h-full flex items-start justify-center">
             <div
               className="relative shadow-2xl rounded-xl"
               style={{
@@ -94,8 +94,8 @@ export default function AspectWeaverPage() {
                 backgroundColor: bgColor,
                 maxWidth: "100%",
                 maxHeight: "100%",
-                height: "100%",
-                width: "auto",
+                height: "80%",   // controla pela altura do main
+                width: "auto",    // largura ajusta sozinha
               }}
             >
               <div
@@ -130,8 +130,8 @@ export default function AspectWeaverPage() {
                 backgroundColor: bgColor,
                 maxWidth: "100%",
                 maxHeight: "100%",
-                height: "100%",
-                width: "auto",
+                height: "80%",   // controla pela altura do main
+                width: "auto",    // largura ajusta sozinha
               }}
             >
               <div
