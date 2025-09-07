@@ -86,14 +86,16 @@ export default function AspectWeaverPage() {
           <Controls />
         </aside>
         <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
+          <div className="w-full h-full flex items-start justify-center">
             <div
-              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              className="relative shadow-2xl rounded-xl"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
                 maxWidth: "100%",
                 maxHeight: "100%",
+                height: "100%",
+                width: "auto",
               }}
             >
               <div
@@ -120,14 +122,16 @@ export default function AspectWeaverPage() {
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
         <main className="flex-1 w-full p-4 flex items-start justify-center overflow-hidden min-h-0">
-          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
+           <div className="w-full h-full flex items-start justify-center">
             <div
-              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              className="relative shadow-2xl rounded-xl"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
                 maxWidth: "100%",
                 maxHeight: "100%",
+                height: "100%",
+                width: "auto",
               }}
             >
               <div
