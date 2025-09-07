@@ -118,7 +118,7 @@ export default function AspectWeaverPage() {
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full p-4 overflow-auto flex items-center justify-center">
+        <main className="flex-1 w-full p-4 overflow-auto flex items-center justify-center min-h-0">
           <div
             className="relative w-full h-full max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
             style={{
