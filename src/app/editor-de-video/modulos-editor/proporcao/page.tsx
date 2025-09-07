@@ -86,29 +86,28 @@ export default function AspectWeaverPage() {
           <Controls />
         </aside>
         <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-          <div
-            className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
-            style={{
-              aspectRatio: aspectRatio,
-              backgroundColor: bgColor,
-              maxWidth: "100%",
-              maxHeight: "100%",
-              width: "100%",
-              height: "auto",
-              objectFit: "contain",
-            }}
-          >
+          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
-              style={{ color: fgColor }}
+              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              style={{
+                aspectRatio: aspectRatio,
+                backgroundColor: bgColor,
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
             >
-              <Ratio className="h-16 w-16" />
-              <p className="text-3xl font-bold font-mono tracking-tighter">
-                {aspectRatio.replace(' / ', ':')}
-              </p>
-              <p className="text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
-                Your content here
-              </p>
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
+                style={{ color: fgColor }}
+              >
+                <Ratio className="h-16 w-16" />
+                <p className="text-3xl font-bold font-mono tracking-tighter">
+                  {aspectRatio.replace(' / ', ':')}
+                </p>
+                <p className="text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
+                  Your content here
+                </p>
+              </div>
             </div>
           </div>
         </main>
@@ -121,29 +120,28 @@ export default function AspectWeaverPage() {
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
         <main className="flex-1 w-full p-4 flex items-start justify-center overflow-hidden min-h-0">
-          <div
-            className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
-            style={{
-              aspectRatio: aspectRatio,
-              backgroundColor: bgColor,
-              maxWidth: "100%",
-              maxHeight: "100%",
-              width: "100%",
-              height: "auto",
-              objectFit: "contain",
-            }}
-          >
-             <div
-              className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center"
-              style={{ color: fgColor }}
+          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
+            <div
+              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              style={{
+                aspectRatio: aspectRatio,
+                backgroundColor: bgColor,
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
             >
-              <Ratio className="h-8 w-8" />
-              <p className="text-xl font-bold font-mono tracking-tighter">
-                 {aspectRatio.replace(' / ', ':')}
-              </p>
-              <p className="text-xs text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
-                Your content here
-              </p>
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center"
+                style={{ color: fgColor }}
+              >
+                <Ratio className="h-8 w-8" />
+                <p className="text-xl font-bold font-mono tracking-tighter">
+                  {aspectRatio.replace(' / ', ':')}
+                </p>
+                <p className="text-xs text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
+                  Your content here
+                </p>
+              </div>
             </div>
           </div>
         </main>
