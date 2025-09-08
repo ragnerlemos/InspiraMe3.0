@@ -1,147 +1,199 @@
 
 "use client";
 
-import { useState } from 'react';
-import { Wand2, Ratio } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { useState } from "react";
+import { Ratio, Wand2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
-// Tipos de proporção e seus valores correspondentes
 const aspectRatios = [
-  { label: '16:9', value: '16 / 9' },
-  { label: '1:1', value: '1 / 1' },
-  { label: '4:3', value: '4 / 3' },
-  { label: '3:2', value: '3 / 2' },
-  { label: '9:16', value: '9 / 16' },
-  { label: '21:9', value: '21 / 9' },
+  { label: "16:9", value: "16 / 9" },
+  { label: "1:1", value: "1 / 1" },
+  { label: "4:3", value: "4 / 3" },
+  { label: "3:2", value: "3 / 2" },
+  { label: "9:16", value: "9 / 16" },
+  { label: "21:9", value: "21 / 9" },
 ];
 
-export default function AspectWeaverPage() {
-  // Estados para controlar a proporção e as cores
-  const [aspectRatio, setAspectRatio] = useState('16 / 9');
-  const [bgColor, setBgColor] = useState('#333333');
-  const [fgColor, setFgColor] = useState('#ffffff');
-
-  // Componente da barra lateral para desktop
-  const Controls = () => (
-    <aside className="border-r flex flex-col bg-card overflow-y-auto">
-      <div className="flex items-center gap-2 border-b p-4 h-16 flex-shrink-0">
-        <Wand2 className="h-6 w-6" />
-        <h1 className="text-xl font-bold tracking-tight">Aspect Weaver</h1>
-      </div>
-      <div className="flex flex-col gap-6 p-4">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight mb-3">Aspect Ratio</h2>
-          <div className="grid grid-cols-2 gap-2">
-            {aspectRatios.map((ratio) => (
-              <Button
-                key={ratio.value}
-                onClick={() => setAspectRatio(ratio.value)}
-                variant={aspectRatio === ratio.value ? 'default' : 'outline'}
-                className="transition-all"
-              >
-                {ratio.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-        <Separator />
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight mb-3">Colors</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="bg-color">Background</Label>
-              <div className="relative">
-                <input
-                  id="bg-color"
-                  type="color"
-                  value={bgColor}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
-                />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="fg-color">Foreground</Label>
-              <div className="relative">
-                <input
-                  id="fg-color"
-                  type="color"
-                  value={fgColor}
-                  onChange={(e) => setFgColor(e.target.value)}
-                  className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
-  
-  const CanvasPreview = () => (
-     <div
-      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl mx-auto my-auto w-full h-full max-w-full max-h-full"
-      style={{
-        aspectRatio: aspectRatio,
-        backgroundColor: bgColor,
-      }}
-    >
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4 text-center"
-        style={{ color: fgColor }}
-      >
-        <Ratio className="h-16 w-16" />
-        <p className="text-3xl font-bold font-mono tracking-tighter">
-          {aspectRatio.replace(' / ', ':')}
-        </p>
-        <p style={{ color: fgColor, opacity: 0.7 }}>
-          Your content here
-        </p>
-      </div>
-    </div>
-  );
+export default function AspectWeaver() {
+  const [aspectRatio, setAspectRatio] = useState("16 / 9");
+  const [bgColor, setBgColor] = useState("#333333");
+  const [fgColor, setFgColor] = useState("#ffffff");
 
   return (
-    <div className="h-dvh w-screen bg-background text-foreground overflow-hidden">
-      {/* Layout para telas médias e maiores (desktop) */}
-      <div className="hidden md:grid md:grid-cols-[288px_1fr] h-full">
-        <Controls />
-        <main className="grid w-full h-full p-6 overflow-hidden place-items-center">
-            <CanvasPreview />
-        </main>
-      </div>
+    <div className="flex h-dvh w-full bg-background font-body text-foreground">
+      <div className="flex flex-1 md:grid md:grid-cols-[288px_1fr] md:divide-x overflow-hidden">
+        <aside className="hidden shrink-0 bg-card p-6 md:flex md:flex-col md:border-r">
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+              <Wand2 className="h-8 w-8 text-primary" />
+              <h1 className="text-2xl font-bold font-headline">Aspect Weaver</h1>
+            </div>
 
-      {/* Layout para telas pequenas (mobile) */}
-      <div className="md:hidden flex flex-col h-dvh">
-        <header className="flex items-center gap-2 border-b p-4 flex-shrink-0 bg-background z-10 h-16">
-          <Wand2 className="h-5 w-5" />
-          <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
-        </header>
-        <main className="grid flex-1 w-full p-4 overflow-hidden min-h-0 place-items-center">
-            <CanvasPreview />
-        </main>
-        <footer className="border-t p-2 flex-shrink-0 bg-background z-10">
-           <div className="flex justify-around items-center h-14">
-             <div className="flex items-center gap-1 overflow-x-auto pr-2">
+            <div className="space-y-4">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Aspect Ratio
+              </h2>
+              <div className="grid grid-cols-2 gap-2">
                 {aspectRatios.map((ratio) => (
                   <Button
                     key={ratio.value}
                     onClick={() => setAspectRatio(ratio.value)}
-                    variant={aspectRatio === ratio.value ? 'default' : 'outline'}
-                    size="sm"
+                    variant={
+                      aspectRatio === ratio.value ? "default" : "outline"
+                    }
+                    className="shrink-0"
                   >
                     {ratio.label}
                   </Button>
                 ))}
-             </div>
-             <div className="flex items-center gap-2 pl-2 border-l">
-                <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-8 h-8 cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0" />
-                <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-8 h-8 cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0" />
-             </div>
-           </div>
-        </footer>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Colors
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="bg-color">Background</Label>
+                  <div className="relative h-10 w-full overflow-hidden rounded-md border">
+                    <div
+                      className="h-full w-full"
+                      style={{ backgroundColor: bgColor }}
+                    />
+                    <input
+                      id="bg-color"
+                      type="color"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                      aria-label="Background color picker"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fg-color">Foreground</Label>
+                  <div className="relative h-10 w-full overflow-hidden rounded-md border">
+                    <div
+                      className="h-full w-full"
+                      style={{ backgroundColor: fgColor }}
+                    />
+                    <input
+                      id="fg-color"
+                      type="color"
+                      value={fgColor}
+                      onChange={(e) => setFgColor(e.target.value)}
+                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                      aria-label="Foreground color picker"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <main className="flex flex-1 flex-col overflow-hidden">
+          <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
+            <Wand2 className="h-6 w-6 text-primary" />
+            <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
+          </header>
+          {/* Main visualization area */}
+          <div className="w-full h-full p-4 md:p-8 overflow-auto">
+            {/* Canvas for aspect ratio preview */}
+            <div
+              className="relative mx-auto my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              style={{
+                aspectRatio: aspectRatio,
+                backgroundColor: bgColor,
+              }}
+            >
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center space-y-2 p-4">
+                  <Ratio
+                    className="mx-auto h-12 w-12 opacity-50"
+                    style={{ color: fgColor }}
+                  />
+                  <p
+                    className="font-semibold text-xl font-mono"
+                    style={{ color: fgColor }}
+                  >
+                    {aspectRatio.replace(/\s\/\s/g, ":")}
+                  </p>
+                  <p className="text-sm opacity-75" style={{ color: fgColor }}>
+                    Your content here
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="shrink-0 border-t bg-card p-4 md:hidden">
+            <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
+              <div className="space-y-4">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Aspect Ratio
+                </h2>
+                <div className="flex space-x-2 overflow-x-auto pb-2">
+                  {aspectRatios.map((ratio) => (
+                    <Button
+                      key={ratio.value}
+                      onClick={() => setAspectRatio(ratio.value)}
+                      variant={
+                        aspectRatio === ratio.value ? "default" : "outline"
+                      }
+                      className="shrink-0"
+                    >
+                      {ratio.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Colors
+                </h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="bg-color-mobile">Background</Label>
+                    <div className="relative h-10 w-full overflow-hidden rounded-md border">
+                      <div
+                        className="h-full w-full"
+                        style={{ backgroundColor: bgColor }}
+                      />
+                      <input
+                        id="bg-color-mobile"
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        aria-label="Background color picker"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fg-color-mobile">Foreground</Label>
+                    <div className="relative h-10 w-full overflow-hidden rounded-md border">
+                      <div
+                        className="h-full w-full"
+                        style={{ backgroundColor: fgColor }}
+                      />
+                      <input
+                        id="fg-color-mobile"
+                        type="color"
+                        value={fgColor}
+                        onChange={(e) => setFgColor(e.target.value)}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        aria-label="Foreground color picker"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
