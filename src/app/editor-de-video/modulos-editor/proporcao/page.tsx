@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -137,13 +136,15 @@ export default function AspectWeaver() {
             {/* Canvas for aspect ratio preview */}
             <div
               className={cn(
-                "transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full max-h-full"
+                "transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
               )}
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
                 transform: `scale(${scale})`, // aplica escala
                 transformOrigin: "top center", // 👈 fixa no topo
+                width: "min(90%, 800px)",
+                height: "auto",
               }}
             >
               <div className="flex items-center justify-center h-full p-4">
