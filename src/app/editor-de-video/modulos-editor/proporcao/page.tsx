@@ -25,61 +25,68 @@ export default function AspectWeaverPage() {
 
   // Componente da barra lateral para desktop
   const Controls = () => (
-    <div className="flex flex-col gap-6 p-4 overflow-auto">
-      <div>
-        <h2 className="text-lg font.semibold tracking-tight mb-3">Aspect Ratio</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {aspectRatios.map((ratio) => (
-            <Button
-              key={ratio.value}
-              onClick={() => setAspectRatio(ratio.value)}
-              variant={aspectRatio === ratio.value ? 'default' : 'outline'}
-              className="transition-all"
-            >
-              {ratio.label}
-            </Button>
-          ))}
-        </div>
+    <aside className="border-r flex flex-col bg-card overflow-y-auto">
+      <div className="flex items-center gap-2 border-b p-4 h-16 flex-shrink-0">
+        <Wand2 className="h-6 w-6" />
+        <h1 className="text-xl font-bold tracking-tight">Aspect Weaver</h1>
       </div>
-      <Separator />
-      <div>
-        <h2 className="text-lg font.semibold tracking-tight mb-3">Colors</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <Label htmlFor="bg-color">Background</Label>
-            <div className="relative">
-              <input
-                id="bg-color"
-                type="color"
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
-              />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="fg-color">Foreground</Label>
-            <div className="relative">
-              <input
-                id="fg-color"
-                type="color"
-                value={fgColor}
-                onChange={(e) => setFgColor(e.target.value)}
-                className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
-              />
-            </div>
+      <div className="flex flex-col gap-6 p-4">
+        <div>
+          <h2 className="text-lg font.semibold tracking-tight mb-3">Aspect Ratio</h2>
+          <div className="grid grid-cols-2 gap-2">
+            {aspectRatios.map((ratio) => (
+              <Button
+                key={ratio.value}
+                onClick={() => setAspectRatio(ratio.value)}
+                variant={aspectRatio === ratio.value ? 'default' : 'outline'}
+                className="transition-all"
+              >
+                {ratio.label}
+              </Button>
+            ))}
           </div>
         </div>
+        <Separator />
+        <div>
+          <h2 className="text-lg font.semibold tracking-tight mb-3">Colors</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="bg-color">Background</Label>
+              <div className="relative">
+                <input
+                  id="bg-color"
+                  type="color"
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="fg-color">Foreground</Label>
+              <div className="relative">
+                <input
+                  id="fg-color"
+                  type="color"
+                  value={fgColor}
+                  onChange={(e) => setFgColor(e.target.value)}
+                  className="h-9 w-full cursor-pointer appearance-none rounded-md border border-input bg-transparent p-0"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </aside>
   );
   
   const CanvasPreview = () => (
      <div
-      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl mx-auto max-w-full max-h-full"
+      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full h-full max-w-full max-h-full"
       style={{
         aspectRatio: aspectRatio,
         backgroundColor: bgColor,
+        margin: 'auto' // Garante centralização dentro do grid cell
       }}
     >
       <div
@@ -98,33 +105,23 @@ export default function AspectWeaverPage() {
   );
 
   return (
-    <div className="h-screen w-screen bg-background text-foreground flex flex-col">
+    <div className="h-screen w-screen bg-background text-foreground">
       {/* Layout para telas médias e maiores (desktop) */}
-      <div className="hidden md:grid md:grid-cols-[288px_1fr] flex-1 overflow-hidden">
-        <aside className="border-r flex flex-col bg-card">
-          <div className="flex items-center gap-2 border-b p-4 h-16 flex-shrink-0">
-            <Wand2 className="h-6 w-6" />
-            <h1 className="text-xl font-bold tracking-tight">Aspect Weaver</h1>
-          </div>
-          <Controls />
-        </aside>
-        <main className="w-full h-full overflow-hidden p-6 flex justify-center items-start">
-          <div className="w-full h-full max-w-4xl mx-auto">
+      <div className="hidden md:grid md:grid-cols-[288px_1fr] h-full overflow-hidden">
+        <Controls />
+        <main className="w-full h-full overflow-hidden p-6 flex justify-center items-center">
             <CanvasPreview />
-          </div>
         </main>
       </div>
 
       {/* Layout para telas pequenas (mobile) */}
-      <div className="md:hidden flex flex-col flex-1 h-full overflow-hidden">
+      <div className="md:hidden flex flex-col h-full overflow-hidden">
         <header className="flex items-center gap-2 border-b p-4 flex-shrink-0 bg-background z-10 h-16">
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full overflow-hidden p-6 min-h-0 flex justify-center items-start">
-           <div className="w-full h-full">
+        <main className="flex-1 w-full overflow-hidden p-6 min-h-0 flex justify-center items-center">
             <CanvasPreview />
-          </div>
         </main>
         <footer className="border-t p-2 flex-shrink-0 bg-background z-10">
            <div className="flex justify-around items-center h-14">
