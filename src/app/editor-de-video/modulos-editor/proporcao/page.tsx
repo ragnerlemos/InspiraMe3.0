@@ -22,8 +22,8 @@ export default function AspectWeaver() {
   const [fgColor, setFgColor] = useState("#ffffff");
 
   return (
-    <div className="flex w-full bg-background font-body text-foreground h-full">
-      <div className="flex flex-1 md:grid md:grid-cols-[288px_1fr] md:divide-x overflow-hidden">
+    <div className="flex flex-col w-full bg-background font-body text-foreground h-full overflow-hidden">
+      <div className="flex flex-1 md:grid md:grid-cols-[288px_1fr] md:divide-x min-h-0">
         <aside className="hidden shrink-0 bg-card p-6 md:flex md:flex-col md:border-r">
           <div className="space-y-8">
             <div className="flex items-center gap-3">
@@ -95,24 +95,23 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="flex flex-1 flex-col overflow-hidden bg-muted/50">
+        <main className="flex flex-col flex-1 overflow-hidden bg-muted/50 md:grid md:grid-rows-[auto_1fr]">
           <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
             <Wand2 className="h-6 w-6 text-primary" />
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="flex-1 flex flex-col px-4 py-2 overflow-hidden">
-            <div className="flex-grow"></div> {/* Espaçador superior */}
+          <div className="flex-1 p-4 grid place-items-center overflow-hidden">
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative w-full max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl p-[10px]"
+              className="relative w-full h-full max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
               }}
             >
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center space-y-2 p-4">
+              <div className="flex items-center justify-center h-full p-4">
+                <div className="text-center space-y-2">
                   <Ratio
                     className="mx-auto h-12 w-12 opacity-50"
                     style={{ color: fgColor }}
@@ -129,7 +128,6 @@ export default function AspectWeaver() {
                 </div>
               </div>
             </div>
-             <div className="flex-grow-[4]"></div> {/* Espaçador inferior (maior) */}
           </div>
           <div className="shrink-0 border-t bg-card p-4 md:hidden">
             <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
@@ -201,5 +199,3 @@ export default function AspectWeaver() {
     </div>
   );
 }
-
-    
