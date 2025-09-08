@@ -101,7 +101,7 @@ export default function AspectWeaver() {
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="w-full h-full overflow-hidden flex justify-center items-start p-[5px]">
+          <div className="w-full h-full overflow-hidden flex justify-center items-start">
             {/* Canvas for aspect ratio preview */}
             <div
               className={cn(
