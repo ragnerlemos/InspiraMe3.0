@@ -105,7 +105,7 @@ export default function AspectWeaver() {
             {/* Canvas for aspect ratio preview */}
             <div
               className={cn(
-                "transition-all duration-300 ease-in-out shadow-2xl rounded-xl absolute top-[10px] left-[10px] right-[10px] mx-auto max-w-full max-h-[calc(100%-30px)]"
+                "transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full absolute top-[10px] left-[10px] right-[10px] mx-auto max-h-[calc(95%)]"
               )}
               style={{
                 aspectRatio: aspectRatio,
