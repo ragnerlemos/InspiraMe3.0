@@ -22,7 +22,7 @@ export default function AspectWeaver() {
   const [fgColor, setFgColor] = useState("#ffffff");
 
   const canvasWidth = useMemo(() => {
-    return "70%";
+    return "50%";
   }, []);
 
   return (
@@ -108,7 +108,7 @@ export default function AspectWeaver() {
           <div className="overflow-hidden grid justify-items-center items-start pt-[5px] px-2">
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full max-h-full"
+              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-h-full"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
