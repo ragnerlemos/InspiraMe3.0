@@ -21,10 +21,6 @@ export default function AspectWeaver() {
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
 
-  const canvasWidth = useMemo(() => {
-    return "45%";
-  }, []);
-
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-screen overflow-hidden">
       <div className="flex flex-1 md:grid md:grid-cols-[288px_1fr] md:divide-x min-h-0">
@@ -99,20 +95,19 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="flex-1 bg-muted/50 grid grid-rows-[auto_1fr_auto] md:grid-rows-1 min-h-0">
+        <main className="grid flex-1 grid-rows-[auto_1fr] bg-muted/50 md:grid-rows-1 min-h-0">
           <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
             <Wand2 className="h-6 w-6 text-primary" />
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="overflow-hidden grid justify-items-center items-start pt-[5px] px-2">
+          <div className="overflow-hidden grid place-items-center p-4">
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-h-full"
+              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full max-w-full max-h-full"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
-                width: canvasWidth,
               }}
             >
               <div className="flex items-center justify-center h-full p-4">
