@@ -131,6 +131,7 @@ export default function AspectWeaver() {
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
                 transform: `scale(${scale})`, // aplica escala
+                transformOrigin: "top center", // 👈 fixa no topo
               }}
             >
               <div className="flex items-center justify-center h-full p-4">
