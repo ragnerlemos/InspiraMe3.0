@@ -16,7 +16,7 @@ const aspectRatios = [
 ];
 
 export default function AspectWeaver() {
-  const [aspectRatio, setAspectRatio] = useState("16 / 9");
+  const [aspectRatio, setAspectRatio] = useState("9 / 16");
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
 
@@ -32,7 +32,7 @@ export default function AspectWeaver() {
 
             <div className="space-y-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Aspect Ratio
+                PROPORÇÃO DA TELA
               </h2>
               <div className="grid grid-cols-2 gap-2">
                 {aspectRatios.map((ratio) => (
@@ -52,11 +52,11 @@ export default function AspectWeaver() {
 
             <div className="space-y-4">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Colors
+                CORES
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="bg-color">Background</Label>
+                  <Label htmlFor="bg-color">Fundo</Label>
                   <div className="relative h-10 w-full overflow-hidden rounded-md border">
                     <div
                       className="h-full w-full"
@@ -68,12 +68,12 @@ export default function AspectWeaver() {
                       value={bgColor}
                       onChange={(e) => setBgColor(e.target.value)}
                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                      aria-label="Background color picker"
+                      aria-label="Seletor de cor do fundo"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fg-color">Foreground</Label>
+                  <Label htmlFor="fg-color">Primeiro Plano</Label>
                   <div className="relative h-10 w-full overflow-hidden rounded-md border">
                     <div
                       className="h-full w-full"
@@ -85,7 +85,7 @@ export default function AspectWeaver() {
                       value={fgColor}
                       onChange={(e) => setFgColor(e.target.value)}
                       className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                      aria-label="Foreground color picker"
+                      aria-label="Seletor de cor do primeiro plano"
                     />
                   </div>
                 </div>
@@ -94,16 +94,16 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="flex flex-1 flex-col overflow-hidden">
+        <main className="flex flex-1 flex-col overflow-hidden bg-muted/50">
           <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
             <Wand2 className="h-6 w-6 text-primary" />
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="w-full h-full p-4 md:p-8 overflow-auto">
+          <div className="w-full h-full p-4 md:p-8 grid place-items-center overflow-auto">
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative mx-auto my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              className="relative my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
@@ -122,7 +122,7 @@ export default function AspectWeaver() {
                     {aspectRatio.replace(/\s\/\s/g, ":")}
                   </p>
                   <p className="text-sm opacity-75" style={{ color: fgColor }}>
-                    Your content here
+                    Seu conteúdo aqui
                   </p>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function AspectWeaver() {
             <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
               <div className="space-y-4">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Aspect Ratio
+                  PROPORÇÃO DA TELA
                 </h2>
                 <div className="flex space-x-2 overflow-x-auto pb-2">
                   {aspectRatios.map((ratio) => (
@@ -152,11 +152,11 @@ export default function AspectWeaver() {
 
               <div className="space-y-4">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Colors
+                  CORES
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="bg-color-mobile">Background</Label>
+                    <Label htmlFor="bg-color-mobile">Fundo</Label>
                     <div className="relative h-10 w-full overflow-hidden rounded-md border">
                       <div
                         className="h-full w-full"
@@ -168,12 +168,12 @@ export default function AspectWeaver() {
                         value={bgColor}
                         onChange={(e) => setBgColor(e.target.value)}
                         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                        aria-label="Background color picker"
+                        aria-label="Seletor de cor do fundo"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="fg-color-mobile">Foreground</Label>
+                    <Label htmlFor="fg-color-mobile">Primeiro Plano</Label>
                     <div className="relative h-10 w-full overflow-hidden rounded-md border">
                       <div
                         className="h-full w-full"
@@ -185,7 +185,7 @@ export default function AspectWeaver() {
                         value={fgColor}
                         onChange={(e) => setFgColor(e.target.value)}
                         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                        aria-label="Foreground color picker"
+                        aria-label="Seletor de cor do primeiro plano"
                       />
                     </div>
                   </div>
