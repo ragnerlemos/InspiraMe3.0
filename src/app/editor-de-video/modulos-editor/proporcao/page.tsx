@@ -22,7 +22,7 @@ export default function AspectWeaver() {
   const [fgColor, setFgColor] = useState("#ffffff");
 
   return (
-    <div className="flex h-dvh w-full bg-background font-body text-foreground">
+    <div className="flex w-full bg-background font-body text-foreground h-full">
       <div className="flex flex-1 md:grid md:grid-cols-[288px_1fr] md:divide-x overflow-hidden">
         <aside className="hidden shrink-0 bg-card p-6 md:flex md:flex-col md:border-r">
           <div className="space-y-8">
@@ -201,3 +201,5 @@ export default function AspectWeaver() {
     </div>
   );
 }
+
+    
