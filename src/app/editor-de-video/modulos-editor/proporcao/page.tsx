@@ -76,7 +76,7 @@ export default function AspectWeaverPage() {
   
   const CanvasPreview = () => (
      <div
-      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full mx-auto"
+      className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl mx-auto max-w-full max-h-full"
       style={{
         aspectRatio: aspectRatio,
         backgroundColor: bgColor,
@@ -108,10 +108,8 @@ export default function AspectWeaverPage() {
           </div>
           <Controls />
         </aside>
-        <main className="w-full h-full p-4 flex justify-center items-start overflow-auto">
-          <div className="w-full max-w-4xl mx-auto">
-            <CanvasPreview />
-          </div>
+        <main className="w-full h-full p-6 flex justify-center items-center overflow-hidden">
+          <CanvasPreview />
         </main>
       </div>
 
@@ -121,10 +119,8 @@ export default function AspectWeaverPage() {
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full p-4 flex justify-center items-start overflow-auto min-h-0">
-           <div className="w-full max-w-lg mx-auto">
-            <CanvasPreview />
-          </div>
+        <main className="flex-1 w-full p-4 flex justify-center items-center overflow-hidden min-h-0">
+          <CanvasPreview />
         </main>
         <footer className="border-t p-2 flex-shrink-0 bg-background z-10">
            <div className="flex justify-around items-center h-14">
