@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -100,7 +99,7 @@ export default function AspectWeaver() {
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="w-full h-full p-4 md:p-8 grid place-items-center overflow-auto">
+          <div className="w-full h-full p-4 md:p-8 grid place-items-center overflow-hidden">
             {/* Canvas for aspect ratio preview */}
             <div
               className="relative my-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
