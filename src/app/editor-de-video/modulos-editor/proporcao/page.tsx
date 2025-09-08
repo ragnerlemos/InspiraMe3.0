@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Ratio, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -101,11 +101,11 @@ export default function AspectWeaver() {
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="relative w-full h-full overflow-hidden p-[10px]">
+          <div className="relative w-full h-full overflow-hidden">
             {/* Canvas for aspect ratio preview */}
             <div
               className={cn(
-                "absolute top-0 left-0 right-0 bottom-0 m-auto max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+                "absolute top-[10px] left-[10px] right-[10px] mx-auto max-w-full max-h-[calc(100%-20px)] transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
               )}
               style={{
                 aspectRatio: aspectRatio,
