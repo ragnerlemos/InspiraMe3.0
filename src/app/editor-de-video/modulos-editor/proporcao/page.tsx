@@ -101,10 +101,11 @@ export default function AspectWeaver() {
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="w-full h-full p-4 grid place-items-center overflow-hidden">
+          <div className="flex-1 flex flex-col px-4 py-2 overflow-hidden">
+            <div className="flex-grow"></div> {/* Espaçador superior */}
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl p-[10px]"
+              className="relative w-full max-w-full max-h-full transition-all duration-300 ease-in-out shadow-2xl rounded-xl p-[10px]"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
@@ -128,6 +129,7 @@ export default function AspectWeaver() {
                 </div>
               </div>
             </div>
+             <div className="flex-grow-[4]"></div> {/* Espaçador inferior (maior) */}
           </div>
           <div className="shrink-0 border-t bg-card p-4 md:hidden">
             <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
