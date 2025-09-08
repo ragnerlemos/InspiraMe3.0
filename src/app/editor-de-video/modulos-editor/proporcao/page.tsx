@@ -77,7 +77,7 @@ export default function AspectWeaver() {
                 value={[scale]}
                 onValueChange={(values) => setScale(values[0])}
                 min={0.5}
-                max={1.5}
+                max={2}
                 step={0.01}
               />
             </div>
@@ -211,7 +211,7 @@ export default function AspectWeaver() {
                   value={[scale]}
                   onValueChange={(values) => setScale(values[0])}
                   min={0.5}
-                  max={1.5}
+                  max={2}
                   step={0.01}
                 />
               </div>
