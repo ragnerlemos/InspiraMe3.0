@@ -22,7 +22,7 @@ export default function AspectWeaver() {
   const [fgColor, setFgColor] = useState("#ffffff");
 
   const canvasWidth = useMemo(() => {
-    return "50%";
+    return "45%";
   }, []);
 
   return (
