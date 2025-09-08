@@ -109,7 +109,7 @@ export default function AspectWeaverPage() {
           <Controls />
         </aside>
         <main className="w-full h-full overflow-hidden p-6 flex justify-center items-start">
-          <div className="w-full h-full">
+          <div className="w-full h-full max-w-4xl mx-auto">
             <CanvasPreview />
           </div>
         </main>
@@ -121,8 +121,8 @@ export default function AspectWeaverPage() {
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full overflow-hidden p-6 min-h-0">
-          <div className="w-full h-full">
+        <main className="flex-1 w-full overflow-hidden p-6 min-h-0 flex justify-center items-start">
+           <div className="w-full h-full">
             <CanvasPreview />
           </div>
         </main>
