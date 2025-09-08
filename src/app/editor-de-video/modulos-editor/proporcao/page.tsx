@@ -127,47 +127,33 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="grid flex-1 grid-rows-[auto_1fr] bg-muted/50 min-h-0">
-          <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
-            <Wand2 className="h-6 w-6 text-primary" />
-            <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
-          </header>
-          {/* Main visualization area */}
-          <div className="flex justify-center items-start p-[10px]">
-            {/* Canvas for aspect ratio preview */}
+        <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
+          <div className="flex items-start justify-center w-full h-full">
             <div
-              className={cn(
-                "transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
-              )}
+              className="relative shadow-2xl rounded-xl max-w-full max-h-full"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
-                transform: `scale(${scale})`,
-                transformOrigin: "top center",
-                width: "clamp(200px, 50vw, 500px)",
-                height: "auto",
               }}
             >
-              <div className="flex items-center justify-center h-full p-4">
-                <div className="text-center space-y-2">
-                  <Ratio
-                    className="mx-auto h-12 w-12 opacity-50"
-                    style={{ color: fgColor }}
-                  />
-                  <p
-                    className="font-semibold text-xl font-mono"
-                    style={{ color: fgColor }}
-                  >
-                    {aspectRatio.replace(/\s\/\s/g, ":")}
-                  </p>
-                  <p className="text-sm opacity-75" style={{ color: fgColor }}>
-                    Seu conteúdo aqui
-                  </p>
-                </div>
+              {/* Conteúdo do canvas */}
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
+                style={{ color: fgColor }}
+              >
+                <Ratio className="h-16 w-16" />
+                <p className="text-3xl font-bold font-mono tracking-tighter">
+                  {aspectRatio.replace(' / ', ':')}
+                </p>
+                <p className="text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
+                  Your content here
+                </p>
               </div>
             </div>
           </div>
-          <div className="shrink-0 border-t bg-card p-4 md:hidden">
+        </main>
+
+        <div className="shrink-0 border-t bg-card p-4 md:hidden">
             <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
               <div className="space-y-4">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -261,7 +247,6 @@ export default function AspectWeaver() {
               </div>
             </div>
           </div>
-        </main>
       </div>
     </div>
   );
