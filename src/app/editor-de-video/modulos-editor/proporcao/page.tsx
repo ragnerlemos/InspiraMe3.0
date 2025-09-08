@@ -85,7 +85,7 @@ export default function AspectWeaverPage() {
           </div>
           <Controls />
         </aside>
-        <main className="w-full h-full px-4 pt-4 pb-8 flex items-start justify-center overflow-hidden">
+        <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
           <div className="w-full h-full flex items-start justify-center">
             <div
               className="relative shadow-2xl rounded-xl"
@@ -121,7 +121,7 @@ export default function AspectWeaverPage() {
           <Wand2 className="h-5 w-5" />
           <h1 className="text-lg font-bold tracking-tight">Aspect Weaver</h1>
         </header>
-        <main className="flex-1 w-full px-4 pt-4 pb-8 flex items-start justify-center overflow-hidden min-h-0">
+        <main className="flex-1 w-full p-4 pb-8 flex items-start justify-center overflow-hidden min-h-0">
           <div className="w-full h-full flex items-start justify-center">
             <div
               className="relative shadow-2xl rounded-xl"
@@ -164,8 +164,12 @@ export default function AspectWeaverPage() {
                 ))}
              </div>
              <div className="flex items-center gap-2 pl-2 border-l">
-                <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="h-8 w-8 cursor-pointer appearance-none rounded-md border-none bg-transparent p-0" />
-                <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="h-8 w-8 cursor-pointer appearance-none rounded-md border-none bg-transparent p-0" />
+                <div className="relative h-8 w-8 rounded-md border border-input" style={{ backgroundColor: bgColor }}>
+                    <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="absolute inset-0 w-full h-full cursor-pointer opacity-0" />
+                </div>
+                 <div className="relative h-8 w-8 rounded-md border border-input" style={{ backgroundColor: fgColor }}>
+                    <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="absolute inset-0 w-full h-full cursor-pointer opacity-0" />
+                </div>
              </div>
            </div>
         </footer>
