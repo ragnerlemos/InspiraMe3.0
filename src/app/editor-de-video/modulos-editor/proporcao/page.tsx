@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Ratio, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 const aspectRatios = [
   { label: "16:9", value: "16 / 9" },
@@ -198,3 +199,5 @@ export default function AspectWeaver() {
     </div>
   );
 }
+
+    
