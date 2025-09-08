@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Ratio, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,22 @@ export default function AspectWeaver() {
   const [aspectRatio, setAspectRatio] = useState("9 / 16");
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
+
+  const canvasWidth = useMemo(() => {
+    switch (aspectRatio) {
+      case "9 / 16":
+        return "40%";
+      case "1 / 1":
+        return "65%";
+      case "16 / 9":
+      case "21 / 9":
+      case "4 / 3":
+      case "3 / 2":
+        return "80%";
+      default:
+        return "70%";
+    }
+  }, [aspectRatio]);
 
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-screen overflow-hidden">
@@ -95,7 +111,7 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="flex-1 bg-muted/50 grid grid-rows-[auto_1fr] md:grid-rows-1 min-h-0">
+        <main className="flex-1 bg-muted/50 grid grid-rows-[auto_1fr_auto] md:grid-rows-1 min-h-0">
           <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
             <Wand2 className="h-6 w-6 text-primary" />
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
@@ -104,11 +120,11 @@ export default function AspectWeaver() {
           <div className="overflow-hidden grid place-items-center p-2">
             {/* Canvas for aspect ratio preview */}
             <div
-              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"
+              className="relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full max-h-full"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
-                width: "70%",
+                width: canvasWidth,
               }}
             >
               <div className="flex items-center justify-center h-full p-4">
