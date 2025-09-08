@@ -115,13 +115,13 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="grid flex-1 grid-rows-[auto_1fr] bg-muted/50 min-h-0 md:grid-rows-1">
+        <main className="grid flex-1 grid-rows-[auto_1fr] bg-muted/50 min-h-0">
           <header className="sticky top-0 z-10 flex items-center border-b bg-background/80 p-4 backdrop-blur-sm md:hidden">
             <Wand2 className="h-6 w-6 text-primary" />
             <h1 className="ml-2 text-xl font-bold font-headline">Aspect Weaver</h1>
           </header>
           {/* Main visualization area */}
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-start p-[10px]">
             {/* Canvas for aspect ratio preview */}
             <div
               className={cn(
