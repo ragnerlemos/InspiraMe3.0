@@ -128,15 +128,20 @@ export default function AspectWeaver() {
         </aside>
 
         <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-          <div className="flex items-start justify-center w-full h-full">
+          {/* Wrapper que limita o espaço disponível */}
+          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
+            {/* Canvas com proporção */}
             <div
-              className="relative shadow-2xl rounded-xl max-w-full max-h-full"
+              className="relative shadow-2xl rounded-xl"
               style={{
                 aspectRatio: aspectRatio,
                 backgroundColor: bgColor,
+                width: "100%",   // ocupa toda a largura disponível
+                height: "auto",  // ajusta a altura proporcionalmente
+                maxHeight: "100%" // nunca ultrapassa a altura do wrapper
               }}
             >
-              {/* Conteúdo do canvas */}
+              {/* Conteúdo interno */}
               <div
                 className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
                 style={{ color: fgColor }}
