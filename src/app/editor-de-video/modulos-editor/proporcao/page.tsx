@@ -135,7 +135,7 @@ export default function AspectWeaver() {
               style={{
                   aspectRatio: aspectRatio,
                   backgroundColor: bgColor,
-                  height: "85vh",
+                  height: "80vh",
                   width: "auto",
                   maxWidth: "100%",
                   maxHeight: "100%",
