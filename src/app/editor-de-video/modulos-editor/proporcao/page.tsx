@@ -1,4 +1,3 @@
-
 // src/app/editor-de-video/modulos-editor/proporcao/page.tsx
 "use client";
 
