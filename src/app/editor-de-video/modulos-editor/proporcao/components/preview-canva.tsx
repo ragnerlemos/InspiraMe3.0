@@ -13,7 +13,7 @@ interface PreviewCanvaProps {
 
 export function PreviewCanva({ aspectRatio, bgColor, fgColor, scale }: PreviewCanvaProps) {
   return (
-    <main className="w-full flex-1 p-4 flex items-start justify-center overflow-hidden">
+    <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
       <div
         className={cn(
             "relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl"

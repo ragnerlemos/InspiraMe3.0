@@ -1,3 +1,4 @@
+
 // src/app/editor-de-video/modulos-editor/proporcao/components/mobile-toolbar.tsx
 "use client";
 
@@ -36,57 +37,46 @@ export function MobileToolbar({
     setFgColor,
 }: MobileToolbarProps) {
     return (
-        <div className="shrink-0 border-t bg-card p-4 md:hidden">
-            <div className="mx-auto max-w-sm space-y-8 md:max-w-none">
-                <div className="space-y-4">
-                    <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                        PROPORÇÃO DA TELA
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-card p-2 md:hidden z-50">
+            <div className="mx-auto max-w-sm space-y-4 overflow-y-auto max-h-[40vh]">
+                {/* Proporção */}
+                <div className="space-y-2">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Proporção
+                </h2>
+                <div className="flex space-x-2 overflow-x-auto pb-1">
+                    {aspectRatios.map((ratio) => (
+                    <Button
+                        key={ratio.value}
+                        onClick={() => setAspectRatio(ratio.value)}
+                        variant={aspectRatio === ratio.value ? "default" : "outline"}
+                        className="shrink-0"
+                        size="sm"
+                    >
+                        {ratio.label}
+                    </Button>
+                    ))}
+                </div>
+                </div>
+
+                {/* Escala */}
+                <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Escala
                     </h2>
-                    <div className="flex space-x-2 overflow-x-auto pb-2">
-                        {aspectRatios.map((ratio) => (
-                            <Button
-                                key={ratio.value}
-                                onClick={() => setAspectRatio(ratio.value)}
-                                variant={
-                                    aspectRatio === ratio.value ? "default" : "outline"
-                                }
-                                className="shrink-0"
-                            >
-                                {ratio.label}
-                            </Button>
-                        ))}
-                    </div>
+                    <span className="text-xs font-mono text-muted-foreground">{Math.round(scale * 100)}%</span>
+                </div>
+                <Slider
+                    value={[scale]}
+                    onValueChange={(values) => setScale(values[0])}
+                    min={0.5}
+                    max={2}
+                    step={0.01}
+                />
                 </div>
 
-                {/* Escala (MOBILE) */}
-                <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                            ESCALA DO CANVAS
-                        </h2>
-                        <span className="text-sm font-mono text-muted-foreground">{Math.round(scale * 100)}%</span>
-                    </div>
-                    <div className="flex space-x-2 overflow-x-auto pb-2">
-                        {[1, 1.1, 1.2].map((value) => (
-                            <Button
-                                key={value}
-                                onClick={() => setScale(value)}
-                                variant={scale === value ? "default" : "outline"}
-                                className="shrink-0"
-                            >
-                                {Math.round(value * 100)}%
-                            </Button>
-                        ))}
-                    </div>
-                    <Slider
-                        value={[scale]}
-                        onValueChange={(values) => setScale(values[0])}
-                        min={0.5}
-                        max={2}
-                        step={0.01}
-                    />
-                </div>
-
+                {/* Cores */}
                 <div className="space-y-4">
                     <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                         CORES
