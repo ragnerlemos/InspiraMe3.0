@@ -30,7 +30,7 @@ export default function AspectWeaver() {
             fgColor={fgColor}
             setFgColor={setFgColor}
         />
-        <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
+        <main className="w-full h-full p-4 flex items-center justify-center overflow-hidden">
             <PreviewCanva 
                 aspectRatio={aspectRatio}
                 bgColor={bgColor}
@@ -42,7 +42,7 @@ export default function AspectWeaver() {
 
       {/* Mobile Layout */}
       <div className="flex flex-col h-full md:hidden">
-         <div className="flex-1 w-full h-full p-4 flex items-start justify-center overflow-hidden">
+         <div className="flex-1 w-full h-full p-4 flex items-center justify-center overflow-hidden">
             <PreviewCanva 
                 aspectRatio={aspectRatio}
                 bgColor={bgColor}
@@ -59,21 +59,23 @@ export default function AspectWeaver() {
                     </Button>
                 </div>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-auto max-h-[60vh] flex flex-col">
-                 <SheetHeader>
+            <SheetContent side="bottom" className="h-auto max-h-[60vh] flex flex-col p-0">
+                 <SheetHeader className="p-4 border-b">
                     <SheetTitle>Editar Proporção</SheetTitle>
                 </SheetHeader>
                 <div className="overflow-y-auto">
-                    <MobileToolbar
-                        aspectRatio={aspectRatio}
-                        setAspectRatio={setAspectRatio}
-                        scale={scale}
-                        setScale={setScale}
-                        bgColor={bgColor}
-                        setBgColor={setBgColor}
-                        fgColor={fgColor}
-                        setFgColor={setFgColor}
-                    />
+                    <div className="p-4">
+                        <MobileToolbar
+                            aspectRatio={aspectRatio}
+                            setAspectRatio={setAspectRatio}
+                            scale={scale}
+                            setScale={setScale}
+                            bgColor={bgColor}
+                            setBgColor={setBgColor}
+                            fgColor={fgColor}
+                            setFgColor={setFgColor}
+                        />
+                    </div>
                 </div>
             </SheetContent>
         </Sheet>
