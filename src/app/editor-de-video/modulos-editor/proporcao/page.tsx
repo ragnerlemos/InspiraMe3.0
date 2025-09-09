@@ -127,32 +127,26 @@ export default function AspectWeaver() {
           </div>
         </aside>
 
-        <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-          <div className="flex items-start justify-center w-full h-full max-w-full max-h-full">
+        <main className="w-full h-full p-4 flex items-center justify-center">
+          <div
+            className="relative shadow-2xl rounded-xl w-full h-full"
+            style={{
+              aspectRatio: aspectRatio,
+              backgroundColor: bgColor,
+            }}
+          >
+            {/* Conteúdo interno */}
             <div
-              className="relative shadow-2xl rounded-xl"
-              style={{
-                aspectRatio: aspectRatio,
-                backgroundColor: bgColor,
-                maxWidth: "100%",
-                maxHeight: "100%",
-                width: "auto",
-                height: "100%",
-              }}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
+              style={{ color: fgColor }}
             >
-              {/* Conteúdo interno */}
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center"
-                style={{ color: fgColor }}
-              >
-                <Ratio className="h-16 w-16" />
-                <p className="text-3xl font-bold font-mono tracking-tighter">
-                  {aspectRatio.replace(' / ', ':')}
-                </p>
-                <p className="text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
-                  Your content here
-                </p>
-              </div>
+              <Ratio className="h-16 w-16" />
+              <p className="text-3xl font-bold font-mono tracking-tighter">
+                {aspectRatio.replace(' / ', ':')}
+              </p>
+              <p className="text-muted-foreground" style={{ color: fgColor, opacity: 0.7 }}>
+                Your content here
+              </p>
             </div>
           </div>
         </main>
