@@ -1,3 +1,4 @@
+
 // src/app/editor-de-video/modulos-editor/proporcao/page.tsx
 "use client";
 
@@ -14,19 +15,6 @@ export default function AspectWeaver() {
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
   const [scale, setScale] = useState(1); // escala inicial 100%
-
-  const controls = (
-    <MobileToolbar
-        aspectRatio={aspectRatio}
-        setAspectRatio={setAspectRatio}
-        scale={scale}
-        setScale={setScale}
-        bgColor={bgColor}
-        setBgColor={setBgColor}
-        fgColor={fgColor}
-        setFgColor={setFgColor}
-    />
-  );
 
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)] overflow-hidden">
@@ -76,7 +64,16 @@ export default function AspectWeaver() {
                     <SheetTitle>Editar Proporção</SheetTitle>
                 </SheetHeader>
                 <div className="overflow-y-auto">
-                    {controls}
+                    <MobileToolbar
+                        aspectRatio={aspectRatio}
+                        setAspectRatio={setAspectRatio}
+                        scale={scale}
+                        setScale={setScale}
+                        bgColor={bgColor}
+                        setBgColor={setBgColor}
+                        fgColor={fgColor}
+                        setFgColor={setFgColor}
+                    />
                 </div>
             </SheetContent>
         </Sheet>
