@@ -137,8 +137,10 @@ export default function AspectWeaver() {
                 backgroundColor: bgColor,
                 transform: `scale(${scale})`,
                 transformOrigin: "top center",
-                maxWidth: '100%',
-                maxHeight: '100%',
+                width: "auto",
+                height: "100%",
+                maxWidth: "100%",
+                maxHeight: "100%",
             }}
             >
             <div className="flex items-center justify-center h-full p-4">
