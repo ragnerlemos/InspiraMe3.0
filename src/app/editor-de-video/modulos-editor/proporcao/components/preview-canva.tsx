@@ -1,17 +1,17 @@
-// src/app/editor-de-video/modulos-editor/proporcao/components/preview.tsx
+// src/app/editor-de-video/modulos-editor/proporcao/components/preview-canva.tsx
 "use client";
 
 import { Ratio } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface PreviewProps {
+interface PreviewCanvaProps {
   aspectRatio: string;
   bgColor: string;
   fgColor: string;
   scale: number;
 }
 
-export function Preview({ aspectRatio, bgColor, fgColor, scale }: PreviewProps) {
+export function PreviewCanva({ aspectRatio, bgColor, fgColor, scale }: PreviewCanvaProps) {
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
       <div

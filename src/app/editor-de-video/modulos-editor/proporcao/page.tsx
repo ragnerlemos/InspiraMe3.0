@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "./components/sidebar";
-import { Preview } from "./components/preview";
+import { PreviewCanva } from "./components/preview-canva";
 import { MobileToolbar } from "./components/mobile-toolbar";
 
 export default function AspectWeaver() {
@@ -26,7 +26,7 @@ export default function AspectWeaver() {
             setFgColor={setFgColor}
         />
 
-        <Preview 
+        <PreviewCanva 
             aspectRatio={aspectRatio}
             bgColor={bgColor}
             fgColor={fgColor}
