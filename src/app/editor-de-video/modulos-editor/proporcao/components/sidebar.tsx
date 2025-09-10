@@ -39,14 +39,14 @@ export function Sidebar({
     return (
         <aside className="hidden shrink-0 bg-card p-6 md:flex md:flex-col md:border-r">
             <div className="flex flex-1 flex-col justify-between">
-                <div className="space-y-6">
+                <div className="space-y-8">
                     <div className="flex items-center gap-3">
                         <Wand2 className="h-8 w-8 text-primary" />
                         <h1 className="text-2xl font-bold font-headline">Aspect Weaver</h1>
                     </div>
 
                     {/* Proporção */}
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                             PROPORÇÃO DA TELA
                         </h2>
@@ -68,7 +68,7 @@ export function Sidebar({
                     </div>
 
                     {/* Escala */}
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                                 ESCALA DO CANVAS
@@ -97,7 +97,7 @@ export function Sidebar({
                     </div>
 
                     {/* Cores */}
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                             CORES
                         </h2>
