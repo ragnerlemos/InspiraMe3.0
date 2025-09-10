@@ -17,27 +17,25 @@ export function PreviewCanva({ aspectRatio, bgColor, fgColor, scale }: PreviewCa
   const canvasStyle: React.CSSProperties = {
     aspectRatio: aspectRatio,
     backgroundColor: bgColor,
-    transform: `scale(${scale})`,
+    transform: `scale(${scale * 0.95})`, // Multiplica a escala do usuário por 0.95 para criar uma margem
     transformOrigin: "center center",
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-4">
-      <div
-        className={cn(
-          "relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full max-h-full"
-        )}
-        style={canvasStyle}
-      >
-        <div className="text-center space-y-2 p-4 h-full flex flex-col items-center justify-center">
-          <Ratio className="mx-auto h-12 w-12 opacity-50" style={{ color: fgColor }} />
-          <p className="font-semibold text-xl font-mono" style={{ color: fgColor }}>
-            {aspectRatio.replace(/\s\/\s/g, ":")}
-          </p>
-          <p className="text-sm opacity-75" style={{ color: fgColor }}>
-            Seu conteúdo aqui
-          </p>
-        </div>
+    <div
+      className={cn(
+        "relative transition-all duration-300 ease-in-out shadow-2xl rounded-xl max-w-full max-h-full"
+      )}
+      style={canvasStyle}
+    >
+      <div className="text-center space-y-2 p-4 h-full flex flex-col items-center justify-center">
+        <Ratio className="mx-auto h-12 w-12 opacity-50" style={{ color: fgColor }} />
+        <p className="font-semibold text-xl font-mono" style={{ color: fgColor }}>
+          {aspectRatio.replace(/\s\/\s/g, ":")}
+        </p>
+        <p className="text-sm opacity-75" style={{ color: fgColor }}>
+          Seu conteúdo aqui
+        </p>
       </div>
     </div>
   );
