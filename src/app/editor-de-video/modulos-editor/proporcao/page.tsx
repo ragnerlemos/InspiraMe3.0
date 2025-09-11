@@ -26,17 +26,14 @@ export default function AspectWeaver() {
           setFgColor={setFgColor}
         />
 
-        <div className="relative flex-1 flex flex-col overflow-hidden">
-            <main className="absolute inset-0 overflow-auto">
-                <PreviewCanva
-                    aspectRatio={aspectRatio}
-                    bgColor={bgColor}
-                    fgColor={fgColor}
-                    scale={scale}
-                />
-            </main>
-        </div>
-
+        <main className="flex-1 w-full overflow-auto">
+            <PreviewCanva
+                aspectRatio={aspectRatio}
+                bgColor={bgColor}
+                fgColor={fgColor}
+                scale={scale}
+            />
+        </main>
       </div>
 
        {/* Barra de Ferramentas Mobile */}
