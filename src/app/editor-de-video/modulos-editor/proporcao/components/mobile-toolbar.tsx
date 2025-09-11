@@ -10,17 +10,14 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   RectangleHorizontal,
   Scaling,
   Paintbrush,
-  X,
   RectangleVertical,
   Square,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { BotaoRecurso } from "../../botao-recurso";
 
 const aspectRatios = [
@@ -38,7 +35,6 @@ interface MobileToolbarProps {
   setBgColor: (color: string) => void;
   fgColor: string;
   setFgColor: (color: string) => void;
-  onClose?: () => void;
 }
 
 type ActivePanel = "ratio" | "scale" | "colors" | null;

@@ -7,11 +7,22 @@ import { PreviewCanva } from "./components/preview-canva";
 import { MobileToolbar } from "./components/mobile-toolbar";
 
 export default function AspectWeaver() {
-  const [aspectRatio, setAspectRatio] = useState("9 / 16");
+  const [aspectRatio, setAspectRatioState] = useState("9 / 16");
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0.85); // Começa com a escala reduzida para 9:16
   
+  const setAspectRatio = (ratio: string) => {
+    setAspectRatioState(ratio);
+    // Se for 9:16 (Story), aplica uma escala menor para caber na tela.
+    // Para outros, usa a escala completa.
+    if (ratio === "9 / 16") {
+      setScale(0.85);
+    } else {
+      setScale(1);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)]">
       <div className="flex-1 flex md:grid md:grid-cols-[288px_1fr] min-h-0">
