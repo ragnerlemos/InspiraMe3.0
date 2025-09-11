@@ -5,6 +5,9 @@ import { useState } from "react";
 import { Sidebar } from "./components/sidebar";
 import { PreviewCanva } from "./components/preview-canva";
 import { MobileToolbar } from "./components/mobile-toolbar";
+import { Button } from "@/components/ui/button";
+import { Wand2 } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export default function AspectWeaver() {
   const [aspectRatio, setAspectRatio] = useState("9 / 16");
@@ -26,17 +29,14 @@ export default function AspectWeaver() {
           setFgColor={setFgColor}
         />
 
-        <div className="relative flex-1 flex flex-col overflow-hidden">
-            <main className="absolute inset-0 overflow-auto">
-                <PreviewCanva
-                    aspectRatio={aspectRatio}
-                    bgColor={bgColor}
-                    fgColor={fgColor}
-                    scale={scale}
-                />
-            </main>
-        </div>
-
+        <main className="flex-1 flex flex-col items-center justify-center overflow-hidden min-h-0">
+          <PreviewCanva
+            aspectRatio={aspectRatio}
+            bgColor={bgColor}
+            fgColor={fgColor}
+            scale={scale}
+          />
+        </main>
       </div>
 
        {/* Barra de Ferramentas Mobile */}
