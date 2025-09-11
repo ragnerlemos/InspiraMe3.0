@@ -26,7 +26,7 @@ export default function AspectWeaver() {
           setFgColor={setFgColor}
         />
 
-        <main className="flex-1 w-full overflow-auto">
+        <main className="flex-1 w-full overflow-auto max-w-4xl mx-auto">
             <PreviewCanva
                 aspectRatio={aspectRatio}
                 bgColor={bgColor}

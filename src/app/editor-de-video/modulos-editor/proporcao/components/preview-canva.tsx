@@ -24,10 +24,10 @@ export function PreviewCanva({
           aspectRatio,
           backgroundColor: bgColor,
           transform: `scale(${scale})`,
-          transformOrigin: "center center",
+          transformOrigin: "top center",
         }}
         className={cn(
-          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[80vh] md:w-auto"
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full"
         )}
       >
         <div className="flex items-center justify-center h-full p-4">
