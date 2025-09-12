@@ -21,8 +21,8 @@ export default function AspectWeaver() {
   
   // Efeito para ajustar a escala baseado na proporção e no tamanho da tela
   useEffect(() => {
-    if (ratio === "9 / 16" && !isDesktop) {
-      setScale(0.80444444);
+    if (aspectRatio === "9 / 16" && !isDesktop) {
+      setScale(0.75);
     } else {
       setScale(1);
     }
