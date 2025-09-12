@@ -26,7 +26,7 @@ const aspectRatios = [
 
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string) => void }) {
+function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: string, setBaseBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<TipoFundoAtivo>('solid');
@@ -89,8 +89,8 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
                 <div className="space-y-2">
                      <Label>Cor do Fundo</Label>
                     <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                        <Input type="color" value={""} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none opacity-0 cursor-pointer" />
-                         <div className="w-full h-full" style={{ backgroundColor: '#000000' }}></div>
+                        <Input type="color" value={baseBgColor} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none opacity-0 cursor-pointer" />
+                         <div className="w-full h-full" style={{ backgroundColor: baseBgColor }}></div>
                     </div>
                 </div>
             )}
@@ -417,8 +417,8 @@ export function Sidebar({
             case 'cores':
                  return (
                     <div className="p-4 grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-left">Cor do Fundo</Label>
+                         <div className="space-y-2">
+                             <Label className="text-left">Cor do Fundo</Label>
                              <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: baseBgColor }} />
                                 <Input 
@@ -429,8 +429,8 @@ export function Sidebar({
                                 />
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-left">Cor do Texto</Label>
+                         <div className="space-y-2">
+                             <Label className="text-left">Cor do Texto</Label>
                              <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
                                 <Input 
@@ -465,7 +465,7 @@ export function Sidebar({
                      </div>
                  );
             case 'fundo':
-                return <div className="p-4"><ControleTipoFundo setBaseBgColor={setBaseBgColor} /></div>;
+                return <div className="p-4"><ControleTipoFundo baseBgColor={baseBgColor} setBaseBgColor={setBaseBgColor} /></div>;
             case 'assinatura':
                 return <div className="p-4"><ControleAssinatura {...props} /></div>;
             case 'logo':
@@ -477,7 +477,7 @@ export function Sidebar({
 
     const mainToolbar = (
         <ScrollArea className="w-full border-b">
-            <div className="flex h-16 items-center justify-center w-full space-x-1 px-2">
+            <div className="flex h-16 items-center justify-start w-max space-x-1 px-2">
                 <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
                 <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
                 <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
@@ -501,3 +501,5 @@ export function Sidebar({
         </aside>
     );
 }
+
+    
