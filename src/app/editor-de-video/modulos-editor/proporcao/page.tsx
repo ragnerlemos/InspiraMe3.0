@@ -8,6 +8,11 @@ import { Sidebar } from "./components/sidebar";
 import { PreviewCanva } from "./components/preview-canva";
 import { MobileToolbar } from "./components/mobile-toolbar";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from "@/components/ui/resizable";
 
 function ProporcaoSkeleton() {
     return (
@@ -116,38 +121,40 @@ export default function AspectWeaver() {
 
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)]">
-      <div className="flex-1 flex md:grid md:grid-cols-[384px_1fr] min-h-0">
-        <Sidebar {...commonProps} />
-
-        <main className="flex-1 w-full overflow-auto">
-            <PreviewCanva
-                aspectRatio={aspectRatio}
-                bgColor={baseBgColor}
-                fgColor={fgColor}
-                filmColor={filmColor}
-                filmOpacity={filmOpacity}
-                scale={scale}
-                text={text}
-                profile={profile}
-                showProfileSignature={showProfileSignature}
-                signaturePositionX={signaturePositionX}
-                signaturePositionY={signaturePositionY}
-                signatureScale={signatureScale}
-                showSignaturePhoto={showSignaturePhoto}
-                showSignatureUsername={showSignatureUsername}
-                showSignatureSocial={showSignatureSocial}
-                showLogo={showLogo}
-                logoPositionX={logoPositionX}
-                logoPositionY={logoPositionY}
-                logoScale={logoScale}
-                logoOpacity={logoOpacity}
-            />
-        </main>
-      </div>
+      <PanelGroup direction="horizontal" className="flex-1 min-h-0">
+         <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:block">
+            <Sidebar {...commonProps} />
+        </Panel>
+        {isDesktop && <PanelResizeHandle />}
+        <Panel>
+            <main className="flex-1 w-full h-full overflow-auto">
+                <PreviewCanva
+                    aspectRatio={aspectRatio}
+                    bgColor={baseBgColor}
+                    fgColor={fgColor}
+                    filmColor={filmColor}
+                    filmOpacity={filmOpacity}
+                    scale={scale}
+                    text={text}
+                    profile={profile}
+                    showProfileSignature={showProfileSignature}
+                    signaturePositionX={signaturePositionX}
+                    signaturePositionY={signaturePositionY}
+                    signatureScale={signatureScale}
+                    showSignaturePhoto={showSignaturePhoto}
+                    showSignatureUsername={showSignatureUsername}
+                    showSignatureSocial={showSignatureSocial}
+                    showLogo={showLogo}
+                    logoPositionX={logoPositionX}
+                    logoPositionY={logoPositionY}
+                    logoScale={logoScale}
+                    logoOpacity={logoOpacity}
+                />
+            </main>
+        </Panel>
+      </PanelGroup>
 
       <MobileToolbar {...commonProps} />
     </div>
   );
 }
-
-    
