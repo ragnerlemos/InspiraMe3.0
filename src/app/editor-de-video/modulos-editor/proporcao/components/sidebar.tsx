@@ -418,7 +418,7 @@ export function Sidebar({
                  return (
                     <div className="p-4 grid grid-cols-2 gap-4">
                          <div className="space-y-2">
-                             <Label className="text-left">Cor do Fundo</Label>
+                            <Label className="text-left">Cor do Fundo</Label>
                              <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: baseBgColor }} />
                                 <Input 
@@ -430,7 +430,7 @@ export function Sidebar({
                             </div>
                         </div>
                          <div className="space-y-2">
-                             <Label className="text-left">Cor do Texto</Label>
+                            <Label className="text-left">Cor do Texto</Label>
                              <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
                                 <Input 
@@ -477,7 +477,7 @@ export function Sidebar({
 
     const mainToolbar = (
         <ScrollArea className="w-full border-b">
-            <div className="flex h-16 items-center justify-start w-max space-x-1 px-2">
+            <div className="flex h-16 items-center justify-around w-full space-x-1 px-2">
                 <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
                 <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
                 <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
@@ -501,5 +501,3 @@ export function Sidebar({
         </aside>
     );
 }
-
-    
