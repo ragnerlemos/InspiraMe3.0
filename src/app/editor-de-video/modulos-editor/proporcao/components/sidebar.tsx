@@ -57,6 +57,8 @@ export function Sidebar({
             return <p className="text-sm text-muted-foreground text-center p-4">Selecione uma ferramenta para editar.</p>;
         }
         switch (activeControl) {
+            case 'texto':
+                return <p className="text-center text-muted-foreground p-4">Controles de Texto aqui.</p>;
             case 'proporcao':
                 return (
                     <div className="space-y-2">
@@ -140,6 +142,7 @@ export function Sidebar({
 
     const mainToolbar = (
          <div className="flex h-16 items-center justify-around px-2 border-b">
+            <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
             <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={activeControl === 'proporcao'}/>
             <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handleSetControleAtivo('escala')} isActive={activeControl === 'escala'}/>
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>

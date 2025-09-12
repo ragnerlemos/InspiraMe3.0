@@ -12,7 +12,7 @@ export default function AspectWeaver() {
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
   const [scale, setScale] = useState(1);
-  const [activeControl, setActiveControl] = useState<string | null>('proporcao');
+  const [activeControl, setActiveControl] = useState<string | null>('texto');
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
 

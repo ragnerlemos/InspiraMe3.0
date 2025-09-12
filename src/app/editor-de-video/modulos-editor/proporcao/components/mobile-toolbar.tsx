@@ -52,7 +52,7 @@ interface MobileToolbarProps {
   setActiveControl: (control: string | null) => void;
 }
 
-type ActivePanel = "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
+type ActivePanel = "texto" | "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
 
 export function MobileToolbar({
   aspectRatio,
@@ -79,6 +79,7 @@ export function MobileToolbar({
     if (!activePanel) return null;
 
     const panels: Record<string, JSX.Element | null> = {
+      texto: <p className="text-center text-muted-foreground">Controles de Texto aqui.</p>,
       proporcao: (
         <div className="space-y-2">
           <Label>Proporção da Tela</Label>
@@ -150,6 +151,7 @@ export function MobileToolbar({
 
   const getPanelTitle = () => {
     const titles: Record<string, string> = {
+      texto: "Editar Texto",
       proporcao: "Editar Proporção",
       escala: "Editar Escala",
       cores: "Editar Cores",
@@ -164,6 +166,7 @@ export function MobileToolbar({
   const mainToolbar = (
      <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex h-16 items-center justify-start gap-1 px-2 border-t bg-background">
+            <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange("texto")} isActive={activePanel === "texto"} />
             <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handlePanelChange("proporcao")} isActive={activePanel === "proporcao"} />
             <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handlePanelChange("escala")} isActive={activePanel === "escala"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
