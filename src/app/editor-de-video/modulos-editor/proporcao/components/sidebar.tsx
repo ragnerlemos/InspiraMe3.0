@@ -461,7 +461,24 @@ export function Sidebar({
                         </ScrollArea>
                         <div className="p-4 flex-1 overflow-y-auto">
                             {!activeSubControl && <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>}
-                            {activeSubControl && <p className="text-center text-muted-foreground text-sm">Controles para '{activeSubControl}' aqui.</p>}
+                            {activeSubControl === 'fonte' && <div className="space-y-2">
+                                <Label htmlFor="font-family">Fonte</Label>
+                                <Select onValueChange={() => {}} defaultValue="Poppins">
+                                    <SelectTrigger id="font-family"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Poppins">Poppins</SelectItem>
+                                        <SelectItem value="PT Sans">PT Sans</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>}
+                             {activeSubControl === 'tamanho' && <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                    <Label htmlFor="font-size">Tamanho</Label>
+                                    <span className="text-sm text-muted-foreground">10 pt</span>
+                                </div>
+                                <Slider id="font-size" min={1} max={20} step={0.1} defaultValue={[10]} />
+                            </div>}
+                            {activeSubControl && !['fonte', 'tamanho'].includes(activeSubControl) && <p className="text-center text-muted-foreground text-sm">Controles para '{activeSubControl}' aqui.</p>}
                         </div>
                      </div>
                  );
@@ -502,5 +519,3 @@ export function Sidebar({
         </aside>
     );
 }
-
-    
