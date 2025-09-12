@@ -88,7 +88,7 @@ function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: strin
             {activeTab === 'solid' && (
                 <div className="space-y-2">
                      <Label>Cor do Fundo</Label>
-                    <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                    <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                         <Input type="color" value={baseBgColor} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none opacity-0 cursor-pointer" />
                          <div className="w-full h-full" style={{ backgroundColor: baseBgColor }}></div>
                     </div>
@@ -417,9 +417,9 @@ export function Sidebar({
             case 'cores':
                  return (
                     <div className="p-4 grid grid-cols-2 gap-4">
-                         <div className="space-y-2">
+                        <div className="space-y-2">
                             <Label className="text-left">Cor do Fundo</Label>
-                             <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
+                            <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: baseBgColor }} />
                                 <Input 
                                     type="color" 
@@ -429,9 +429,9 @@ export function Sidebar({
                                 />
                             </div>
                         </div>
-                         <div className="space-y-2">
+                        <div className="space-y-2">
                             <Label className="text-left">Cor do Texto</Label>
-                             <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
+                            <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
                                 <Input 
                                     type="color" 
