@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useRef, ComponentType } from "react";
+import { useState, useRef } from "react";
 import Link from 'next/link';
 import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+
 
 const aspectRatios = [
     { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -86,6 +88,7 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
 
             {activeTab === 'solid' && (
                 <div className="space-y-2">
+                    <Label>Cor do Fundo</Label>
                     <div className="relative h-10 w-full">
                         <Input type="color" value={""} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                     </div>
@@ -319,6 +322,10 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps {
     setBaseBgColor: (color: string) => void;
     fgColor: string;
     setFgColor: (color: string) => void;
+    filmColor: string;
+    setFilmColor: (color: string) => void;
+    filmOpacity: number;
+    setFilmOpacity: (opacity: number) => void;
     activeControl: string | null;
     setActiveControl: (control: string | null) => void;
     text: string;
@@ -335,6 +342,10 @@ export function Sidebar({
     setBaseBgColor,
     fgColor,
     setFgColor,
+    filmColor,
+    setFilmColor,
+    filmOpacity,
+    setFilmOpacity,
     activeControl,
     setActiveControl,
     text,
@@ -416,19 +427,43 @@ export function Sidebar({
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label>Cor do Fundo</Label>
-                                <div className="relative h-10">
+                                <div className="relative h-10 w-full">
                                     <Input type="color" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label>Cor do Texto</Label>
-                                <div className="relative h-10">
+                                <div className="relative h-10 w-full">
                                     <Input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                                 </div>
                             </div>
                         </div>
                     </div>
                  );
+            case 'filtro':
+                return (
+                    <div className="p-4 space-y-4">
+                        <div className="space-y-2">
+                            <Label>Cor do Filtro</Label>
+                             <div className="relative h-10 w-full">
+                                <Input type="color" value={filmColor} onChange={(e) => setFilmColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Label>Opacidade do Filtro</Label>
+                                <span className="text-sm font-mono text-muted-foreground">{Math.round(filmOpacity)}%</span>
+                            </div>
+                            <Slider
+                                value={[filmOpacity]}
+                                onValueChange={(values) => setFilmOpacity(values[0])}
+                                min={0}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                    </div>
+                );
             case 'estilo':
                  return (
                      <div className="w-full flex-1 flex flex-col">
@@ -462,21 +497,19 @@ export function Sidebar({
     }
 
     const mainToolbar = (
-         <div className="flex h-16 items-center justify-around px-2 border-b">
-            <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
-            <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
-            <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
-            <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
-        </div>
-    );
-     const elementsToolbar = (
-        <div className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
+        <ScrollArea className="w-full whitespace-nowrap border-b">
+            <div className="flex h-16 items-center justify-start gap-1 px-2">
+                <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
+                <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
+                <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
+                <BotaoRecurso icon={Film} label="Filtro" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
+                <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('fundo')} isActive={activeControl === 'fundo'}/>
                 <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={activeControl === 'assinatura'}/>
                 <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={activeControl === 'logo'}/>
             </div>
-        </div>
+            <ScrollBar orientation="horizontal" className="h-2" />
+        </ScrollArea>
     );
 
     return (
@@ -491,9 +524,6 @@ export function Sidebar({
             <div className="flex-1 overflow-y-auto flex flex-col">
                 {renderActiveControl()}
             </div>
-
-            {activeControl !== 'estilo' && elementsToolbar}
-
         </aside>
     );
 }
