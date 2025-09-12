@@ -21,6 +21,14 @@ import {
   UserCheck,
   ImageUp,
   ArrowLeft,
+  Wand2,
+  Type,
+  CaseSensitive,
+  Pipette,
+  AlignLeft,
+  Bold,
+  MoveVertical,
+  Baseline,
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -44,7 +52,7 @@ interface MobileToolbarProps {
   setActiveControl: (control: string | null) => void;
 }
 
-type ActivePanel = "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | null;
+type ActivePanel = "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
 
 export function MobileToolbar({
   aspectRatio,
@@ -59,10 +67,12 @@ export function MobileToolbar({
   setActiveControl
 }: MobileToolbarProps) {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
+  const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
 
   const handlePanelChange = (panel: ActivePanel) => {
     setActivePanel(panel);
     setActiveControl(panel);
+    setActiveSubControl(null); // Reset sub-controls when main panel changes
   };
 
   const renderPanelContent = () => {
@@ -111,6 +121,25 @@ export function MobileToolbar({
           </div>
         </div>
       ),
+      estilo: (
+        <div className="w-full h-full flex flex-col">
+            <div className="flex-1 overflow-y-auto">
+                {!activeSubControl && <p className="text-muted-foreground text-center p-4">Selecione uma opção abaixo para editar.</p>}
+            </div>
+             <div className="w-full whitespace-nowrap border-t">
+                <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
+                    <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
+                    <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
+                    <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
+                    <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setActiveSubControl('alinhamento')} isActive={activeSubControl === 'alinhamento'}/>
+                    <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setActiveSubControl('estilo')} isActive={activeSubControl === 'estilo'}/>
+                    <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setActiveSubControl('posicao')} isActive={activeSubControl === 'posicao'}/>
+                    <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
+                    <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
+                </div>
+            </div>
+       </div>
+      ),
       fundo: <p className="text-center text-muted-foreground">Controles de Fundo aqui.</p>,
       assinatura: <p className="text-center text-muted-foreground">Controles de Assinatura aqui.</p>,
       logo: <p className="text-center text-muted-foreground">Controles de Logo aqui.</p>,
@@ -124,6 +153,7 @@ export function MobileToolbar({
       proporcao: "Editar Proporção",
       escala: "Editar Escala",
       cores: "Editar Cores",
+      estilo: "Editar Estilo",
       fundo: "Editar Fundo",
       assinatura: "Editar Assinatura",
       logo: "Editar Logo",
@@ -137,6 +167,7 @@ export function MobileToolbar({
             <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handlePanelChange("proporcao")} isActive={activePanel === "proporcao"} />
             <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handlePanelChange("escala")} isActive={activePanel === "escala"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
+            <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handlePanelChange("estilo")} isActive={activePanel === "estilo"} />
             <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />
             <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handlePanelChange("logo")} isActive={activePanel === "logo"} />

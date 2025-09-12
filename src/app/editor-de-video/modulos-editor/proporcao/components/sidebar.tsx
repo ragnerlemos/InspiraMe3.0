@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Scaling, Paintbrush } from "lucide-react";
+import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Scaling, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -39,8 +39,16 @@ export function Sidebar({
     setActiveControl,
 }: SidebarProps) {
 
+    const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
+
     const handleSetControleAtivo = (controle: string) => {
-        setActiveControl(prev => prev === controle ? null : controle);
+        setActiveControl(prev => {
+            if (prev === controle) {
+                return null;
+            }
+            setActiveSubControl(null); // Reseta sub-controle ao trocar de principal
+            return controle;
+        });
     }
 
     const renderActiveControl = () => {
@@ -99,6 +107,24 @@ export function Sidebar({
                         </div>
                     </div>
                  );
+            case 'estilo':
+                 return (
+                     <div className="w-full flex-1 flex flex-col">
+                        <div className="p-4">{!activeSubControl && <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>}</div>
+                        <div className="w-full whitespace-nowrap border-t mt-auto">
+                            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
+                                <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
+                                <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
+                                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
+                                <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setActiveSubControl('alinhamento')} isActive={activeSubControl === 'alinhamento'}/>
+                                <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setActiveSubControl('estilo')} isActive={activeSubControl === 'estilo'}/>
+                                <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setActiveSubControl('posicao')} isActive={activeSubControl === 'posicao'}/>
+                                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
+                                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
+                            </div>
+                        </div>
+                     </div>
+                 );
             case 'fundo':
                 return <p className="text-center text-muted-foreground p-4">Controles de Fundo aqui.</p>;
             case 'assinatura':
@@ -116,6 +142,7 @@ export function Sidebar({
             <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={activeControl === 'proporcao'}/>
             <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handleSetControleAtivo('escala')} isActive={activeControl === 'escala'}/>
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
+            <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
         </div>
     );
      const elementsToolbar = (
@@ -137,11 +164,11 @@ export function Sidebar({
             
             {mainToolbar}
 
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col">
                 {renderActiveControl()}
             </div>
 
-            {elementsToolbar}
+            {activeControl !== 'estilo' && elementsToolbar}
 
         </aside>
     );
