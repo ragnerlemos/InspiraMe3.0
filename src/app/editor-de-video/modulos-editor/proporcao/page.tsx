@@ -30,7 +30,7 @@ function ProporcaoSkeleton() {
 }
 
 export default function AspectWeaver() {
-  const [aspectRatio, setAspectRatioState] = useState("9 / 16");
+  const [aspectRatio, setAspectRatio] = useState("9 / 16");
   const [bgColor, setBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
   const [scale, setScale] = useState(1);
@@ -56,16 +56,6 @@ export default function AspectWeaver() {
   const [logoScale, setLogoScale] = useState(40);
   const [logoOpacity, setLogoOpacity] = useState(100);
 
-
-  const setAspectRatio = (ratio: string) => {
-    setAspectRatioState(ratio);
-    if (ratio === '9 / 16' && !isDesktop) {
-        setScale(0.80);
-    } else {
-        setScale(1);
-    }
-  };
-  
   useEffect(() => {
     if (aspectRatio === "9 / 16" && !isDesktop) {
       setScale(0.80);
