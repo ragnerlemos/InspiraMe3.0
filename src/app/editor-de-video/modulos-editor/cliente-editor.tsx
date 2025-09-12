@@ -381,7 +381,7 @@ export function EditorClient() {
   // Layout para Mobile e Desktop
   return (
     <PanelGroup direction="horizontal" className="h-full w-full">
-        <Panel defaultSize={100} minSize={30} className={!isDesktop ? "md:!flex-none" : ""}>
+        <Panel defaultSize={65} minSize={30}>
              <div className="relative w-full h-full flex flex-col">
                 <div className="flex-1 min-h-0 flex items-center justify-center bg-muted/40">
                     <div className="w-full h-full max-w-[900px] flex justify-center items-center p-4 md:p-8">
@@ -394,7 +394,7 @@ export function EditorClient() {
         </Panel>
         {isDesktop && <PanelResizeHandle />}
         {isDesktop && (
-          <Panel defaultSize={35} minSize={30} maxSize={45}>
+          <Panel defaultSize={35} minSize={25} maxSize={40}>
               <div className="h-full w-full border-l bg-background">
                    {controlsPanel}
               </div>
@@ -403,3 +403,5 @@ export function EditorClient() {
     </PanelGroup>
   );
 }
+
+    
