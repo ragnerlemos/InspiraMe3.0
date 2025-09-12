@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { BotaoRecurso } from "../../botao-recurso";
+import { Textarea } from "@/components/ui/textarea";
 
 const aspectRatios = [
     { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -25,6 +26,8 @@ interface SidebarProps {
     setFgColor: (color: string) => void;
     activeControl: string | null;
     setActiveControl: (control: string | null) => void;
+    text: string;
+    setText: (text: string) => void;
 }
 
 export function Sidebar({
@@ -38,6 +41,8 @@ export function Sidebar({
     setFgColor,
     activeControl,
     setActiveControl,
+    text,
+    setText,
 }: SidebarProps) {
 
     const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
@@ -58,7 +63,19 @@ export function Sidebar({
         }
         switch (activeControl) {
             case 'texto':
-                return <p className="text-center text-muted-foreground p-4">Controles de Texto aqui.</p>;
+                return (
+                    <div className="p-4">
+                        <Label htmlFor="text-input" className="sr-only">Texto da Frase</Label>
+                        <Textarea
+                            id="text-input"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            rows={5}
+                            placeholder="Digite sua frase aqui..."
+                            className="text-base"
+                        />
+                    </div>
+                );
             case 'proporcao':
                 return (
                     <div className="space-y-2">
@@ -168,7 +185,7 @@ export function Sidebar({
             
             {mainToolbar}
 
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col">
+            <div className="flex-1 overflow-y-auto p-2 flex flex-col">
                 {renderActiveControl()}
             </div>
 

@@ -9,6 +9,7 @@ interface PreviewCanvaProps {
   bgColor: string;
   fgColor: string;
   scale: number;
+  text: string;
 }
 
 export function PreviewCanva({
@@ -16,6 +17,7 @@ export function PreviewCanva({
   bgColor,
   fgColor,
   scale,
+  text,
 }: PreviewCanvaProps) {
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
@@ -30,22 +32,13 @@ export function PreviewCanva({
           "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto"
         )}
       >
-        <div className="flex items-center justify-center h-full p-4">
-          <div className="text-center space-y-2">
-            <Ratio
-              className="mx-auto h-12 w-12 opacity-50"
-              style={{ color: fgColor }}
-            />
+        <div className="flex items-center justify-center h-full p-8">
             <p
-              className="font-semibold text-xl font-mono"
-              style={{ color: fgColor }}
+              className="font-semibold text-3xl text-center break-words"
+              style={{ color: fgColor, textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}
             >
-              {aspectRatio.replace(/\s\/\s/g, ":")}
+              {text}
             </p>
-            <p className="text-sm opacity-75" style={{ color: fgColor }}>
-              Seu conteúdo aqui
-            </p>
-          </div>
         </div>
       </div>
     </main>

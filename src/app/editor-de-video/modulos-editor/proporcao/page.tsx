@@ -15,6 +15,7 @@ export default function AspectWeaver() {
   const [activeControl, setActiveControl] = useState<string | null>('texto');
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
+  const [text, setText] = useState("A única maneira de fazer um ótimo trabalho é amar o que você faz.");
 
   const setAspectRatio = (ratio: string) => {
     setAspectRatioState(ratio);
@@ -43,6 +44,8 @@ export default function AspectWeaver() {
           setFgColor={setFgColor}
           activeControl={activeControl}
           setActiveControl={setActiveControl}
+          text={text}
+          setText={setText}
         />
 
         <main className="flex-1 w-full overflow-auto">
@@ -51,6 +54,7 @@ export default function AspectWeaver() {
                 bgColor={bgColor}
                 fgColor={fgColor}
                 scale={scale}
+                text={text}
             />
         </main>
       </div>
@@ -66,6 +70,8 @@ export default function AspectWeaver() {
         setFgColor={setFgColor}
         activeControl={activeControl}
         setActiveControl={setActiveControl}
+        text={text}
+        setText={setText}
       />
     </div>
   );

@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 
 const aspectRatios = [
   { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -50,6 +51,8 @@ interface MobileToolbarProps {
   setFgColor: (color: string) => void;
   activeControl: string | null;
   setActiveControl: (control: string | null) => void;
+  text: string;
+  setText: (text: string) => void;
 }
 
 type ActivePanel = "texto" | "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
@@ -64,7 +67,9 @@ export function MobileToolbar({
   fgColor,
   setFgColor,
   activeControl,
-  setActiveControl
+  setActiveControl,
+  text,
+  setText,
 }: MobileToolbarProps) {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
@@ -79,7 +84,19 @@ export function MobileToolbar({
     if (!activePanel) return null;
 
     const panels: Record<string, JSX.Element | null> = {
-      texto: <p className="text-center text-muted-foreground">Controles de Texto aqui.</p>,
+      texto: (
+          <div className="p-4">
+              <Label htmlFor="text-input-mobile" className="sr-only">Texto da Frase</Label>
+              <Textarea
+                  id="text-input-mobile"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  rows={4}
+                  placeholder="Digite sua frase aqui..."
+                  className="text-base"
+              />
+          </div>
+      ),
       proporcao: (
         <div className="space-y-2">
           <Label>Proporção da Tela</Label>
@@ -195,7 +212,7 @@ export function MobileToolbar({
               {getPanelTitle()}
             </SheetTitle>
           </SheetHeader>
-          <div className="overflow-y-auto flex-1 p-4">
+          <div className="overflow-y-auto flex-1 p-0">
             {renderPanelContent()}
           </div>
         </SheetContent>
