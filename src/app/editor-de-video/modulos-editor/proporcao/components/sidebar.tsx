@@ -1,10 +1,11 @@
 
 "use client";
 
-import { Wand2, RectangleHorizontal, RectangleVertical, Square } from "lucide-react";
+import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { BotaoRecurso } from "../../botao-recurso";
 
 const aspectRatios = [
     { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -132,6 +133,18 @@ export function Sidebar({
                                 />
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                 {/* Elementos */}
+                <div className="space-y-2">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                        ELEMENTOS
+                    </h2>
+                     <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2 rounded-lg border">
+                        <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => {}} isActive={false}/>
+                        <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => {}} isActive={false}/>
+                        <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => {}} isActive={false}/>
                     </div>
                 </div>
             </div>

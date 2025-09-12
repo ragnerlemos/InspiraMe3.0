@@ -17,6 +17,9 @@ import {
   Paintbrush,
   RectangleVertical,
   Square,
+  LayoutTemplate,
+  UserCheck,
+  ImageUp,
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
 
@@ -37,7 +40,7 @@ interface MobileToolbarProps {
   setFgColor: (color: string) => void;
 }
 
-type ActivePanel = "ratio" | "scale" | "colors" | null;
+type ActivePanel = "ratio" | "scale" | "colors" | "elements" | null;
 
 export function MobileToolbar({
   aspectRatio,
@@ -136,17 +139,55 @@ export function MobileToolbar({
             </div>
           </div>
         );
+        case "elements":
+            return (
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-muted-foreground">
+                  ELEMENTOS
+                </h3>
+                <div className="flex justify-around items-center h-16">
+                     <BotaoRecurso
+                        icon={LayoutTemplate}
+                        label="Fundo"
+                        onClick={() => {}}
+                        isActive={false}
+                    />
+                     <BotaoRecurso
+                        icon={UserCheck}
+                        label="Assinatura"
+                        onClick={() => {}}
+                        isActive={false}
+                    />
+                     <BotaoRecurso
+                        icon={ImageUp}
+                        label="Logo"
+                        onClick={() => {}}
+                        isActive={false}
+                    />
+                </div>
+              </div>
+            );
       default:
         return null;
     }
   };
+
+  const getPanelTitle = () => {
+    switch (activePanel) {
+        case "ratio": return "Proporção";
+        case "scale": return "Escala";
+        case "colors": return "Cores";
+        case "elements": return "Elementos";
+        default: return "";
+    }
+  }
 
   return (
     <>
       <Sheet open={!!activePanel} onOpenChange={(open) => !open && setActivePanel(null)}>
         <SheetContent side="bottom" className="h-auto">
           <SheetHeader className="mb-4">
-             <SheetTitle className="capitalize">{activePanel}</SheetTitle>
+             <SheetTitle className="capitalize">{getPanelTitle()}</SheetTitle>
           </SheetHeader>
           <div className="p-4">{renderPanelContent()}</div>
         </SheetContent>
@@ -171,6 +212,12 @@ export function MobileToolbar({
             label="Cores"
             onClick={() => setActivePanel("colors")}
             isActive={activePanel === "colors"}
+          />
+           <BotaoRecurso
+            icon={LayoutTemplate}
+            label="Elementos"
+            onClick={() => setActivePanel("elements")}
+            isActive={activePanel === "elements"}
           />
         </div>
       </div>
