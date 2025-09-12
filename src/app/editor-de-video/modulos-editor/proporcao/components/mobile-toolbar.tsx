@@ -70,7 +70,7 @@ interface MobileToolbarProps {
 type ActivePanel = "texto" | "proporcao" | "escala" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-function ControleTipoFundo({ setBgColor }: { setBgColor: (color: string) => void }) {
+function ControleTipoFundo({ bgColor, setBgColor }: { bgColor: string, setBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<TipoFundoAtivo>('solid');
@@ -278,7 +278,7 @@ export function MobileToolbar({
             </div>
        </div>
       ),
-      fundo: <div className="p-4"><ControleTipoFundo setBgColor={setBgColor} /></div>,
+      fundo: <div className="p-4"><ControleTipoFundo bgColor={bgColor} setBgColor={setBgColor} /></div>,
       assinatura: <div className="p-4"><p className="text-center text-muted-foreground">Controles de Assinatura aqui.</p></div>,
       logo: <div className="p-4"><p className="text-center text-muted-foreground">Controles de Logo aqui.</p></div>,
     };
@@ -340,3 +340,5 @@ export function MobileToolbar({
     </>
   );
 }
+
+    
