@@ -86,11 +86,11 @@ function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: strin
             )}
 
             {activeTab === 'solid' && (
-                <div className="space-y-2">
-                     <Label>Cor do Fundo</Label>
+                 <div className="space-y-2">
+                    <Label className="text-left">Cor do Fundo</Label>
                     <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
+                        <div className="w-full h-full" style={{ backgroundColor: baseBgColor }} />
                         <Input type="color" value={baseBgColor} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none opacity-0 cursor-pointer" />
-                         <div className="w-full h-full" style={{ backgroundColor: baseBgColor }}></div>
                     </div>
                 </div>
             )}
@@ -450,8 +450,8 @@ export function Sidebar({
                             {!activeSubControl && <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>}
                             {activeSubControl && <p className="text-center text-muted-foreground text-sm">Controles para '{activeSubControl}' aqui.</p>}
                         </div>
-                        <div className="w-full whitespace-nowrap border-t mt-auto">
-                            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
+                        <ScrollArea className="w-full whitespace-nowrap border-t mt-auto">
+                            <div className="flex h-16 items-center justify-start w-max space-x-1 bg-background/90 backdrop-blur-sm px-2">
                                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
                                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
                                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
@@ -461,7 +461,8 @@ export function Sidebar({
                                 <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
                                 <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
                             </div>
-                        </div>
+                            <ScrollBar orientation="horizontal" className="h-2" />
+                        </ScrollArea>
                      </div>
                  );
             case 'fundo':

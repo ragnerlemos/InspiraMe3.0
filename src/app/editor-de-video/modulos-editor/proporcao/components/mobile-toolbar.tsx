@@ -126,9 +126,11 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
             )}
 
             {activeTab === 'solid' && (
-                 <div className="space-y-1">
-                    <div className="relative h-10 w-full">
-                        <Input type="color" value={"#000000"} onChange={(e) => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
+                 <div className="space-y-2">
+                    <Label className="text-left">Cor do Fundo</Label>
+                    <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
+                        <div className="w-full h-full" style={{ backgroundColor: '#333333' }} />
+                        <Input type="color" value={"#000000"} onChange={(e) => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none opacity-0 cursor-pointer" />
                     </div>
                 </div>
             )}
@@ -136,28 +138,28 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
             {activeTab === 'gradient' && (
                  <div className="space-y-4">
                     <div className="flex items-end gap-2">
-                        <div className="space-y-2">
-                           <Label>Tipo</Label>
-                           <div className="flex gap-1">
-                               <Button size="sm" variant={gradient.type === 'linear' ? 'secondary' : 'outline'} onClick={() => setGradient(g => ({...g, type: 'linear'}))}>Linear</Button>
-                               <Button size="sm" variant={gradient.type === 'radial' ? 'secondary' : 'outline'} onClick={() => setGradient(g => ({...g, type: 'radial'}))}>Radial</Button>
-                           </div>
-                       </div>
+                         <div className="space-y-2">
+                            <Label>Tipo</Label>
+                            <div className="flex gap-1">
+                                <Button size="sm" variant={gradient.type === 'linear' ? 'secondary' : 'outline'} onClick={() => setGradient(g => ({...g, type: 'linear'}))}>Linear</Button>
+                                <Button size="sm" variant={gradient.type === 'radial' ? 'secondary' : 'outline'} onClick={() => setGradient(g => ({...g, type: 'radial'}))}>Radial</Button>
+                            </div>
+                        </div>
 
-                       {gradient.type === 'linear' && (
-                           <div className="space-y-2 flex-1">
-                               <Label htmlFor="gradient-direction-mobile">Direção</Label>
-                               <Select value={gradient.direction} onValueChange={(dir) => setGradient(g => ({...g, direction: dir}))}>
-                                   <SelectTrigger id="gradient-direction-mobile" className="h-9"><SelectValue /></SelectTrigger>
-                                   <SelectContent>
-                                       <SelectItem value="to right">Direita</SelectItem>
-                                       <SelectItem value="to left">Esquerda</SelectItem>
-                                       <SelectItem value="to bottom">Abaixo</SelectItem>
-                                       <SelectItem value="to top">Acima</SelectItem>
-                                   </SelectContent>
-                               </Select>
-                           </div>
-                       )}
+                        {gradient.type === 'linear' && (
+                            <div className="space-y-2 flex-1">
+                                <Label htmlFor="gradient-direction-mobile">Direção</Label>
+                                <Select value={gradient.direction} onValueChange={(dir) => setGradient(g => ({...g, direction: dir}))}>
+                                    <SelectTrigger id="gradient-direction-mobile" className="h-9"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="to right">Direita</SelectItem>
+                                        <SelectItem value="to left">Esquerda</SelectItem>
+                                        <SelectItem value="to bottom">Abaixo</SelectItem>
+                                        <SelectItem value="to top">Acima</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
                    </div>
                    <div className="space-y-2">
                        <Label>Cores</Label>
@@ -473,8 +475,8 @@ export function MobileToolbar({
                 {!activeSubControl && <p className="text-muted-foreground text-center p-4">Selecione uma opção abaixo para editar.</p>}
                  {activeSubControl && <div className="p-4"><p className="text-center text-muted-foreground">Controles para '{activeSubControl}' aqui.</p></div>}
             </div>
-             <div className="w-full whitespace-nowrap border-t">
-                <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
+             <ScrollArea className="w-full whitespace-nowrap border-t">
+                <div className="flex h-16 items-center justify-start w-max space-x-1 bg-background/90 backdrop-blur-sm px-2">
                     <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
                     <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
                     <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
@@ -484,7 +486,8 @@ export function MobileToolbar({
                     <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
                     <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
                 </div>
-            </div>
+                <ScrollBar orientation="horizontal" className="h-2" />
+            </ScrollArea>
        </div>
       ),
       fundo: <div className="p-4"><ControleTipoFundo setBaseBgColor={setBaseBgColor} /></div>,
@@ -531,8 +534,8 @@ export function MobileToolbar({
       </div>
 
       <Sheet open={!!activePanel} onOpenChange={(open) => { if (!open) { setActivePanel(null); setActiveControl(null); }}}>
-        <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col p-4">
-          <SheetHeader className="mb-2">
+        <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col p-0">
+          <SheetHeader className="p-4 pb-2">
             <SheetTitle className="flex items-center">
               <Button variant="ghost" size="icon" className="mr-2" onClick={() => { setActivePanel(null); setActiveControl(null); }}>
                 <ArrowLeft className="h-5 w-5" />
@@ -540,7 +543,7 @@ export function MobileToolbar({
               {getPanelTitle()}
             </SheetTitle>
           </SheetHeader>
-          <div className="overflow-y-auto flex-1 p-0">
+          <div className="overflow-y-auto flex-1">
             {renderPanelContent()}
           </div>
         </SheetContent>
@@ -548,5 +551,3 @@ export function MobileToolbar({
     </>
   );
 }
-
-    
