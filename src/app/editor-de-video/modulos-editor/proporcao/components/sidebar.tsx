@@ -25,38 +25,6 @@ const aspectRatios = [
 
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-interface ControleAssinaturaProps {
-  showProfileSignature: boolean;
-  onShowProfileSignatureChange: (show: boolean) => void;
-  signaturePositionX: number;
-  onSignaturePositionXChange: (x: number) => void;
-  signaturePositionY: number;
-  onSignaturePositionYChange: (y: number) => void;
-  signatureScale: number;
-  onSignatureScaleChange: (scale: number) => void;
-  showSignaturePhoto: boolean;
-  onShowSignaturePhotoChange: (show: boolean) => void;
-  showSignatureUsername: boolean;
-  onShowSignatureUsernameChange: (show: boolean) => void;
-  showSignatureSocial: boolean;
-  onShowSignatureSocialChange: (show: boolean) => void;
-  profile: ProfileData;
-}
-
-interface ControleLogoProps {
-    showLogo: boolean;
-    onShowLogoChange: (show: boolean) => void;
-    logoPositionX: number;
-    onLogoPositionXChange: (x: number) => void;
-    logoPositionY: number;
-    onLogoPositionYChange: (y: number) => void;
-    logoScale: number;
-    onLogoScaleChange: (scale: number) => void;
-    logoOpacity: number;
-    onLogoOpacityChange: (opacity: number) => void;
-    profile: ProfileData;
-}
-
 function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
@@ -64,7 +32,7 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
     
     const [gradient, setGradient] = useState({
         type: 'linear' as 'linear' | 'radial',
-        colors: ['#A06CD5', '#45B8AC'],
+        colors: ['#A06CD5', '#45B8AC'] as [string, string],
         direction: 'to right'
     });
 
@@ -118,12 +86,8 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
 
             {activeTab === 'solid' && (
                 <div className="space-y-2">
-                    <Label>Cor de Fundo</Label>
-                    <div className="flex items-center gap-2">
-                        <Input type="text" value={"#ffffff"} onChange={(e) => handleSolidColorChange(e.target.value)} className="w-full h-10"/>
-                         <div className="relative h-10 w-10">
-                            <Input type="color" value={"#ffffff"} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                        </div>
+                    <div className="relative h-10 w-full">
+                        <Input type="color" value={""} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                     </div>
                 </div>
             )}
@@ -159,8 +123,7 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
                         <div className="grid grid-cols-1 gap-2">
                             {[0, 1].map((index) => (
                                 <div key={index} className="flex items-center gap-2">
-                                    <Input type="text" value={gradient.colors[index as 0 | 1]} onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)} className="w-full h-10"/>
-                                    <div className="relative h-10 w-10">
+                                    <div className="relative h-10 w-full">
                                         <Input type="color" value={gradient.colors[index as 0 | 1]} onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                                     </div>
                                 </div>
@@ -173,6 +136,23 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
     )
 }
 
+interface ControleAssinaturaProps {
+  showProfileSignature: boolean;
+  onShowProfileSignatureChange: (show: boolean) => void;
+  signaturePositionX: number;
+  onSignaturePositionXChange: (x: number) => void;
+  signaturePositionY: number;
+  onSignaturePositionYChange: (y: number) => void;
+  signatureScale: number;
+  onSignatureScaleChange: (scale: number) => void;
+  showSignaturePhoto: boolean;
+  onShowSignaturePhotoChange: (show: boolean) => void;
+  showSignatureUsername: boolean;
+  onShowSignatureUsernameChange: (show: boolean) => void;
+  showSignatureSocial: boolean;
+  onShowSignatureSocialChange: (show: boolean) => void;
+  profile: ProfileData;
+}
 function ControleAssinatura(props: ControleAssinaturaProps) {
     const { 
         showProfileSignature, onShowProfileSignatureChange,
@@ -248,6 +228,19 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
      )
 }
 
+interface ControleLogoProps {
+    showLogo: boolean;
+    onShowLogoChange: (show: boolean) => void;
+    logoPositionX: number;
+    onLogoPositionXChange: (x: number) => void;
+    logoPositionY: number;
+    onLogoPositionYChange: (y: number) => void;
+    logoScale: number;
+    onLogoScaleChange: (scale: number) => void;
+    logoOpacity: number;
+    onLogoOpacityChange: (opacity: number) => void;
+    profile: ProfileData;
+}
 function ControleLogo(props: ControleLogoProps) {
     const {
         showLogo, onShowLogoChange,
@@ -419,23 +412,13 @@ export function Sidebar({
                 );
             case 'cores':
                  return (
-                     <div className="space-y-4 p-4">
+                     <div className="p-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <Input id="bg-color" type="text" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="flex-1" />
-                                    <div className="relative h-10 w-10">
-                                       <Input type="color" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                    </div>
-                                </div>
+                            <div className="relative h-10">
+                               <Input type="color" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                             </div>
-                             <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <Input id="fg-color" type="text" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="flex-1" />
-                                    <div className="relative h-10 w-10">
-                                        <Input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                    </div>
-                                </div>
+                             <div className="relative h-10">
+                                <Input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                             </div>
                         </div>
                     </div>

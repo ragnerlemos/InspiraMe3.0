@@ -59,22 +59,13 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                 {controleAtivo === 'cor' && (
                      <div className="space-y-2">
                         <Label htmlFor="text-color">Cor do Texto</Label>
-                        <div className="flex items-center gap-2">
+                        <div className="relative h-10 w-full">
                             <Input
-                                id="text-color"
-                                type="text"
+                                type="color"
                                 value={props.textColor}
                                 onChange={(e) => props.onTextColorChange(e.target.value)}
-                                className="flex-1"
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                             />
-                            <div className="relative h-10 w-10">
-                                <Input
-                                    type="color"
-                                    value={props.textColor}
-                                    onChange={(e) => props.onTextColorChange(e.target.value)}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                />
-                            </div>
                         </div>
                     </div>
                 )}
@@ -110,22 +101,13 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                      <div className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
-                            <div className="flex items-center gap-2">
+                            <div className="relative h-9 w-full">
                                 <Input
-                                    id="stroke-color"
-                                    type="text"
+                                    type="color"
                                     value={props.textStrokeColor}
                                     onChange={(e) => props.onTextStrokeColorChange(e.target.value)}
-                                    className="h-9 flex-1"
+                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                                 />
-                                <div className="relative h-9 w-9">
-                                     <Input
-                                        type="color"
-                                        value={props.textStrokeColor}
-                                        onChange={(e) => props.onTextStrokeColorChange(e.target.value)}
-                                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                    />
-                                </div>
                             </div>
                         </div>
                         <div className="space-y-2">

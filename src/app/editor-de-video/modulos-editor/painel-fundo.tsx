@@ -167,21 +167,13 @@ function ControleTipoFundo(props: {
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label>Cor da Película</Label>
-                        <div className="flex items-center gap-2">
+                         <div className="relative h-10 w-full">
                             <Input
-                                type="text"
+                                type="color"
                                 value={filmColor}
                                 onChange={(e) => onFilmColorChange(e.target.value)}
-                                className="h-10 flex-1"
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                             />
-                            <div className="relative h-10 w-10">
-                                <Input
-                                    type="color"
-                                    value={filmColor}
-                                    onChange={(e) => onFilmColorChange(e.target.value)}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                />
-                            </div>
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -230,21 +222,13 @@ function ControleTipoFundo(props: {
                         <Label>Cores do Gradiente</Label>
                         <div className="grid grid-cols-2 gap-4">
                             {[0, 1].map((index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                     <Input
-                                        type="text"
+                                <div key={index} className="relative h-10 w-full">
+                                    <Input
+                                        type="color"
                                         value={gradient.colors[index as 0 | 1]}
                                         onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)}
-                                        className="h-10 flex-1"
+                                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                                     />
-                                    <div className="relative h-10 w-10">
-                                        <Input
-                                            type="color"
-                                            value={gradient.colors[index as 0 | 1]}
-                                            onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)}
-                                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                        />
-                                    </div>
                                 </div>
                             ))}
                         </div>
