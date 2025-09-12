@@ -23,6 +23,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const aspectRatios = [
   { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -54,11 +55,14 @@ export function MobileToolbar({
   setBgColor,
   fgColor,
   setFgColor,
+  activeControl,
+  setActiveControl
 }: MobileToolbarProps) {
-  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
+  const [activePanel, setActivePanel] = useState<ActivePanel>(activeControl);
 
   const handlePanelChange = (panel: ActivePanel) => {
     setActivePanel(panel);
+    setActiveControl(panel);
   };
 
   const renderPanelContent = () => {
@@ -125,31 +129,34 @@ export function MobileToolbar({
       logo: "Editar Logo",
       null: "",
     };
-    return titles[activePanel];
+    return titles[activePanel ?? 'null'];
   };
 
   const mainToolbar = (
-    <div className="flex h-16 items-center justify-around px-2 border-t bg-background">
-      <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handlePanelChange("proporcao")} isActive={activePanel === "proporcao"} />
-      <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handlePanelChange("escala")} isActive={activePanel === "escala"} />
-      <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
-      <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
-      <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />
-      <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handlePanelChange("logo")} isActive={activePanel === "logo"} />
-    </div>
+     <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex h-16 items-center justify-start px-2 border-t bg-background w-max">
+            <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handlePanelChange("proporcao")} isActive={activePanel === "proporcao"} />
+            <BotaoRecurso icon={Scaling} label="Escala" onClick={() => handlePanelChange("escala")} isActive={activePanel === "escala"} />
+            <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
+            <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
+            <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />
+            <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handlePanelChange("logo")} isActive={activePanel === "logo"} />
+        </div>
+        <ScrollBar orientation="horizontal" className="h-2" />
+    </ScrollArea>
   );
 
   return (
     <>
-      <div className="md:hidden fixed bottom-0 left-0 w-full z-10">
+      <div className="md:hidden fixed bottom-0 left-0 w-full z-10 bg-background border-t">
         {mainToolbar}
       </div>
 
-      <Sheet open={!!activePanel} onOpenChange={(open) => !open && setActivePanel(null)}>
+      <Sheet open={!!activePanel} onOpenChange={(open) => { if (!open) { setActivePanel(null); setActiveControl(null); }}}>
         <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col">
           <SheetHeader className="mb-2">
             <SheetTitle className="flex items-center">
-              <Button variant="ghost" size="icon" className="mr-2" onClick={() => setActivePanel(null)}>
+              <Button variant="ghost" size="icon" className="mr-2" onClick={() => { setActivePanel(null); setActiveControl(null); }}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               {getPanelTitle()}
