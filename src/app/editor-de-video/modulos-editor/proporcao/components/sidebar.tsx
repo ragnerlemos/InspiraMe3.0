@@ -408,7 +408,7 @@ export function Sidebar({
                  return (
                     <div className="p-4 grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-center block">Fundo</Label>
+                            <Label>Cor do Fundo</Label>
                             <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: baseBgColor }} />
                                 <Input 
@@ -420,8 +420,8 @@ export function Sidebar({
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-center block">Primeiro Plano</Label>
-                            <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
+                            <Label>Cor do Texto</Label>
+                             <div className="relative h-10 w-full rounded-md border overflow-hidden cursor-pointer">
                                 <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
                                 <Input 
                                     type="color" 
