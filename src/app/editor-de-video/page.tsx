@@ -2,9 +2,6 @@
 import { Suspense } from 'react';
 import { EditorClient } from './modulos-editor/cliente-editor';
 import { Skeleton } from '@/components/ui/skeleton';
-import { EditorHeader } from '@/app/cabecalho-app';
-import { EditorProvider } from './contexts/editor-context';
-
 
 // Componente que exibe um esqueleto de carregamento enquanto o editor está sendo preparado.
 function EditorSkeleton() {
@@ -28,15 +25,8 @@ function EditorSkeleton() {
 // Página do editor de vídeo que usa Suspense para mostrar um fallback de carregamento.
 export default function EditorPage() {
     return (
-        <EditorProvider>
-            <div className="flex flex-col h-screen w-full bg-background">
-                <EditorHeader />
-                <main className="flex-1 flex flex-col md:h-[calc(100vh-4rem)]">
-                    <Suspense fallback={<EditorSkeleton />}>
-                        <EditorClient />
-                    </Suspense>
-                </main>
-            </div>
-        </EditorProvider>
+        <Suspense fallback={<EditorSkeleton />}>
+            <EditorClient />
+        </Suspense>
     )
 }

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
-import { AppHeader } from './cabecalho-app';
+import { AppLayout } from './app-layout';
 
 
 // Metadados da página, como título e descrição, para SEO.
@@ -34,12 +34,11 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
         >
-          <div className="flex flex-col h-full">
-            <AppHeader />
             {/* O Toaster é usado para exibir notificações no aplicativo. */}
             <Toaster />
-            <main className="flex-1 min-h-0">{children}</main>
-          </div>
+            <AppLayout>
+                {children}
+            </AppLayout>
         </ThemeProvider>
       </body>
     </html>

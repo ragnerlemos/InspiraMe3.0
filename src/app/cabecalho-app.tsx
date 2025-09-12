@@ -87,7 +87,7 @@ export function AppHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   // Renderiza o cabeçalho do editor apenas na página /editor-de-video
-  if (pathname.startsWith('/editor-de-video/modulos-editor') || pathname === '/editor-de-video') {
+  if (pathname.startsWith('/editor-de-video')) {
     return null;
   }
 
@@ -206,5 +206,3 @@ export function AppHeader() {
     </header>
   );
 }
-
-    
