@@ -1,5 +1,3 @@
-
-
 // Componente para a aba "Estilo", que agrupa todos os controles de customização visual do texto.
 
 import {
@@ -60,7 +58,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                 {controleAtivo === 'cor' && (
                      <div className="space-y-2">
                         <Label htmlFor="text-color">Cor do Texto</Label>
-                        <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full">
                             <Input
                                 type="color"
                                 value={props.textColor}
