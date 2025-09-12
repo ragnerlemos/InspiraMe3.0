@@ -163,11 +163,6 @@ export function AppHeader() {
                             Proporção
                          </DropdownMenuItem>
                       </Link>
-                      <Link href="/editor-de-video/modulos-editor/assinatura-perfil" passHref>
-                         <DropdownMenuItem>
-                            Assinatura
-                         </DropdownMenuItem>
-                      </Link>
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
@@ -193,10 +188,6 @@ export function AppHeader() {
                     <Link href="/editor-de-video/modulos-editor/proporcao" onClick={() => setIsSheetOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
                       <TestTube2 className="h-4 w-4" />
                       Proporção
-                    </Link>
-                    <Link href="/editor-de-video/modulos-editor/assinatura-perfil" onClick={() => setIsSheetOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-                      <TestTube2 className="h-4 w-4" />
-                      Assinatura
                     </Link>
                 </nav>
             </SheetContent>

@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import type { VisualizacaoEditorProps } from "./tipos";
+import { AssinaturaPerfil } from "./assinatura-perfil";
 import { VisualizacaoPerfil } from "./visualizacao-perfil";
 import { cn } from "@/lib/utils";
 
@@ -120,7 +121,12 @@ export function VisualizacaoEditor({
                 transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
               }}
             >
-              {/* O componente AssinaturaPerfil foi removido */}
+              <AssinaturaPerfil
+                profile={profile}
+                showPhoto={showSignaturePhoto}
+                showUsername={showSignatureUsername}
+                showSocial={showSignatureSocial}
+              />
             </div>
           )}
            {showLogo && profile.logo && (
