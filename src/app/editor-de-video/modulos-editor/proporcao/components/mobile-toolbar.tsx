@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, ComponentType } from "react";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -53,6 +53,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
 
+
 const aspectRatios = [
   { label: "Story", value: "9 / 16", icon: RectangleVertical },
   { label: "Quadrado", value: "1 / 1", icon: Square },
@@ -62,7 +63,41 @@ const aspectRatios = [
 type ActivePanel = "texto" | "canvas" | "cores" | "filtro" | "fundo" | "assinatura" | "logo" | "estilo" | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: string, setBaseBgColor: (color: string) => void }) {
+
+interface ControleAssinaturaProps {
+  showProfileSignature: boolean;
+  onShowProfileSignatureChange: (show: boolean) => void;
+  signaturePositionX: number;
+  onSignaturePositionXChange: (x: number) => void;
+  signaturePositionY: number;
+  onSignaturePositionYChange: (y: number) => void;
+  signatureScale: number;
+  onSignatureScaleChange: (scale: number) => void;
+  showSignaturePhoto: boolean;
+  onShowSignaturePhotoChange: (show: boolean) => void;
+  showSignatureUsername: boolean;
+  onShowSignatureUsernameChange: (show: boolean) => void;
+  showSignatureSocial: boolean;
+  onShowSignatureSocialChange: (show: boolean) => void;
+  profile: ProfileData;
+}
+
+interface ControleLogoProps {
+    showLogo: boolean;
+    onShowLogoChange: (show: boolean) => void;
+    logoPositionX: number;
+    onLogoPositionXChange: (x: number) => void;
+    logoPositionY: number;
+    onLogoPositionYChange: (y: number) => void;
+    logoScale: number;
+    onLogoScaleChange: (scale: number) => void;
+    logoOpacity: number;
+    onLogoOpacityChange: (opacity: number) => void;
+    profile: ProfileData;
+}
+
+
+function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<TipoFundoAtivo>('solid');
@@ -127,9 +162,9 @@ function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: strin
                  <div className="space-y-1">
                     <Label htmlFor="bg-color-mobile">Cor de Fundo</Label>
                     <div className="flex items-center gap-2">
-                        <Input id="bg-color-mobile" type="text" value={baseBgColor} onChange={(e) => handleSolidColorChange(e.target.value)} className="flex-1" />
+                        <Input id="bg-color-mobile" type="text" value={"#000000"} onChange={(e) => handleSolidColorChange(e.target.value)} className="flex-1" />
                         <div className="relative h-10 w-10">
-                            <Input type="color" value={baseBgColor} onChange={(e) => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
+                            <Input type="color" value={"#000000"} onChange={(e) => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                         </div>
                     </div>
                 </div>
@@ -419,7 +454,7 @@ export function MobileToolbar({
       cores: (
         <div className="space-y-4 p-4">
           <div className="space-y-1">
-              <Label htmlFor="bg-color-mobile">Cor de Fundo</Label>
+              <Label htmlFor="bg-color-mobile">Fundo</Label>
                <div className="flex items-center gap-2">
                     <Input id="bg-color-mobile" type="text" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="flex-1" />
                     <div className="relative h-10 w-10">
@@ -428,7 +463,7 @@ export function MobileToolbar({
                 </div>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="fg-color-mobile">Cor do Texto</Label>
+              <Label htmlFor="fg-color-mobile">Primeiro Plano</Label>
               <div className="flex items-center gap-2">
                 <Input id="fg-color-mobile" type="text" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="flex-1" />
                 <div className="relative h-10 w-10">
@@ -478,7 +513,7 @@ export function MobileToolbar({
             </div>
        </div>
       ),
-      fundo: <div className="p-4"><ControleTipoFundo baseBgColor={baseBgColor} setBaseBgColor={setBaseBgColor} /></div>,
+      fundo: <div className="p-4"><ControleTipoFundo setBaseBgColor={setBaseBgColor} /></div>,
       assinatura: <div className="p-4"><ControleAssinatura {...props} /></div>,
       logo: <div className="p-4"><ControleLogo {...props} /></div>,
     };
@@ -506,7 +541,6 @@ export function MobileToolbar({
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange("texto")} isActive={activePanel === "texto"} />
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange("canvas")} isActive={activePanel === "canvas"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
-            <BotaoRecurso icon={Film} label="Filtro" onClick={() => handlePanelChange("filtro")} isActive={activePanel === "filtro"} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handlePanelChange("estilo")} isActive={activePanel === "estilo"} />
             <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />

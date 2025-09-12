@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, ComponentType } from "react";
 import Link from 'next/link';
 import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -428,53 +428,20 @@ export function Sidebar({
             case 'cores':
                  return (
                      <div className="space-y-4 p-4">
-                        <div className="space-y-2">
-                            <Label>Cor de Fundo</Label>
-                            <div className="flex items-center gap-2">
-                                <Input type="text" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="flex-1" />
-                                <div className="relative h-10 w-10">
-                                    <Input type="color" value={baseBgColor} onChange={e => setBaseBgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="bg-color">Fundo</Label>
+                                <Input id="bg-color" type="text" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="h-10" />
+                                <Input type="color" value={baseBgColor} onChange={e => setBaseBgColor(e.target.value)} className="h-10 w-full p-0 border-none cursor-pointer" />
                             </div>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Cor do Texto</Label>
-                            <div className="flex items-center gap-2">
-                                <Input type="text" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="flex-1" />
-                                <div className="relative h-10 w-10">
-                                    <Input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="fg-color">Primeiro Plano</Label>
+                                <Input id="fg-color" type="text" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="h-10" />
+                                <Input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="h-10 w-full p-0 border-none cursor-pointer" />
                             </div>
                         </div>
                     </div>
                  );
-             case 'filtro':
-                return (
-                    <div className="space-y-4 p-4">
-                        <div className="space-y-2">
-                            <Label>Cor do Filtro</Label>
-                            <div className="flex items-center gap-2">
-                                <Input type="text" value={filmColor} onChange={(e) => setFilmColor(e.target.value)} className="flex-1" />
-                                <div className="relative h-10 w-10">
-                                    <Input type="color" value={filmColor} onChange={e => setFilmColor(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                                <Label>Opacidade do Filtro</Label>
-                                <span className="text-sm font-mono text-muted-foreground">{filmOpacity}%</span>
-                            </div>
-                            <Slider
-                                value={[filmOpacity]}
-                                onValueChange={(values) => setFilmOpacity(values[0])}
-                                min={0}
-                                max={100}
-                                step={1}
-                            />
-                        </div>
-                    </div>
-                );
             case 'estilo':
                  return (
                      <div className="w-full flex-1 flex flex-col">
@@ -512,7 +479,6 @@ export function Sidebar({
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
-            <BotaoRecurso icon={Film} label="Filtro" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
         </div>
     );
