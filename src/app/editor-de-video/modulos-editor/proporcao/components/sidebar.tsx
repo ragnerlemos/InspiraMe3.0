@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, forwardRef } from "react";
 import Link from 'next/link';
-import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Scaling, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent } from "lucide-react";
+import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -16,7 +16,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
-
 
 const aspectRatios = [
     { label: "Story", value: "9 / 16", icon: RectangleVertical },
@@ -58,7 +57,7 @@ interface ControleLogoProps {
     profile: ProfileData;
 }
 
-function ControleTipoFundo({ setBgColor }: { setBgColor: (color: string) => void }) {
+function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<TipoFundoAtivo>('solid');
@@ -86,7 +85,7 @@ function ControleTipoFundo({ setBgColor }: { setBgColor: (color: string) => void
     };
 
     const handleSolidColorChange = (color: string) => {
-        setBgColor(color);
+        setBaseBgColor(color);
     };
 
     return (
@@ -321,10 +320,14 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps {
     setAspectRatio: (ratio: string) => void;
     scale: number;
     setScale: (scale: number) => void;
-    bgColor: string;
-    setBgColor: (color: string) => void;
+    baseBgColor: string;
+    setBaseBgColor: (color: string) => void;
     fgColor: string;
     setFgColor: (color: string) => void;
+    filmColor: string;
+    setFilmColor: (color: string) => void;
+    filmOpacity: number;
+    setFilmOpacity: (opacity: number) => void;
     activeControl: string | null;
     setActiveControl: (control: string | null) => void;
     text: string;
@@ -337,10 +340,14 @@ export function Sidebar({
     setAspectRatio,
     scale,
     setScale,
-    bgColor,
-    setBgColor,
+    baseBgColor,
+    setBaseBgColor,
     fgColor,
     setFgColor,
+    filmColor,
+    setFilmColor,
+    filmOpacity,
+    setFilmOpacity,
     activeControl,
     setActiveControl,
     text,
@@ -381,7 +388,7 @@ export function Sidebar({
                         />
                     </div>
                 );
-            case 'proporcao':
+            case 'canvas':
                 return (
                     <div className="space-y-4 p-4">
                         <div className="space-y-2">
@@ -419,19 +426,47 @@ export function Sidebar({
             case 'cores':
                  return (
                      <div className="space-y-4 p-4">
-                        <Label>Cores</Label>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="bg-color">Fundo</Label>
-                                <input id="bg-color" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" aria-label="Seletor de cor do fundo" />
+                        <div className="space-y-2">
+                            <Label>Cor de Fundo</Label>
+                            <div className="flex items-center gap-2">
+                                <Input type="text" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="w-full h-10"/>
+                                <Popover><PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: baseBgColor }} className="h-10 w-10 border-2" /></PopoverTrigger><PopoverContent className="w-auto p-0 border-none"><input type="color" value={baseBgColor} onChange={e => setBaseBgColor(e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent></Popover>
                             </div>
-                            <div className="space-y-1">
-                                <Label htmlFor="fg-color">Primeiro Plano</Label>
-                                <input id="fg-color" type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" aria-label="Seletor de cor do primeiro plano" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Cor do Texto</Label>
+                            <div className="flex items-center gap-2">
+                                <Input type="text" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-full h-10"/>
+                                <Popover><PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: fgColor }} className="h-10 w-10 border-2" /></PopoverTrigger><PopoverContent className="w-auto p-0 border-none"><input type="color" value={fgColor} onChange={e => setFgColor(e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent></Popover>
                             </div>
                         </div>
                     </div>
                  );
+             case 'filtro':
+                return (
+                    <div className="space-y-4 p-4">
+                        <div className="space-y-2">
+                            <Label>Cor do Filtro</Label>
+                            <div className="flex items-center gap-2">
+                                <Input type="text" value={filmColor} onChange={(e) => setFilmColor(e.target.value)} className="w-full h-10"/>
+                                <Popover><PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: filmColor }} className="h-10 w-10 border-2" /></PopoverTrigger><PopoverContent className="w-auto p-0 border-none"><input type="color" value={filmColor} onChange={e => setFilmColor(e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent></Popover>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Label>Opacidade do Filtro</Label>
+                                <span className="text-sm font-mono text-muted-foreground">{filmOpacity}%</span>
+                            </div>
+                            <Slider
+                                value={[filmOpacity]}
+                                onValueChange={(values) => setFilmOpacity(values[0])}
+                                min={0}
+                                max={100}
+                                step={1}
+                            />
+                        </div>
+                    </div>
+                );
             case 'estilo':
                  return (
                      <div className="w-full flex-1 flex flex-col">
@@ -454,7 +489,7 @@ export function Sidebar({
                      </div>
                  );
             case 'fundo':
-                return <div className="p-4"><ControleTipoFundo setBgColor={setBgColor} /></div>;
+                return <div className="p-4"><ControleTipoFundo setBaseBgColor={setBaseBgColor} /></div>;
             case 'assinatura':
                 return <div className="p-4"><ControleAssinatura {...props} /></div>;
             case 'logo':
@@ -464,12 +499,12 @@ export function Sidebar({
         }
     }
 
-
     const mainToolbar = (
          <div className="flex h-16 items-center justify-around px-2 border-b">
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
-            <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('proporcao')} isActive={activeControl === 'proporcao'}/>
+            <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
+            <BotaoRecurso icon={Palette} label="Filtro" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
         </div>
     );
@@ -501,5 +536,3 @@ export function Sidebar({
         </aside>
     );
 }
-
-    

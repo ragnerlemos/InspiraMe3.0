@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/sheet";
 import {
   RectangleHorizontal,
-  Scaling,
   Paintbrush,
   RectangleVertical,
   Square,
@@ -59,9 +58,8 @@ const aspectRatios = [
   { label: "Vídeo", value: "16 / 9", icon: RectangleHorizontal },
 ];
 
-type ActivePanel = "texto" | "proporcao" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
+type ActivePanel = "texto" | "canvas" | "cores" | "filtro" | "fundo" | "assinatura" | "logo" | "estilo" | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
-
 
 interface ControleAssinaturaProps {
   showProfileSignature: boolean;
@@ -95,7 +93,7 @@ interface ControleLogoProps {
     profile: ProfileData;
 }
 
-function ControleTipoFundo({ bgColor, setBgColor }: { bgColor: string, setBgColor: (color: string) => void }) {
+function ControleTipoFundo({ baseBgColor, setBaseBgColor }: { baseBgColor: string, setBaseBgColor: (color: string) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<TipoFundoAtivo>('solid');
@@ -125,7 +123,7 @@ function ControleTipoFundo({ bgColor, setBgColor }: { bgColor: string, setBgColo
     };
 
     const handleSolidColorChange = (color: string) => {
-        setBgColor(color);
+        setBaseBgColor(color);
     };
 
     return (
@@ -153,7 +151,7 @@ function ControleTipoFundo({ bgColor, setBgColor }: { bgColor: string, setBgColo
             {activeTab === 'solid' && (
                  <div className="space-y-1">
                     <Label htmlFor="bg-color-mobile">Cor de Fundo</Label>
-                    <input id="bg-color-mobile" type="color" value={bgColor} onChange={(e) => handleSolidColorChange(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
+                    <input id="bg-color-mobile" type="color" value={baseBgColor} onChange={(e) => handleSolidColorChange(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
                 </div>
             )}
             
@@ -347,10 +345,14 @@ interface MobileToolbarProps extends ControleAssinaturaProps, ControleLogoProps 
   setAspectRatio: (ratio: string) => void;
   scale: number;
   setScale: (scale: number) => void;
-  bgColor: string;
-  setBgColor: (color: string) => void;
+  baseBgColor: string;
+  setBaseBgColor: (color: string) => void;
   fgColor: string;
   setFgColor: (color: string) => void;
+  filmColor: string;
+  setFilmColor: (color: string) => void;
+  filmOpacity: number;
+  setFilmOpacity: (opacity: number) => void;
   activeControl: string | null;
   setActiveControl: (control: string | null) => void;
   text: string;
@@ -363,10 +365,14 @@ export function MobileToolbar({
   setAspectRatio,
   scale,
   setScale,
-  bgColor,
-  setBgColor,
+  baseBgColor,
+  setBaseBgColor,
   fgColor,
   setFgColor,
+  filmColor,
+  setFilmColor,
+  filmOpacity,
+  setFilmOpacity,
   activeControl,
   setActiveControl,
   text,
@@ -401,7 +407,7 @@ export function MobileToolbar({
               />
           </div>
       ),
-      proporcao: (
+      canvas: (
         <div className="space-y-4 p-4">
             <div className="space-y-2">
                 <Label>Proporção da Tela</Label>
@@ -431,17 +437,29 @@ export function MobileToolbar({
       ),
       cores: (
         <div className="space-y-4 p-4">
-          <Label>Cores</Label>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="bg-color-mobile">Fundo</Label>
-              <input id="bg-color-mobile" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
+          <div className="space-y-1">
+              <Label htmlFor="bg-color-mobile">Cor de Fundo</Label>
+              <input id="bg-color-mobile" type="color" value={baseBgColor} onChange={(e) => setBaseBgColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="fg-color-mobile">Primeiro Plano</Label>
+              <Label htmlFor="fg-color-mobile">Cor do Texto</Label>
               <input id="fg-color-mobile" type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
             </div>
-          </div>
+        </div>
+      ),
+       filtro: (
+         <div className="space-y-4 p-4">
+            <div className="space-y-1">
+              <Label htmlFor="film-color-mobile">Cor do Filtro</Label>
+              <input id="film-color-mobile" type="color" value={filmColor} onChange={(e) => setFilmColor(e.target.value)} className="w-full h-10 rounded-md border cursor-pointer" />
+            </div>
+            <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                    <Label>Opacidade do Filtro</Label>
+                    <span className="text-sm font-mono">{filmOpacity}%</span>
+                </div>
+                <Slider value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} min={0} max={100} step={1} />
+            </div>
         </div>
       ),
       estilo: (
@@ -464,7 +482,7 @@ export function MobileToolbar({
             </div>
        </div>
       ),
-      fundo: <div className="p-4"><ControleTipoFundo bgColor={bgColor} setBgColor={setBgColor} /></div>,
+      fundo: <div className="p-4"><ControleTipoFundo baseBgColor={baseBgColor} setBaseBgColor={setBaseBgColor} /></div>,
       assinatura: <div className="p-4"><ControleAssinatura {...props} /></div>,
       logo: <div className="p-4"><ControleLogo {...props} /></div>,
     };
@@ -475,8 +493,9 @@ export function MobileToolbar({
   const getPanelTitle = () => {
     const titles: Record<string, string> = {
       texto: "Editar Texto",
-      proporcao: "Editar Canvas",
+      canvas: "Editar Canvas",
       cores: "Editar Cores",
+      filtro: "Editar Filtro",
       estilo: "Editar Estilo",
       fundo: "Editar Fundo",
       assinatura: "Editar Assinatura",
@@ -489,8 +508,9 @@ export function MobileToolbar({
      <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex h-16 items-center justify-start gap-1 px-2 border-t bg-background">
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange("texto")} isActive={activePanel === "texto"} />
-            <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange("proporcao")} isActive={activePanel === "proporcao"} />
+            <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange("canvas")} isActive={activePanel === "canvas"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
+            <BotaoRecurso icon={Palette} label="Filtro" onClick={() => handlePanelChange("filtro")} isActive={activePanel === "filtro"} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handlePanelChange("estilo")} isActive={activePanel === "estilo"} />
             <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />
@@ -524,5 +544,3 @@ export function MobileToolbar({
     </>
   );
 }
-
-    

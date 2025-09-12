@@ -11,6 +11,8 @@ interface PreviewCanvaProps {
   aspectRatio: string;
   bgColor: string;
   fgColor: string;
+  filmColor: string;
+  filmOpacity: number;
   scale: number;
   text: string;
   profile: ProfileData;
@@ -32,6 +34,8 @@ export function PreviewCanva({
   aspectRatio,
   bgColor,
   fgColor,
+  filmColor,
+  filmOpacity,
   scale,
   text,
   profile,
@@ -48,6 +52,21 @@ export function PreviewCanva({
   logoScale,
   logoOpacity,
 }: PreviewCanvaProps) {
+  // Função para converter cor hexadecimal para RGB
+  function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+        }
+        : null;
+  }
+  
+  const filmRgb = hexToRgb(filmColor);
+  const filmBackgroundColor = filmRgb ? `rgba(${filmRgb.r}, ${filmRgb.g}, ${filmRgb.b}, ${filmOpacity / 100})` : `rgba(0, 0, 0, ${filmOpacity / 100})`;
+
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
       <div
@@ -61,7 +80,8 @@ export function PreviewCanva({
           "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container"
         )}
       >
-        <div className="flex items-center justify-center h-full p-8">
+        <div className="absolute inset-0 z-20" style={{ backgroundColor: filmBackgroundColor }} />
+        <div className="relative z-30 flex items-center justify-center h-full p-8">
             <p
               className="font-semibold text-3xl text-center break-words"
               style={{ color: fgColor, textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}
@@ -72,7 +92,7 @@ export function PreviewCanva({
         
         {showProfileSignature && (
             <div
-              className="absolute"
+              className="absolute z-30"
               style={{
                 top: `${signaturePositionY}%`,
                 left: `${signaturePositionX}%`,
@@ -90,7 +110,7 @@ export function PreviewCanva({
 
         {showLogo && profile.logo && (
             <div
-              className="absolute"
+              className="absolute z-30"
               style={{
                 top: `${logoPositionY}%`,
                 left: `${logoPositionX}%`,
@@ -105,5 +125,3 @@ export function PreviewCanva({
     </main>
   );
 }
-
-    

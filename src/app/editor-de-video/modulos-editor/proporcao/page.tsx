@@ -31,8 +31,10 @@ function ProporcaoSkeleton() {
 
 export default function AspectWeaver() {
   const [aspectRatio, setAspectRatio] = useState("9 / 16");
-  const [bgColor, setBgColor] = useState("#333333");
+  const [baseBgColor, setBaseBgColor] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
+  const [filmColor, setFilmColor] = useState("#000000");
+  const [filmOpacity, setFilmOpacity] = useState(0);
   const [scale, setScale] = useState(1);
   const [activeControl, setActiveControl] = useState<string | null>('texto');
   const { width } = useWindowSize();
@@ -73,10 +75,14 @@ export default function AspectWeaver() {
     setAspectRatio,
     scale,
     setScale,
-    bgColor,
-    setBgColor,
+    baseBgColor,
+    setBaseBgColor,
     fgColor,
     setFgColor,
+    filmColor,
+    setFilmColor,
+    filmOpacity,
+    setFilmOpacity,
     activeControl,
     setActiveControl,
     text,
@@ -116,8 +122,10 @@ export default function AspectWeaver() {
         <main className="flex-1 w-full overflow-auto">
             <PreviewCanva
                 aspectRatio={aspectRatio}
-                bgColor={bgColor}
+                bgColor={baseBgColor}
                 fgColor={fgColor}
+                filmColor={filmColor}
+                filmOpacity={filmOpacity}
                 scale={scale}
                 text={text}
                 profile={profile}
@@ -141,5 +149,3 @@ export default function AspectWeaver() {
     </div>
   );
 }
-
-    
