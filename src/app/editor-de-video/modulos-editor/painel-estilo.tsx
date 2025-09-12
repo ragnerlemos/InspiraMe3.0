@@ -133,7 +133,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
 
     const subMenu = (
         <ScrollArea className="w-full whitespace-nowrap border-b">
-            <div className="flex h-20 items-center justify-start gap-1 px-2">
+            <div className="flex w-max space-x-1 p-2">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => handleSetControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
@@ -156,5 +156,3 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
        </div>
     );
 }
-
-    
