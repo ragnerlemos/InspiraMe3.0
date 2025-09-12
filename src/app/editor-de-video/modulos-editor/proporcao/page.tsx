@@ -61,7 +61,7 @@ export default function AspectWeaver() {
   useEffect(() => {
     if (aspectRatio === "9 / 16" && !isDesktop) {
       setScale(0.80);
-    } else {
+    } else if (scale !== 1 && (aspectRatio !== "9 / 16" || isDesktop)) {
       setScale(1);
     }
   }, [aspectRatio, isDesktop]);
@@ -70,7 +70,7 @@ export default function AspectWeaver() {
     return <ProporcaoSkeleton />;
   }
 
-  const sidebarProps = {
+  const commonProps = {
     aspectRatio,
     setAspectRatio,
     scale,
@@ -79,10 +79,6 @@ export default function AspectWeaver() {
     setBaseBgColor,
     fgColor,
     setFgColor,
-    filmColor,
-    setFilmColor,
-    filmOpacity,
-    setFilmOpacity,
     activeControl,
     setActiveControl,
     text,
@@ -117,7 +113,7 @@ export default function AspectWeaver() {
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)]">
       <div className="flex-1 flex md:grid md:grid-cols-[288px_1fr] min-h-0">
-        <Sidebar {...sidebarProps} />
+        <Sidebar {...commonProps} />
 
         <main className="flex-1 w-full overflow-auto">
             <PreviewCanva
@@ -145,7 +141,7 @@ export default function AspectWeaver() {
         </main>
       </div>
 
-      <MobileToolbar {...sidebarProps} />
+      <MobileToolbar {...commonProps} />
     </div>
   );
 }

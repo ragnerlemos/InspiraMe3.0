@@ -87,7 +87,7 @@ function ControleTipoFundo({ setBaseBgColor }: { setBaseBgColor: (color: string)
 
             {activeTab === 'solid' && (
                 <div className="space-y-2">
-                    <Label>Cor do Fundo</Label>
+                     <Label>Cor do Fundo</Label>
                     <div className="relative h-10 w-full">
                         <Input type="color" value={""} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                     </div>
@@ -315,6 +315,8 @@ function ControleLogo(props: ControleLogoProps) {
 interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps {
     aspectRatio: string;
     setAspectRatio: (ratio: string) => void;
+    scale: number;
+    setScale: (scale: number) => void;
     baseBgColor: string;
     setBaseBgColor: (color: string) => void;
     fgColor: string;
@@ -329,6 +331,8 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps {
 export function Sidebar({
     aspectRatio,
     setAspectRatio,
+    scale,
+    setScale,
     baseBgColor,
     setBaseBgColor,
     fgColor,
@@ -342,14 +346,11 @@ export function Sidebar({
 
     const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
 
-    const handleSetControleAtivo = (controle: string) => {
-        setActiveControl(prev => {
-            if (prev === controle) {
-                return null;
-            }
-            setActiveSubControl(null); // Reseta sub-controle ao trocar de principal
-            return controle;
-        });
+    const handleSetControleAtivo = (controle: string | null) => {
+        setActiveControl(controle);
+        if (controle !== 'estilo') {
+            setActiveSubControl(null);
+        }
     }
 
     const renderActiveControl = () => {
@@ -392,12 +393,20 @@ export function Sidebar({
                                 ))}
                             </div>
                         </div>
+                        <Separator />
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Label>Escala do Canvas</Label>
+                                <span className="text-sm font-mono">{Math.round(scale * 100)}%</span>
+                            </div>
+                            <Slider value={[scale]} onValueChange={(v) => setScale(v[0])} min={0.5} max={2} step={0.01} />
+                        </div>
                     </div>
                 );
             case 'cores':
                  return (
                      <div className="p-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2">
                                 <Label>Cor do Fundo</Label>
                                 <div className="relative h-10 w-full">
