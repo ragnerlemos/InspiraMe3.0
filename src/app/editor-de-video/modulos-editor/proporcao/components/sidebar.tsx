@@ -446,8 +446,12 @@ export function Sidebar({
             case 'estilo':
                  return (
                      <div className="w-full flex-1 flex flex-col">
-                        <ScrollArea className="w-full whitespace-nowrap border-b">
-                            <div className="flex w-max space-x-1 p-2">
+                        <div className="p-4 flex-1 overflow-y-auto">
+                            {!activeSubControl && <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>}
+                            {activeSubControl && <p className="text-center text-muted-foreground text-sm">Controles para '{activeSubControl}' aqui.</p>}
+                        </div>
+                        <div className="w-full whitespace-nowrap border-t mt-auto">
+                            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
                                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
                                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
                                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
@@ -457,28 +461,6 @@ export function Sidebar({
                                 <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
                                 <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
                             </div>
-                            <ScrollBar orientation="horizontal" className="h-2" />
-                        </ScrollArea>
-                        <div className="p-4 flex-1 overflow-y-auto">
-                            {!activeSubControl && <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>}
-                            {activeSubControl === 'fonte' && <div className="space-y-2">
-                                <Label htmlFor="font-family">Fonte</Label>
-                                <Select onValueChange={() => {}} defaultValue="Poppins">
-                                    <SelectTrigger id="font-family"><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Poppins">Poppins</SelectItem>
-                                        <SelectItem value="PT Sans">PT Sans</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>}
-                             {activeSubControl === 'tamanho' && <div className="space-y-2">
-                                <div className="flex justify-between items-center">
-                                    <Label htmlFor="font-size">Tamanho</Label>
-                                    <span className="text-sm text-muted-foreground">10 pt</span>
-                                </div>
-                                <Slider id="font-size" min={1} max={20} step={0.1} defaultValue={[10]} />
-                            </div>}
-                            {activeSubControl && !['fonte', 'tamanho'].includes(activeSubControl) && <p className="text-center text-muted-foreground text-sm">Controles para '{activeSubControl}' aqui.</p>}
                         </div>
                      </div>
                  );
@@ -519,3 +501,5 @@ export function Sidebar({
         </aside>
     );
 }
+
+    
