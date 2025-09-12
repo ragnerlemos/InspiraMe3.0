@@ -395,7 +395,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
     
     const renderControle = () => {
-        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção abaixo para editar.</p>;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção ao lado.</p>;
 
         const Content = () => {
             switch(controleAtivo) {
@@ -427,22 +427,20 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
 
     const subMenu = (
-        <div className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
-                <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
-                <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
-                <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
-                 <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
-            </div>
+        <div className="flex h-full flex-col items-center gap-1 border-r bg-background/90 backdrop-blur-sm p-2">
+            <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
+            <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
+            <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
+             <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
         </div>
     );
 
     return (
-       <div className="w-full h-full flex flex-col">
+       <div className="w-full h-full flex flex-row">
+            {subMenu}
             <div className="flex-1 overflow-y-auto">
                  {renderControle()}
             </div>
-            {subMenu}
        </div>
     );
 }

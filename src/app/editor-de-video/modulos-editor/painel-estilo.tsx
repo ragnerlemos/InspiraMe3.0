@@ -16,6 +16,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import type { PainelEstiloProps } from "./tipos";
 import { BotaoRecurso } from "./botao-recurso";
+import { Separator } from "@/components/ui/separator";
 
 type ControleAtivo = 'fonte' | 'tamanho' | 'cor' | 'alinhamento' | 'estilo' | 'posicao' | 'contorno' | 'sombra' | null;
 
@@ -29,7 +30,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     }
 
     const renderControle = () => {
-        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção abaixo para editar.</p>;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4 text-sm">Selecione uma ferramenta.</p>;
 
         return (
             <div className="space-y-4 p-4">
@@ -133,26 +134,24 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
     }
 
     const subMenu = (
-         <div className="w-full whitespace-nowrap border-t">
-            <div className="flex h-14 items-center justify-around flex-wrap bg-background/90 backdrop-blur-sm px-2">
-                <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
-                <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
-                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => handleSetControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
-                <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => handleSetControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
-                <BotaoRecurso icon={Bold} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
-                <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => handleSetControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
-                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => handleSetControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
-                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => handleSetControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
-            </div>
+        <div className="flex h-full flex-col items-center gap-1 border-r bg-background/90 backdrop-blur-sm p-2">
+            <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
+            <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
+            <BotaoRecurso icon={Pipette} label="Cor" onClick={() => handleSetControleAtivo('cor')} isActive={controleAtivo === 'cor'}/>
+            <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => handleSetControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
+            <BotaoRecurso icon={Bold} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
+            <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => handleSetControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
+            <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => handleSetControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
+            <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => handleSetControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
         </div>
     )
 
     return (
-       <div className="w-full h-full flex flex-col">
+       <div className="w-full h-full flex flex-row">
+            {subMenu}
             <div className="flex-1 overflow-y-auto">
                 {renderControle()}
             </div>
-            {subMenu}
        </div>
     );
 }
