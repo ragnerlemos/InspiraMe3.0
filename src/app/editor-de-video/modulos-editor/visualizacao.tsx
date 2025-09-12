@@ -7,6 +7,18 @@ import { VisualizacaoPerfil } from "./visualizacao-perfil";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { cn } from "@/lib/utils";
 
+// Função para converter cor hexadecimal para RGB
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+        }
+        : null;
+}
+
 // Detecta tipo de mídia
 const getMediaType = (src: string): "image" | "video" | "unknown" => {
   if (!src) return "unknown";
@@ -25,6 +37,8 @@ const getMediaType = (src: string): "image" | "video" | "unknown" => {
 export function VisualizacaoEditor({
   aspectRatio,
   backgroundStyle,
+  filmColor,
+  filmOpacity,
   text,
   textStyle,
   textVerticalPosition,
@@ -146,6 +160,9 @@ export function VisualizacaoEditor({
     );
   };
   
+    const filmRgb = hexToRgb(filmColor);
+    const filmBackgroundColor = filmRgb ? `rgba(${filmRgb.r}, ${filmRgb.g}, ${filmRgb.b}, ${filmOpacity / 100})` : `rgba(0, 0, 0, ${filmOpacity / 100})`;
+
   return (
     <div
       id="editor-preview-content"
@@ -158,12 +175,20 @@ export function VisualizacaoEditor({
         }
       )}
       style={{
-        backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : undefined,
-        backgroundImage: backgroundStyle.type === 'gradient' ? backgroundStyle.value : undefined,
+        backgroundColor: backgroundStyle.type === 'solid' && filmOpacity === 0 ? backgroundStyle.value : undefined,
+        backgroundImage: backgroundStyle.type === 'gradient' && filmOpacity === 0 ? backgroundStyle.value : undefined,
       }}
     >
         {renderBackground()}
-        {renderContent()}
+        {filmOpacity > 0 && (
+            <div 
+                className="absolute inset-0 z-10"
+                style={{ backgroundColor: filmBackgroundColor }}
+            />
+        )}
+        <div className="relative z-20 h-full w-full">
+            {renderContent()}
+        </div>
     </div>
   );
 }

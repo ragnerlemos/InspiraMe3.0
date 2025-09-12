@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -46,20 +46,21 @@ function ControleProporcao({ aspectRatio, onAspectRatioChange }: { aspectRatio: 
 
 function ControleTipoFundo(props: {
     backgroundStyle: PainelFundoProps['backgroundStyle'],
-    onBackgroundStyleChange: PainelFundoProps['onBackgroundStyleChange']
+    onBackgroundStyleChange: PainelFundoProps['onBackgroundStyleChange'],
+    filmColor: string,
+    onFilmColorChange: (color: string) => void,
+    filmOpacity: number,
+    onFilmOpacityChange: (opacity: number) => void,
 }) {
-    const { backgroundStyle, onBackgroundStyleChange } = props;
+    const { backgroundStyle, onBackgroundStyleChange, filmColor, onFilmColorChange, filmOpacity, onFilmOpacityChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
-     const { activeTab, solidColor, gradient } = useMemo(() => {
-        const activeTab: TipoFundoAtivo = backgroundStyle.type === 'media' ? 'media' : backgroundStyle.type === 'solid' ? 'solid' : 'gradient';
-        let solidColor = '#A06CD5';
+     const { activeTab, gradient } = useMemo(() => {
+        const activeTab: TipoFundoAtivo = backgroundStyle.type === 'media' ? 'media' : backgroundStyle.type === 'solid' ? 'film' : 'gradient';
         let gradient = { type: 'linear' as 'linear'|'radial', colors: ['#A06CD5', '#45B8AC'] as [string, string], direction: 'to right' };
 
-        if (activeTab === 'solid') {
-            solidColor = backgroundStyle.value;
-        } else if (activeTab === 'gradient' && backgroundStyle.value) {
+        if (activeTab === 'gradient' && backgroundStyle.value) {
              try {
                 const type = backgroundStyle.value.startsWith('linear') ? 'linear' : 'radial';
                 const parts = backgroundStyle.value.match(/\((.*)\)/)?.[1].split(', ');
@@ -81,21 +82,28 @@ function ControleTipoFundo(props: {
                 // fallback
             }
         }
-        return { activeTab, solidColor, gradient };
+        return { activeTab, gradient };
     }, [backgroundStyle]);
 
     const handleTabChange = (tab: TipoFundoAtivo) => {
          let newStyle;
-        if (tab === 'solid') {
-            newStyle = { type: 'solid' as const, value: solidColor };
+        if (tab === 'film') {
+            // Ao mudar para película, se o fundo for mídia, mantém, senão, põe preto.
+            if (backgroundStyle.type !== 'media') {
+                 onBackgroundStyleChange({ type: 'solid', value: '#000000' });
+            }
+            onFilmOpacityChange(50); // Opacidade padrão ao ativar
         } else if (tab === 'gradient') {
             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : 'circle, '}${gradient.colors[0]}, ${gradient.colors[1]})`;
             newStyle = { type: 'gradient' as const, value: gradValue };
-        } else {
+            onBackgroundStyleChange(newStyle);
+            onFilmOpacityChange(0);
+        } else { // media
             const mediaValue = templates.find(t => t.id === 1)?.imageUrl ?? '';
             newStyle = { type: 'media' as const, value: mediaValue };
+            onBackgroundStyleChange(newStyle);
+            onFilmOpacityChange(0);
         }
-        onBackgroundStyleChange(newStyle);
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,8 +120,6 @@ function ControleTipoFundo(props: {
         reader.onerror = () => toast({ variant: "destructive", title: "Erro ao Carregar", description: "Houve um problema ao ler o arquivo selecionado."});
         reader.readAsDataURL(file);
     };
-    
-    const handleSolidColorChange = (color: string) => onBackgroundStyleChange({ type: 'solid', value: color });
     
     const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
         const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : 'circle, '}${grad.colors[0]}, ${grad.colors[1]})`;
@@ -138,7 +144,7 @@ function ControleTipoFundo(props: {
         <div className="space-y-4">
             <div className="grid grid-cols-3 gap-2">
                 <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}><Palette className="mr-2 h-4 w-4" /> Cor</Button>
+                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => handleTabChange('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
                 <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
             </div>
             
@@ -157,12 +163,21 @@ function ControleTipoFundo(props: {
                 </div>
             )}
 
-            {activeTab === 'solid' && (
-                <div className="space-y-2">
-                    <Label>Cor de Fundo</Label>
-                    <div className="flex items-center gap-2">
-                        <Input type="text" value={solidColor} onChange={(e) => handleSolidColorChange(e.target.value)} className="w-full h-10"/>
-                        <Popover><PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: solidColor }} className="h-10 w-10 border-2" /></PopoverTrigger><PopoverContent className="w-auto p-0 border-none"><input type="color" value={solidColor} onChange={e => handleSolidColorChange(e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent></Popover>
+            {activeTab === 'film' && (
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label>Cor da Película</Label>
+                        <div className="flex items-center gap-2">
+                            <Input type="text" value={filmColor} onChange={(e) => onFilmColorChange(e.target.value)} className="w-full h-10"/>
+                            <Popover><PopoverTrigger asChild><Button variant="outline" size="icon" style={{ backgroundColor: filmColor }} className="h-10 w-10 border-2" /></PopoverTrigger><PopoverContent className="w-auto p-0 border-none"><input type="color" value={filmColor} onChange={e => onFilmColorChange(e.target.value)} className="w-16 h-16 cursor-pointer" /></PopoverContent></Popover>
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <Label htmlFor="film-opacity">Opacidade da Película</Label>
+                            <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
+                        </div>
+                        <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => onFilmOpacityChange(v[0])} />
                     </div>
                 </div>
             )}
@@ -226,9 +241,9 @@ function ControleTipoFundo(props: {
 }
 
 type ControleAtivo = 'proporcao' | 'tipo' | 'assinatura' | 'logo' | null;
-type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
+type TipoFundoAtivo = 'media' | 'film' | 'gradient';
 
-function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'onBackgroundStyleChange' | 'aspectRatio' | 'onAspectRatioChange' | 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' > & { onClose: () => void }) {
+function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'onBackgroundStyleChange' | 'aspectRatio' | 'onAspectRatioChange' | 'showLogo' | 'onShowLogoChange' | 'logoPositionX' | 'onLogoPositionXChange' | 'logoPositionY' | 'onLogoPositionYChange' | 'logoScale' | 'onLogoScaleChange' | 'logoOpacity' | 'onLogoOpacityChange' | 'filmColor' | 'onFilmColorChange' | 'filmOpacity' | 'onFilmOpacityChange' > & { onClose: () => void }) {
     const { 
         showProfileSignature, onShowProfileSignatureChange,
         signaturePositionX, onSignaturePositionXChange,
@@ -388,7 +403,14 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
                 case 'proporcao':
                     return <ControleProporcao aspectRatio={props.aspectRatio} onAspectRatioChange={props.onAspectRatioChange} />
                 case 'tipo':
-                    return <ControleTipoFundo backgroundStyle={props.backgroundStyle} onBackgroundStyleChange={props.onBackgroundStyleChange} />
+                    return <ControleTipoFundo 
+                                backgroundStyle={props.backgroundStyle} 
+                                onBackgroundStyleChange={props.onBackgroundStyleChange}
+                                filmColor={props.filmColor}
+                                onFilmColorChange={props.onFilmColorChange}
+                                filmOpacity={props.filmOpacity}
+                                onFilmOpacityChange={props.onFilmOpacityChange}
+                            />
                 case 'assinatura':
                     return <ControleAssinatura {...props} />
                  case 'logo':

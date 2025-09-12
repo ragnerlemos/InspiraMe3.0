@@ -29,6 +29,8 @@ export interface EditorState {
     textStrokeColor: string;
     textStrokeWidth: number;
     backgroundStyle: EstiloFundo;
+    filmColor: string;
+    filmOpacity: number;
     aspectRatio: ProporcaoTela;
     activeTemplateId: number | string | null;
     showProfileSignature: boolean;
@@ -59,6 +61,8 @@ export interface SavedVideo {
 export interface VisualizacaoEditorProps {
     aspectRatio: ProporcaoTela;
     backgroundStyle: EstiloFundo;
+    filmColor: string;
+    filmOpacity: number;
     text: string;
     textStyle: EstiloTexto;
     textVerticalPosition: number;
@@ -122,6 +126,10 @@ export interface PainelEstiloProps {
 export interface PainelFundoProps {
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
+    filmColor: string;
+    onFilmColorChange: (color: string) => void;
+    filmOpacity: number;
+    onFilmOpacityChange: (opacity: number) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
     showProfileSignature: boolean;

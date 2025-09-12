@@ -34,6 +34,8 @@ const getInitialState = (): EditorState => ({
         type: 'media',
         value: "",
     },
+    filmColor: "#000000",
+    filmOpacity: 0,
     aspectRatio: "9 / 16",
     activeTemplateId: null,
     showProfileSignature: false,
@@ -288,6 +290,8 @@ export function EditorClient() {
   const editorProps = {
     aspectRatio: currentState.aspectRatio,
     backgroundStyle: currentState.backgroundStyle,
+    filmColor: currentState.filmColor,
+    filmOpacity: currentState.filmOpacity,
     text: currentState.text,
     textStyle: textStyle,
     textVerticalPosition: currentState.textVerticalPosition,
@@ -334,6 +338,10 @@ export function EditorClient() {
         onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
         backgroundStyle={currentState.backgroundStyle}
         onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
+        filmColor={currentState.filmColor}
+        onFilmColorChange={(filmColor) => updateState({ filmColor })}
+        filmOpacity={currentState.filmOpacity}
+        onFilmOpacityChange={(filmOpacity) => updateState({ filmOpacity })}
         aspectRatio={currentState.aspectRatio}
         onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
         onUndo={undo}
