@@ -103,7 +103,7 @@ export default function HomePage() {
                     <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">
                         {quote.category}
                     </span>
-                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center">
                          <Button variant="ghost" size="icon" onClick={() => toggleFavorite(quote.id)}>
                             <Heart className={cn("h-4 w-4", favorites.includes(quote.id) ? "text-red-500 fill-current" : "")} />
                         </Button>
