@@ -115,7 +115,6 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
             setBackgroundStyle({ type: 'gradient', value: gradValue });
         } else { // media
              setBackgroundStyle({ type: 'media', value: '' });
-             toast({ title: "Pronto para carregar!", description: "Selecione um arquivo de mídia." });
         }
     };
     
