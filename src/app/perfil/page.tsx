@@ -156,9 +156,9 @@ export default function ProfilePage() {
           <div>
               <h3 className="text-xl font-headline mb-4 text-center">Pré-visualização</h3>
               <Card className="max-w-sm mx-auto overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                  <div className="bg-muted h-24 relative">
+                  <div className="bg-muted h-24 relative flex items-center justify-center">
                     {profile.logo && (
-                        <Image src={profile.logo} alt="Pré-visualização da logomarca" layout="fill" objectFit="contain" className="p-4" />
+                        <img src={profile.logo} alt="Pré-visualização da logomarca" className="max-h-full max-w-full p-2" />
                     )}
                   </div>
                   <CardContent className="relative text-center -mt-14 pt-0">
@@ -183,21 +183,22 @@ export default function ProfilePage() {
                                                   <p className="font-semibold">{profile.username}</p>
                                                   <p className="text-sm text-muted-foreground">{profile.social}</p>
                                               </div>
-                                               {profile.showIcon && (
-                                                  profile.iconUrl ? 
-                                                      <img src={profile.iconUrl} alt="Ícone" className="h-5 w-5" /> : 
-                                                      <Twitter className="h-5 w-5 text-blue-500" />
-                                              )}
+                                               <Button variant="ghost" size="icon" onClick={() => handleProfileChange('showIcon', !profile.showIcon)}>
+                                                  {profile.showIcon ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                                               </Button>
                                           </div>
                                       </div>
                                   </div>
                                   <p className="mt-3 text-base">"A única maneira de fazer um ótimo trabalho é amar o que você faz."</p>
                               </CardHeader>
-                               {profile.showDate && (
-                                  <CardFooter className="p-4 pt-0 text-xs text-muted-foreground">
-                                      <p>10:30 AM · 28 de Maio de 2024</p>
-                                  </CardFooter>
-                              )}
+                               <CardFooter className="p-4 pt-0 flex justify-between items-center text-xs text-muted-foreground">
+                                    {profile.showDate ? (
+                                          <p>10:30 AM · 28 de Maio de 2024</p>
+                                    ) : <div />}
+                                    <Button variant="ghost" size="icon" onClick={() => handleProfileChange('showDate', !profile.showDate)}>
+                                        <Calendar className="h-5 w-5" />
+                                    </Button>
+                               </CardFooter>
                           </Card>
                       </div>
                   </CardContent>
