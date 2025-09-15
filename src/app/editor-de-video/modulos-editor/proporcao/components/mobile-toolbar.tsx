@@ -95,7 +95,10 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
                         colors = [parts[0], parts[1]] as [string, string];
                     }
                 } else {
-                     colors = [parts[0], parts[1]] as [string, string];
+                     const colorParts = backgroundStyle.value.match(/#(?:[0-9a-fA-F]{3}){1,2}|rgb\([^)]+\)/g);
+                     if (colorParts && colorParts.length >= 2) {
+                        colors = [colorParts[0], colorParts[1]] as [string, string];
+                    }
                 }
                 grad = { type: gradType, colors, direction };
 
@@ -108,7 +111,7 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
         if (tab === 'solid') {
             setBackgroundStyle({ type: 'solid', value: '#333333' });
         } else if (tab === 'gradient') {
-            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : 'circle, '}${gradient.colors[0]}, ${gradient.colors[1]})`;
+            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             setBackgroundStyle({ type: 'gradient', value: gradValue });
         } else { // media
              setBackgroundStyle({ type: 'media', value: '' });
@@ -138,7 +141,7 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
     };
     
     const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
-        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : 'circle, '}${grad.colors[0]}, ${grad.colors[1]})`;
+        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : `circle at center, `}${grad.colors[0]}, ${grad.colors[1]})`;
         setBackgroundStyle({ type: 'gradient', value: gradValue });
     };
 

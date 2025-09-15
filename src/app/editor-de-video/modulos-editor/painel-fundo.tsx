@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, LineHeight } from 'lucide-react';
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
@@ -75,7 +75,11 @@ function ControleTipoFundo(props: {
                         colors = [parts[0], parts[1]] as [string, string];
                     }
                 } else {
-                    colors = [parts[0], parts[1]] as [string, string];
+                    // For radial, we just get colors
+                    const colorParts = backgroundStyle.value.match(/#(?:[0-9a-fA-F]{3}){1,2}|rgb\([^)]+\)/g);
+                     if (colorParts && colorParts.length >= 2) {
+                        colors = [colorParts[0], colorParts[1]] as [string, string];
+                    }
                 }
                 gradient = { type, colors, direction };
             } catch {
@@ -94,12 +98,12 @@ function ControleTipoFundo(props: {
             }
             onFilmOpacityChange(50); // Opacidade padrão ao ativar
         } else if (tab === 'gradient') {
-            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : 'circle, '}${gradient.colors[0]}, ${gradient.colors[1]})`;
+            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             newStyle = { type: 'gradient' as const, value: gradValue };
             onBackgroundStyleChange(newStyle);
             onFilmOpacityChange(0);
         } else { // media
-            const mediaValue = templates.find(t => t.id === 1)?.imageUrl ?? '';
+            const mediaValue = templates.find(t => t.id === 1)?.thumbnail ?? '';
             newStyle = { type: 'media' as const, value: mediaValue };
             onBackgroundStyleChange(newStyle);
             onFilmOpacityChange(0);
@@ -122,7 +126,7 @@ function ControleTipoFundo(props: {
     };
     
     const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
-        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : 'circle, '}${grad.colors[0]}, ${grad.colors[1]})`;
+        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : `circle at center, `}${grad.colors[0]}, ${grad.colors[1]})`;
         onBackgroundStyleChange({ type: 'gradient', value: gradValue });
     };
 
