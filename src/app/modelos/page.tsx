@@ -54,7 +54,7 @@ export default function ModelosPage() {
 
     if (!isLoaded) {
         return (
-             <main className="flex-1">
+             <main className="overflow-y-auto">
                 <div className="container mx-auto py-8 px-4">
                     <div className="text-center mb-8">
                         <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Modelos</h1>
@@ -70,7 +70,7 @@ export default function ModelosPage() {
     const defaultTemplates = templates.filter(t => !t.isCustom);
 
   return (
-    <main className="flex-1">
+    <main className="overflow-y-auto">
       <div className="container mx-auto py-8 px-4">
         <div className="text-center mb-8">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
