@@ -24,6 +24,7 @@ interface PreviewCanvaProps {
   showSignaturePhoto: boolean;
   showSignatureUsername: boolean;
   showSignatureSocial: boolean;
+  showSignatureBackground: boolean;
   showLogo: boolean;
   logoPositionX: number;
   logoPositionY: number;
@@ -48,6 +49,7 @@ export function PreviewCanva({
   showSignaturePhoto,
   showSignatureUsername,
   showSignatureSocial,
+  showSignatureBackground,
   showLogo,
   logoPositionX,
   logoPositionY,
@@ -114,6 +116,7 @@ export function PreviewCanva({
                 showPhoto={showSignaturePhoto}
                 showUsername={showSignatureUsername}
                 showSocial={showSignatureSocial}
+                showBackground={showSignatureBackground}
               />
             </div>
         )}

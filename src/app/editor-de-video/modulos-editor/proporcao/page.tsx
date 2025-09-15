@@ -77,6 +77,7 @@ export default function AspectWeaver() {
   const [showSignaturePhoto, setShowSignaturePhoto] = useState(false);
   const [showSignatureUsername, setShowSignatureUsername] = useState(true);
   const [showSignatureSocial, setShowSignatureSocial] = useState(true);
+  const [showSignatureBackground, setShowSignatureBackground] = useState(false);
 
   // Logo State
   const [showLogo, setShowLogo] = useState(false);
@@ -149,6 +150,7 @@ export default function AspectWeaver() {
     showSignaturePhoto, onShowSignaturePhotoChange: setShowSignaturePhoto,
     showSignatureUsername, onShowSignatureUsernameChange: setShowSignatureUsername,
     showSignatureSocial, onShowSignatureSocialChange: setShowSignatureSocial,
+    showSignatureBackground, onShowSignatureBackgroundChange: setShowSignatureBackground,
     showLogo, onShowLogoChange: setShowLogo,
     logoPositionX, onLogoPositionXChange: setLogoPositionX,
     logoPositionY, onLogoPositionYChange: setLogoPositionY,
@@ -192,6 +194,7 @@ export default function AspectWeaver() {
                     showSignaturePhoto={showSignaturePhoto}
                     showSignatureUsername={showSignatureUsername}
                     showSignatureSocial={showSignatureSocial}
+                    showSignatureBackground={showSignatureBackground}
                     showLogo={showLogo}
                     logoPositionX={logoPositionX}
                     logoPositionY={logoPositionY}

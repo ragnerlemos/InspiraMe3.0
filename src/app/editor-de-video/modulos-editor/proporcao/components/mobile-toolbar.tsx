@@ -45,6 +45,7 @@ import {
   AlignCenter,
   AlignRight,
   Italic,
+  Box,
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -223,6 +224,8 @@ interface ControleAssinaturaProps {
   onShowSignatureUsernameChange: (show: boolean) => void;
   showSignatureSocial: boolean;
   onShowSignatureSocialChange: (show: boolean) => void;
+  showSignatureBackground: boolean;
+  onShowSignatureBackgroundChange: (show: boolean) => void;
   profile: ProfileData;
 }
 function ControleAssinatura(props: ControleAssinaturaProps) {
@@ -234,6 +237,7 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
         showSignaturePhoto, onShowSignaturePhotoChange,
         showSignatureUsername, onShowSignatureUsernameChange,
         showSignatureSocial, onShowSignatureSocialChange,
+        showSignatureBackground, onShowSignatureBackgroundChange,
         profile,
     } = props;
     
@@ -262,7 +266,7 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
                     <Label>Elementos Visíveis</Label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                          <Button size="sm" variant={showSignaturePhoto ? 'secondary' : 'outline'} onClick={() => onShowSignaturePhotoChange(!showSignaturePhoto)}>
                              <ImageIcon className="mr-2 h-4 w-4" /> Foto
                         </Button>
@@ -271,6 +275,9 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                         </Button>
                          <Button size="sm" variant={showSignatureSocial ? 'secondary' : 'outline'} onClick={() => onShowSignatureSocialChange(!showSignatureSocial)}>
                             <AtSign className="mr-2 h-4 w-4" /> Social
+                        </Button>
+                        <Button size="sm" variant={showSignatureBackground ? 'secondary' : 'outline'} onClick={() => onShowSignatureBackgroundChange(!showSignatureBackground)}>
+                           <Box className="mr-2 h-4 w-4" /> Fundo
                         </Button>
                     </div>
                      <div className="space-y-2">
