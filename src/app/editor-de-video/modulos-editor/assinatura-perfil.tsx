@@ -4,12 +4,14 @@
 import type { ProfileData } from "@/hooks/use-profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Twitter } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AssinaturaPerfilProps {
   profile: ProfileData;
   showPhoto: boolean;
   showUsername: boolean;
   showSocial: boolean;
+  showBackground: boolean;
 }
 
 export function AssinaturaPerfil({
@@ -17,12 +19,16 @@ export function AssinaturaPerfil({
   showPhoto,
   showUsername,
   showSocial,
+  showBackground,
 }: AssinaturaPerfilProps) {
   // Define se o ícone da rede social deve ser exibido.
   const shouldShowIcon = profile.showIcon && (profile.iconUrl || profile.social.includes('twitter.com') || profile.social.includes('x.com'));
   
   return (
-    <div className="flex items-center gap-3 p-2 rounded-lg bg-black/30 backdrop-blur-sm max-w-max">
+    <div className={cn(
+        "flex items-center gap-3 p-2 rounded-lg max-w-max",
+        showBackground && "bg-black/30 backdrop-blur-sm"
+    )}>
       {showPhoto && (
         <Avatar className="h-10 w-10">
           <AvatarImage src={profile.photo || ""} alt={profile.username} />

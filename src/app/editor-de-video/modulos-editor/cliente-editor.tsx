@@ -45,6 +45,7 @@ const getInitialState = (): EditorState => ({
     showSignaturePhoto: false,
     showSignatureUsername: true,
     showSignatureSocial: true,
+    showSignatureBackground: false,
     profileVerticalPosition: 25,
     showLogo: false,
     logoPositionX: 85,
@@ -303,6 +304,7 @@ export function EditorClient() {
     showSignaturePhoto: currentState.showSignaturePhoto,
     showSignatureUsername: currentState.showSignatureUsername,
     showSignatureSocial: currentState.showSignatureSocial,
+    showSignatureBackground: currentState.showSignatureBackground,
     activeTemplateId: typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null,
     profileVerticalPosition: currentState.profileVerticalPosition,
     showLogo: currentState.showLogo,
@@ -360,6 +362,8 @@ export function EditorClient() {
         onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
         showSignatureSocial={currentState.showSignatureSocial}
         onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
+        showSignatureBackground={currentState.showSignatureBackground}
+        onShowSignatureBackgroundChange={(show) => updateState({ showSignatureBackground: show })}
         activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
         profileVerticalPosition={currentState.profileVerticalPosition}
         onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
@@ -403,5 +407,3 @@ export function EditorClient() {
     </PanelGroup>
   );
 }
-
-    

@@ -40,6 +40,7 @@ export interface EditorState {
     showSignaturePhoto: boolean;
     showSignatureUsername: boolean;
     showSignatureSocial: boolean;
+    showSignatureBackground: boolean;
     profileVerticalPosition: number;
     showLogo: boolean;
     logoPositionX: number;
@@ -74,6 +75,7 @@ export interface VisualizacaoEditorProps {
     showSignaturePhoto: boolean;
     showSignatureUsername: boolean;
     showSignatureSocial: boolean;
+    showSignatureBackground: boolean;
     activeTemplateId: number | null;
     profileVerticalPosition: number;
     showLogo: boolean;
@@ -146,6 +148,8 @@ export interface PainelFundoProps {
     onShowSignatureUsernameChange: (show: boolean) => void;
     showSignatureSocial: boolean;
     onShowSignatureSocialChange: (show: boolean) => void;
+    showSignatureBackground: boolean;
+    onShowSignatureBackgroundChange: (show: boolean) => void;
     showLogo: boolean;
     onShowLogoChange: (show: boolean) => void;
     logoPositionX: number;

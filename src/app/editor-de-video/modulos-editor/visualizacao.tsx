@@ -50,6 +50,7 @@ export function VisualizacaoEditor({
   showSignaturePhoto,
   showSignatureUsername,
   showSignatureSocial,
+  showSignatureBackground,
   activeTemplateId,
   profileVerticalPosition,
   showLogo,
@@ -140,6 +141,7 @@ export function VisualizacaoEditor({
                 showPhoto={showSignaturePhoto}
                 showUsername={showSignatureUsername}
                 showSocial={showSignatureSocial}
+                showBackground={showSignatureBackground}
               />
             </div>
           )}
