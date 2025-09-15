@@ -50,8 +50,8 @@ const getInitialState = (): EditorState => ({
     signatureBgOpacity: 30,
     profileVerticalPosition: 25,
     showLogo: false,
-    logoPositionX: 85,
-    logoPositionY: 10,
+    logoPositionX: 50,
+    logoPositionY: 72,
     logoScale: 40,
     logoOpacity: 100,
 });

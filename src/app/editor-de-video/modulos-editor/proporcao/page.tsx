@@ -83,8 +83,8 @@ export default function AspectWeaver() {
 
   // Logo State
   const [showLogo, setShowLogo] = useState(false);
-  const [logoPositionX, setLogoPositionX] = useState(85);
-  const [logoPositionY, setLogoPositionY] = useState(10);
+  const [logoPositionX, setLogoPositionX] = useState(50);
+  const [logoPositionY, setLogoPositionY] = useState(72);
   const [logoScale, setLogoScale] = useState(40);
   const [logoOpacity, setLogoOpacity] = useState(100);
 
