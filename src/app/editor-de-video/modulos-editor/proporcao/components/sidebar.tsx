@@ -487,10 +487,7 @@ function ControleLogo(props: ControleLogoProps) {
     )
 }
 
-type EstiloControlProps = CommonStyleProps & {
-    fgColor: string;
-    onFgColorChange: (color: string) => void;
-};
+type EstiloControlProps = CommonStyleProps;
 
 function renderEstiloControl(subControl: string | null, props: EstiloControlProps) {
     if (!subControl) return <p className="text-center text-muted-foreground text-sm">Selecione um controle de estilo abaixo.</p>;
