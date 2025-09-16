@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, PaintBrush, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow } from 'lucide-react';
+import { Upload, Image as ImageIcon, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow, PaintBrush } from 'lucide-react';
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
@@ -141,12 +141,10 @@ function ControleTipoFundo(props: {
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-4 gap-1">
-                <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => setActiveTab('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
-                <Button variant={activeTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}><PaintBrush className="mr-2 h-4 w-4" /> Cor</Button>
-                <Button variant={activeTab === 'gradient' ? 'secondary' : 'ghost'} onClick={() => handleTabChange('gradient')}>
-                    <IconeGradiente className="mr-2 h-4 w-4" /> Gradiente
-                </Button>
+                <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}>Mídia</Button>
+                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => setActiveTab('film')}>Película</Button>
+                <Button variant={activeTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}>Cor</Button>
+                <Button variant={activeTab === 'gradient' ? 'secondary' : 'ghost'} onClick={() => handleTabChange('gradient')}>Gradiente</Button>
             </div>
             
             <Separator />

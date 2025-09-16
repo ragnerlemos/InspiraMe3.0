@@ -214,7 +214,7 @@ useEffect(() => {
         setScale(1);
     } else {
         if (aspectRatio === "9 / 16") {
-            setScale(0.8);
+            setScale(0.83);
         } else {
             setScale(1);
         }

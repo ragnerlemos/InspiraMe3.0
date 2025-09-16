@@ -176,12 +176,10 @@ function ControleTipoFundo({
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-4 gap-1">
-                <Button variant={currentTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => setCurrentTab('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
-                <Button variant={currentTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}><Paintbrush className="mr-2 h-4 w-4" /> Cor</Button>
-                <Button variant={currentTab === 'gradient' ? 'secondary' : 'ghost'} onClick={() => handleTabChange('gradient')}>
-                    <IconeGradiente className="mr-2 h-4 w-4" /> Gradiente
-                </Button>
+                <Button variant={currentTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}>Mídia</Button>
+                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => setCurrentTab('film')}>Película</Button>
+                <Button variant={currentTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}>Cor</Button>
+                <Button variant={currentTab === 'gradient' ? 'secondary' : 'ghost'} onClick={() => handleTabChange('gradient')}>Gradiente</Button>
             </div>
             
             <Separator />
