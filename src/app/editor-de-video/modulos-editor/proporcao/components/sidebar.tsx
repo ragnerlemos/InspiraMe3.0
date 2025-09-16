@@ -715,14 +715,14 @@ export function Sidebar({
                     <div className="space-y-4 p-4">
                         <div className="space-y-2">
                             <Label>Cor da Película</Label>
-                             <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                            <div className="relative h-10 w-full rounded-md border overflow-hidden">
                                 <Input
                                     type="color"
                                     value={filmColor}
                                     onChange={(e) => setFilmColor(e.target.value)}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                                 />
-                                 <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
+                                <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                             </div>
                         </div>
                         <div className="space-y-2">
