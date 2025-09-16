@@ -197,7 +197,7 @@ function ControleTipoFundo({
             {currentTab === 'color' && (
                 <div className="space-y-2">
                     <Label>Cor de Fundo</Label>
-                    <div className="relative h-10 w-full">
+                    <div className="relative h-10 w-full rounded-md overflow-hidden">
                         <Input
                             type="color"
                             value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
@@ -211,7 +211,7 @@ function ControleTipoFundo({
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label>Cor da Película</Label>
-                         <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
                                 value={filmColor}
@@ -386,12 +386,14 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <Label className="text-xs flex items-center"><Pipette className="mr-2 h-3 w-3" />Cor do Fundo</Label>
-                                    <Input
-                                        type="color"
-                                        value={signatureBgColor}
-                                        onChange={(e) => onSignatureBgColorChange(e.target.value)}
-                                        className="h-6 w-10 p-0 border-none cursor-pointer"
-                                    />
+                                    <div className="relative h-6 w-10 rounded-md overflow-hidden">
+                                        <Input
+                                            type="color"
+                                            value={signatureBgColor}
+                                            onChange={(e) => onSignatureBgColorChange(e.target.value)}
+                                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -551,7 +553,7 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
             return (
                 <div className="space-y-2">
                     <Label>Cor do Texto</Label>
-                    <div className="relative h-10 w-full">
+                    <div className="relative h-10 w-full rounded-md overflow-hidden">
                        <Input
                             type="color"
                             value={props.fgColor}
@@ -620,7 +622,7 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
-                         <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
                                 value={props.textStrokeColor}

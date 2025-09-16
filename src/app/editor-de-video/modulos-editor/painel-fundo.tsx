@@ -67,7 +67,7 @@ function ControleTipoFundo(props: {
                 const parts = backgroundStyle.value.match(/\((.*)\)/)?.[1].split(', ');
                 if (!parts) throw new Error("Invalid gradient string");
                 let direction = 'to right';
-                let colors: [string, string] = ['#A06CD5', '#45B8AC'];
+                let colors: [string, string] = ['#A06CD5-gradient(circle at center, ', '#45B8AC'];
                 if (type === 'linear') {
                     if (parts[0].startsWith('to ')) {
                         direction = parts[0];
@@ -163,7 +163,7 @@ function ControleTipoFundo(props: {
              {activeTab === 'color' && (
                  <div className="space-y-2">
                     <Label>Cor de Fundo</Label>
-                    <div className="relative h-10 w-full">
+                    <div className="relative h-10 w-full rounded-md overflow-hidden">
                         <Input
                             type="color"
                             value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
@@ -179,7 +179,7 @@ function ControleTipoFundo(props: {
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label>Cor da Película</Label>
-                         <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
                                 value={filmColor}
@@ -315,12 +315,14 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <Label className="text-xs flex items-center"><Pipette className="mr-2 h-3 w-3" />Cor do Fundo</Label>
-                                    <Input
-                                        type="color"
-                                        value={signatureBgColor}
-                                        onChange={(e) => onSignatureBgColorChange(e.target.value)}
-                                        className="h-6 w-10 p-0 border-none cursor-pointer"
-                                    />
+                                    <div className="relative h-6 w-10 rounded-md overflow-hidden">
+                                        <Input
+                                            type="color"
+                                            value={signatureBgColor}
+                                            onChange={(e) => onSignatureBgColorChange(e.target.value)}
+                                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
