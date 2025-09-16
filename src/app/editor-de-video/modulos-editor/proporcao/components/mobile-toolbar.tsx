@@ -197,14 +197,14 @@ function ControleTipoFundo({
             {currentTab === 'color' && (
                 <div className="space-y-2">
                     <Label>Cor de Fundo</Label>
-                    <div className="relative h-10 w-full">
+                    <div className="relative h-10 w-full rounded-md overflow-hidden">
                         <Input
                             type="color"
                             value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
                             onChange={(e) => handleSolidColorChange(e.target.value)}
                             className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                         />
-                         <div className="w-full h-full rounded-md" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' }} />
+                         <div className="w-full h-full" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' }} />
                     </div>
                 </div>
             )}
@@ -212,14 +212,14 @@ function ControleTipoFundo({
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label>Cor da Película</Label>
-                         <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
                                 value={filmColor}
                                 onChange={(e) => setFilmColor(e.target.value)}
                                 className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                             />
-                            <div className="w-full h-full rounded-md" style={{ backgroundColor: filmColor }} />
+                            <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -389,14 +389,14 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <Label className="text-xs flex items-center"><Pipette className="mr-2 h-3 w-3" />Cor do Fundo</Label>
-                                    <div className="relative h-6 w-10">
+                                    <div className="relative h-6 w-10 rounded-md overflow-hidden">
                                         <Input
                                             type="color"
                                             value={signatureBgColor}
                                             onChange={(e) => onSignatureBgColorChange(e.target.value)}
                                             className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                                         />
-                                         <div className="w-full h-full rounded-md" style={{backgroundColor: signatureBgColor}} />
+                                         <div className="w-full h-full" style={{backgroundColor: signatureBgColor}} />
                                     </div>
                                 </div>
                             </div>
@@ -612,14 +612,14 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                  <div className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
-                         <div className="relative h-10 w-full">
+                         <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
                                 value={props.textStrokeColor}
                                 onChange={(e) => props.onTextStrokeColorChange(e.target.value)}
                                 className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                             />
-                             <div className="w-full h-full rounded-md" style={{ backgroundColor: props.textStrokeColor }} />
+                             <div className="w-full h-full" style={{ backgroundColor: props.textStrokeColor }} />
                         </div>
                     </div>
                     <div className="space-y-2">
@@ -750,26 +750,26 @@ export function MobileToolbar({
         <div className="p-4 grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-left block">Cor do Fundo</Label>
-            <div className="relative h-10 w-full">
+            <div className="relative h-10 w-full rounded-md overflow-hidden">
                 <Input
                     type="color"
                     value={backgroundColorValue}
                     onChange={(e) => setBackgroundColorValue(e.target.value)}
                     className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                 />
-                 <div className="w-full h-full rounded-md" style={{ backgroundColor: backgroundColorValue }} />
+                 <div className="w-full h-full" style={{ backgroundColor: backgroundColorValue }} />
             </div>
           </div>
           <div className="space-y-2">
               <Label className="text-left block">Cor do Texto</Label>
-              <div className="relative h-10 w-full">
+              <div className="relative h-10 w-full rounded-md overflow-hidden">
                    <Input
                       type="color"
                       value={fgColor}
                       onChange={e => setFgColor(e.target.value)}
                       className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                   />
-                   <div className="w-full h-full rounded-md" style={{ backgroundColor: fgColor }} />
+                   <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
               </div>
           </div>
         </div>

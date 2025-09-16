@@ -110,7 +110,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                      <div className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
-                             <div className="relative h-10 w-full">
+                             <div className="relative h-10 w-full rounded-md overflow-hidden">
                                 <Input
                                     type="color"
                                     value={props.textStrokeColor}
@@ -146,7 +146,7 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
             <div className="flex w-max space-x-1 p-2">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
-                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => props.onTextColorChange(props.textColor)} isActive={false}/>
+                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => { const input = document.createElement('input'); input.type = 'color'; input.value = props.textColor; input.onchange = (e) => props.onTextColorChange((e.target as HTMLInputElement).value); input.click(); }} isActive={false}/>
                 <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => handleSetControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
                 <BotaoRecurso icon={Bold} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
                 <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => handleSetControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
