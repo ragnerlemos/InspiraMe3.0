@@ -104,7 +104,7 @@ export function AppHeader() {
             onClick={() => setIsSheetOpen(false)} // Fecha o menu ao clicar
             className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                isActive && "bg-primary/10 text-primary",
+                isActive && "bg-secondary text-secondary-foreground",
                 className
             )}
             >
@@ -143,31 +143,6 @@ export function AppHeader() {
               </Link>
              )
           })}
-           {/* Menu de Teste */}
-           <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary">
-                    Teste
-                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <TestTube2 className="mr-2 h-4 w-4" />
-                    <span>Testes</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <Link href="/editor-de-video/modulos-editor/proporcao" passHref>
-                         <DropdownMenuItem>
-                            Proporção
-                         </DropdownMenuItem>
-                      </Link>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-              </DropdownMenuContent>
-            </DropdownMenu>
         </nav>
         {/* Navegação para telas menores (mobile) usando um menu lateral. */}
         <div className="md:hidden">
@@ -184,11 +159,6 @@ export function AppHeader() {
                 </SheetHeader>
                 <nav className="grid gap-2 text-lg font-medium pt-8">
                     {navLinks("text-base")}
-                     {/* Menu de Teste Mobile */}
-                    <Link href="/editor-de-video/modulos-editor/proporcao" onClick={() => setIsSheetOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-                      <TestTube2 className="h-4 w-4" />
-                      Proporção
-                    </Link>
                 </nav>
             </SheetContent>
           </Sheet>

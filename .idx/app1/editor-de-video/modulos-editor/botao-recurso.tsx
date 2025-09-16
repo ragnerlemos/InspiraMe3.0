@@ -18,7 +18,7 @@ export function BotaoRecurso({ icon: Icon, label, onClick, isActive }: BotaoRecu
       variant="ghost"
       className={cn(
         "flex flex-col items-center justify-center h-full text-muted-foreground px-3",
-        isActive && "text-primary bg-primary/10"
+        isActive && "text-secondary-foreground bg-secondary"
       )}
       onClick={onClick}
     >

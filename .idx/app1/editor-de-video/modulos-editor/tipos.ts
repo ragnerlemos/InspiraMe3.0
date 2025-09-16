@@ -15,6 +15,10 @@ export type EstiloFundo = {
     value: string; // URL da mídia, cor sólida, ou string do gradiente
 };
 
+// Define qual painel de controle está ativo
+export type ActivePanel = 'text' | 'style' | 'background' | 'colors' | 'canvas' | 'signature' | null;
+
+
 // Agrupa todo o estado do editor em um único objeto.
 export interface EditorState {
     text: string;
@@ -93,7 +97,7 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps, PainelCoresProps, PainelCanvaProps, PainelAssinaturaProps {
     onUndo: () => void;
     canUndo: boolean;
 }
@@ -114,18 +118,12 @@ export interface PainelEstiloProps {
     onFontWeightChange: (weight: "normal" | "bold") => void;
     fontStyle: "normal" | "italic";
     onFontStyleChange: (style: "normal" | "italic") => void;
-    textColor: string;
-    onTextColorChange: (color: string) => void;
     textAlign: "left" | "center" | "right";
     onTextAlignChange: (align: "left" | "center" | "right") => void;
     textShadowBlur: number;
     onTextShadowBlurChange: (blur: number) => void;
     textVerticalPosition: number;
     onTextVerticalPositionChange: (position: number) => void;
-    textStrokeColor: string;
-    onTextStrokeColorChange: (color: string) => void;
-    textStrokeWidth: number;
-    onTextStrokeWidthChange: (width: number) => void;
     letterSpacing: number;
     onLetterSpacingChange: (spacing: number) => void;
     lineHeight: number;
@@ -137,16 +135,41 @@ export interface PainelEstiloProps {
     onProfileVerticalPositionChange: (position: number) => void;
 }
 
-// Define as propriedades para o painel de upload de fundo.
-export interface PainelFundoProps {
+// Define as propriedades para o painel de cores
+export interface PainelCoresProps {
+    textColor: string;
+    onTextColorChange: (color: string) => void;
+    textStrokeColor: string;
+    onTextStrokeColorChange: (color: string) => void;
+    textStrokeWidth: number;
+    onTextStrokeWidthChange: (width: number) => void;
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
     filmColor: string;
     onFilmColorChange: (color: string) => void;
     filmOpacity: number;
     onFilmOpacityChange: (opacity: number) => void;
-    aspectRatio: ProporcaoTela;
-    onAspectRatioChange: (ratio: ProporcaoTela) => void;
+}
+
+// Define as propriedades para o painel de fundo.
+export interface PainelFundoProps {
+    backgroundStyle: EstiloFundo;
+    onBackgroundStyleChange: (style: EstiloFundo) => void;
+    showLogo: boolean;
+    onShowLogoChange: (show: boolean) => void;
+    logoPositionX: number;
+    onLogoPositionXChange: (x: number) => void;
+    logoPositionY: number;
+    onLogoPositionYChange: (y: number) => void;
+    logoScale: number;
+    onLogoScaleChange: (scale: number) => void;
+    logoOpacity: number;
+    onLogoOpacityChange: (opacity: number) => void;
+    profile: ProfileData;
+}
+
+
+export interface PainelAssinaturaProps {
     showProfileSignature: boolean;
     onShowProfileSignatureChange: (show: boolean) => void;
     signaturePositionX: number;
@@ -167,21 +190,19 @@ export interface PainelFundoProps {
     onSignatureBgColorChange: (color: string) => void;
     signatureBgOpacity: number;
     onSignatureBgOpacityChange: (opacity: number) => void;
-    showLogo: boolean;
-    onShowLogoChange: (show: boolean) => void;
-    logoPositionX: number;
-    onLogoPositionXChange: (x: number) => void;
-    logoPositionY: number;
-    onLogoPositionYChange: (y: number) => void;
-    logoScale: number;
-    onLogoScaleChange: (scale: number) => void;
-    logoOpacity: number;
-    onLogoOpacityChange: (opacity: number) => void;
     profile: ProfileData;
 }
 
-// Propriedades para o componente de visualização de perfil
-export interface VisualizacaoPerfilProps {
+
+// Propriedades para o painel do canvas
+export interface PainelCanvaProps {
+    aspectRatio: ProporcaoTela;
+    onAspectRatioChange: (ratio: ProporcaoTela) => void;
+}
+
+
+// Propriedades para o componente de visualização de perfil (Twitter)
+export interface ModeloTwitterProps {
   profile: ProfileData;
   text: string;
   textStyle: EstiloTexto;
@@ -189,4 +210,26 @@ export interface VisualizacaoPerfilProps {
   profileVerticalPosition: number;
 }
 
-    
+// Propriedades para o componente de visualização padrão
+export interface ModeloPadraoProps {
+  text: string;
+  textStyle: EstiloTexto;
+  textVerticalPosition: number;
+  showProfileSignature: boolean;
+  profile: ProfileData;
+  signaturePositionX: number;
+  signaturePositionY: number;
+  signatureScale: number;
+  showSignaturePhoto: boolean;
+  showSignatureUsername: boolean;
+  showSignatureSocial: boolean;
+  showSignatureBackground: boolean;
+  signatureBgColor: string;
+  signatureBgOpacity: number;
+  showLogo: boolean;
+  logo: string | null;
+  logoPositionX: number;
+  logoPositionY: number;
+  logoScale: number;
+  logoOpacity: number;
+}

@@ -11,7 +11,7 @@ export default function SettingsPage() {
   const { setTheme, theme } = useTheme()
 
   return (
-    <main className="flex-1 overflow-y-auto">
+    <main className="flex-1">
       <div className="container mx-auto py-8 px-4 max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
@@ -21,41 +21,40 @@ export default function SettingsPage() {
             Personalize a aparência e o comportamento do aplicativo.
           </p>
         </div>
-        <div className="space-y-6">
-            <Card>
-            <CardHeader>
-                <CardTitle>Aparência</CardTitle>
-                <CardDescription>
-                Escolha como o QuoteVid deve aparecer para você.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-3 gap-4">
-                <Button
-                    variant={theme === "light" ? "secondary" : "outline"}
-                    onClick={() => setTheme("light")}
-                >
-                    <Sun className="mr-2 h-4 w-4" />
-                    Claro
-                </Button>
-                <Button
-                    variant={theme === "dark" ? "secondary" : "outline"}
-                    onClick={() => setTheme("dark")}
-                >
-                    <Moon className="mr-2 h-4 w-4" />
-                    Escuro
-                </Button>
-                <Button
-                    variant={theme === "system" ? "secondary" : "outline"}
-                    onClick={() => setTheme("system")}
-                >
-                    <Laptop className="mr-2 h-4 w-4" />
-                    Sistema
-                </Button>
-                </div>
-            </CardContent>
-            </Card>
-        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Aparência</CardTitle>
+            <CardDescription>
+              Escolha como o QuoteVid deve aparecer para você.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              <Button
+                variant={theme === "light" ? "secondary" : "outline"}
+                onClick={() => setTheme("light")}
+              >
+                <Sun className="mr-2 h-4 w-4" />
+                Claro
+              </Button>
+              <Button
+                variant={theme === "dark" ? "secondary" : "outline"}
+                onClick={() => setTheme("dark")}
+              >
+                <Moon className="mr-2 h-4 w-4" />
+                Escuro
+              </Button>
+              <Button
+                variant={theme === "system" ? "secondary" : "outline"}
+                onClick={() => setTheme("system")}
+              >
+                <Laptop className="mr-2 h-4 w-4" />
+                Sistema
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
   )
