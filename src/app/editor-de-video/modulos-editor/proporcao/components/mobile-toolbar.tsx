@@ -597,8 +597,9 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                                 type="color"
                                 value={props.textStrokeColor}
                                 onChange={(e) => props.onTextStrokeColorChange(e.target.value)}
-                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                             />
+                            <div className="w-full h-full" style={{ backgroundColor: props.textStrokeColor }} />
                         </div>
                     </div>
                     <div className="space-y-2">
