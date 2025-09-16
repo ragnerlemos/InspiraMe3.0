@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import type { VisualizacaoEditorProps } from "./tipos";
-import { ModeloTwitter } from "./modelo-twitter";
+import { ModeloTwitter } from "./modelos/modelo-twitter";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { cn } from "@/lib/utils";
 

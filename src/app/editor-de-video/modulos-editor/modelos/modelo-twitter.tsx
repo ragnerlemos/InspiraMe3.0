@@ -1,4 +1,4 @@
-import type { ModeloTwitterProps } from './tipos';
+import type { ModeloTwitterProps } from '../tipos';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
 
