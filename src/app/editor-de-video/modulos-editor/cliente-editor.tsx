@@ -13,9 +13,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "../contexts/editor-context";
 import { useTemplates } from "@/hooks/use-templates";
-import html2canvas from 'html2canvas';
 import { Panel, PanelGroup, PanelResizeHandle } from "@/components/ui/resizable";
 import { useWindowSize } from "react-use";
+import { useExport } from "@/hooks/use-export";
 
 
 // Estado inicial para o editor.
@@ -79,10 +79,9 @@ function EditorSkeleton() {
 // Componente principal do cliente do editor de vídeo.
 export function EditorClient() {
   const searchParams = useSearchParams();
-  const { toast } = useToast();
   const { profile, isLoaded: isProfileLoaded } = useProfile();
   const { setUndoState, setSaveActions } = useEditor();
-  const { templates: allTemplates, isLoaded: areTemplatesLoaded, addTemplate } = useTemplates();
+  const { templates: allTemplates, isLoaded: areTemplatesLoaded } = useTemplates();
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
 
@@ -93,6 +92,9 @@ export function EditorClient() {
   const [isReady, setIsReady] = useState(false);
 
   const currentState = history[currentStateIndex];
+  
+  // Funções de exportação movidas para o hook useExport
+  const { onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useExport(currentState);
   
   // Função para atualizar o estado e adicionar ao histórico.
   const updateState = (newState: Partial<EditorState>) => {
@@ -122,86 +124,15 @@ export function EditorClient() {
   useEffect(() => {
     setUndoState({ canUndo, undo, canRedo, redo });
   }, [canUndo, undo, canRedo, redo, setUndoState]);
-
-  const handleSaveAsTemplate = useCallback(async () => {
-        const templateName = prompt("Digite um nome para o novo modelo:");
-        if (!templateName) return;
-        const previewElement = document.getElementById('editor-preview-content');
-        if (previewElement) {
-            try {
-                const canvas = await html2canvas(previewElement, {
-                    scale: 0.5,
-                    useCORS: true,
-                    backgroundColor: null, 
-                });
-                const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
-                
-                addTemplate(templateName, currentState, thumbnail);
-
-                toast({
-                    title: "Modelo Salvo!",
-                    description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
-                });
-            } catch (error) {
-                console.error("Erro ao criar thumbnail:", error);
-                toast({
-                    variant: "destructive",
-                    title: "Erro ao Salvar",
-                    description: "Não foi possível gerar a pré-visualização do modelo.",
-                });
-            }
-        }
-    }, [addTemplate, currentState, toast]);
-
-    const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
-        const previewElement = document.getElementById('editor-preview-content');
-        if (!previewElement) {
-            toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
-            return;
-        }
-
-        toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
-        
-        try {
-            const canvas = await html2canvas(previewElement, {
-                useCORS: true,
-                backgroundColor: null, 
-                scale: 4, // Aumenta a resolução para melhor qualidade
-            });
-
-            const image = canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
-            
-            const link = document.createElement('a');
-            link.href = image;
-            link.download = `quotevid-export.${format}`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
-
-        } catch (error) {
-            console.error('Erro ao exportar imagem:', error);
-            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
-        }
-    }, [toast]);
-    
-    const handleExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
-    const handleExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
-
-    const handleExportMP4 = useCallback(() => {
-        // Lógica de exportação de vídeo será implementada aqui
-        toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
-    }, [toast]);
     
     useEffect(() => {
         setSaveActions({
-            onSaveAsTemplate: handleSaveAsTemplate,
-            onExportJPG: handleExportJPG,
-            onExportPNG: handleExportPNG,
-            onExportMP4: handleExportMP4,
+            onSaveAsTemplate,
+            onExportJPG,
+            onExportPNG,
+            onExportMP4,
         });
-    }, [handleSaveAsTemplate, handleExportJPG, handleExportPNG, handleExportMP4, setSaveActions]);
+    }, [onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setSaveActions]);
 
   // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
