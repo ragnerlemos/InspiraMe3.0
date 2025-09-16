@@ -58,11 +58,16 @@ export default function AspectWeaver() {
   const [textVerticalPosition, setTextVerticalPosition] = useState(50);
   
   // Color State
-  const [backgroundColorValue, setBackgroundColorValue] = useState("#ffffff");
+  const [backgroundColorValue, setBackgroundColorValueState] = useState("#333333");
   const [fgColor, setFgColor] = useState("#ffffff");
 
   // Background state
   const [backgroundStyle, setBackgroundStyle] = useState<EstiloFundo>({ type: 'solid', value: '#333333' });
+  
+  const setBackgroundColorValue = (color: string) => {
+    setBackgroundColorValueState(color);
+    setBackgroundStyle({ type: 'solid', value: color });
+  };
 
 
   // Filter State
