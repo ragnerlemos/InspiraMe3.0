@@ -1,20 +1,16 @@
-// Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
+// Componente para a aba "Fundo", permitindo o upload de imagem/vídeo e ajuste de proporção.
 
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow } from 'lucide-react';
+import { Upload, Image as ImageIcon, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, Check, Edit, ImageUp, BadgePercent, User, RectangleHorizontal, RectangleVertical, Square } from 'lucide-react';
 import type { PainelFundoProps, ProporcaoTela } from '../tipos';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { templates } from '@/lib/dados';
 import { Slider } from '@/components/ui/slider';
 import { BotaoRecurso } from '../botao-recurso';
-import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { IconeGradiente } from '../icone-gradiente';
+import { Box } from 'lucide-react';
 
 function ControleProporcao({ aspectRatio, onAspectRatioChange }: { aspectRatio: ProporcaoTela, onAspectRatioChange: (ratio: ProporcaoTela) => void }) {
     const proportions: { ratio: ProporcaoTela; icon: React.ElementType; label: string }[] = [
@@ -47,7 +43,7 @@ function ControleTipoFundo(props: {
     backgroundStyle: PainelFundoProps['backgroundStyle'],
     onBackgroundStyleChange: PainelFundoProps['onBackgroundStyleChange']
 }) {
-    const { backgroundStyle, onBackgroundStyleChange } = props;
+    const { onBackgroundStyleChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
@@ -142,7 +138,7 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
                         <div className="space-y-4 pt-4 border-t">
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
-                                    <Label className="text-xs flex items-center"><Pipette className="mr-2 h-3 w-3" />Cor do Fundo</Label>
+                                    <Label className="text-xs flex items-center">Cor do Fundo</Label>
                                     <Input
                                         type="color"
                                         value={signatureBgColor}
@@ -178,7 +174,7 @@ function ControleAssinatura(props: Omit<PainelFundoProps, 'backgroundStyle' | 'o
                     </div>
                     <div className="space-y-2">
                          <div className="flex justify-between items-center">
-                            <Label htmlFor="signature-scale" className="text-xs flex items-center"><ZoomIn className="mr-2 h-3 w-3" />Escala</Label>
+                            <Label htmlFor="signature-scale" className="text-xs flex items-center">Escala</Label>
                             <span className="text-xs text-muted-foreground">{signatureScale}%</span>
                         </div>
                         <Slider id="signature-scale" min={50} max={150} step={1} value={[signatureScale]} onValueChange={(value) => onSignatureScaleChange(value[0])}/>
@@ -239,7 +235,7 @@ function ControleLogo(props: Pick<PainelFundoProps, 'showLogo' | 'onShowLogoChan
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-scale" className="text-xs flex items-center"><ZoomIn className="mr-2 h-3 w-3" />Escala</Label>
+                            <Label htmlFor="logo-scale" className="text-xs flex items-center">Escala</Label>
                             <span className="text-xs text-muted-foreground">{logoScale}%</span>
                         </div>
                         <Slider id="logo-scale" min={10} max={200} step={1} value={[logoScale]} onValueChange={(v) => onLogoScaleChange(v[0])} />
