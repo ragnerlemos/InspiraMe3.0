@@ -1,6 +1,6 @@
 
 import type { VisualizacaoEditorProps } from '../tipos';
-import { AssinaturaPerfil } from '../assinatura-perfil';
+import { AssinaturaPerfil } from './assinatura-perfil';
 
 export function ModeloPadrao({
   text,
