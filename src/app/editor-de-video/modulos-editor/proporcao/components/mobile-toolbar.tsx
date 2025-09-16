@@ -262,7 +262,7 @@ function ControleTipoFundo({
                            {[0, 1].map((index) => (
                                <div key={index} className="flex-1 space-y-1">
                                    <Label className="text-xs text-muted-foreground">Cor {index + 1}</Label>
-                                   <div className="relative h-9 w-full">
+                                   <div className="relative h-9 w-full rounded-md overflow-hidden">
                                        <Input type="color" value={gradient.colors[index as 0 | 1]} onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                                    </div>
                                </div>

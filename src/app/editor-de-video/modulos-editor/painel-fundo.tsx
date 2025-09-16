@@ -1,3 +1,4 @@
+
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
@@ -232,7 +233,7 @@ function ControleTipoFundo(props: {
                             {[0, 1].map((index) => (
                                 <div key={index} className="flex-1 space-y-1">
                                     <Label className="text-xs text-muted-foreground">Cor {index + 1}</Label>
-                                    <div className="relative h-9 w-full">
+                                    <div className="relative h-9 w-full rounded-md overflow-hidden">
                                         <Input
                                             type="color"
                                             value={gradient.colors[index as 0 | 1]}
