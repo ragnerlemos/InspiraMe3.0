@@ -93,7 +93,7 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps, PainelCoresProps {
     onUndo: () => void;
     canUndo: boolean;
 }
@@ -114,18 +114,12 @@ export interface PainelEstiloProps {
     onFontWeightChange: (weight: "normal" | "bold") => void;
     fontStyle: "normal" | "italic";
     onFontStyleChange: (style: "normal" | "italic") => void;
-    textColor: string;
-    onTextColorChange: (color: string) => void;
     textAlign: "left" | "center" | "right";
     onTextAlignChange: (align: "left" | "center" | "right") => void;
     textShadowBlur: number;
     onTextShadowBlurChange: (blur: number) => void;
     textVerticalPosition: number;
     onTextVerticalPositionChange: (position: number) => void;
-    textStrokeColor: string;
-    onTextStrokeColorChange: (color: string) => void;
-    textStrokeWidth: number;
-    onTextStrokeWidthChange: (width: number) => void;
     letterSpacing: number;
     onLetterSpacingChange: (spacing: number) => void;
     lineHeight: number;
@@ -137,14 +131,26 @@ export interface PainelEstiloProps {
     onProfileVerticalPositionChange: (position: number) => void;
 }
 
-// Define as propriedades para o painel de upload de fundo.
-export interface PainelFundoProps {
+// Define as propriedades para o painel de cores
+export interface PainelCoresProps {
+    textColor: string;
+    onTextColorChange: (color: string) => void;
+    textStrokeColor: string;
+    onTextStrokeColorChange: (color: string) => void;
+    textStrokeWidth: number;
+    onTextStrokeWidthChange: (width: number) => void;
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
     filmColor: string;
     onFilmColorChange: (color: string) => void;
     filmOpacity: number;
     onFilmOpacityChange: (opacity: number) => void;
+}
+
+// Define as propriedades para o painel de upload de fundo.
+export interface PainelFundoProps {
+    backgroundStyle: EstiloFundo;
+    onBackgroundStyleChange: (style: EstiloFundo) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
     showProfileSignature: boolean;
@@ -188,5 +194,3 @@ export interface VisualizacaoPerfilProps {
   textVerticalPosition: number;
   profileVerticalPosition: number;
 }
-
-    

@@ -2,21 +2,16 @@
 
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow, PaintBrush } from 'lucide-react';
+import { Upload, Image as ImageIcon, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film } from 'lucide-react';
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { templates } from '@/lib/dados';
 import { Slider } from '@/components/ui/slider';
 import { BotaoRecurso } from './botao-recurso';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { IconeGradiente } from './icone-gradiente';
 
 function ControleProporcao({ aspectRatio, onAspectRatioChange }: { aspectRatio: ProporcaoTela, onAspectRatioChange: (ratio: ProporcaoTela) => void }) {
     const proportions: { ratio: ProporcaoTela; icon: React.ElementType; label: string }[] = [
@@ -48,57 +43,10 @@ function ControleProporcao({ aspectRatio, onAspectRatioChange }: { aspectRatio: 
 function ControleTipoFundo(props: {
     backgroundStyle: PainelFundoProps['backgroundStyle'],
     onBackgroundStyleChange: PainelFundoProps['onBackgroundStyleChange'],
-    filmColor: string,
-    onFilmColorChange: (color: string) => void,
-    filmOpacity: number,
-    onFilmOpacityChange: (opacity: number) => void,
 }) {
-    const { backgroundStyle, onBackgroundStyleChange, filmColor, onFilmColorChange, filmOpacity, onFilmOpacityChange } = props;
+    const { backgroundStyle, onBackgroundStyleChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
-    const [activeTab, setActiveTab] = useState<'media' | 'film' | 'color' | 'gradient'>(backgroundStyle.type === 'solid' ? 'color' : backgroundStyle.type);
-
-
-     const { gradient } = useMemo(() => {
-        let grad = { type: 'linear' as 'linear'|'radial', colors: ['#A06CD5', '#45B8AC'] as [string, string], direction: 'to right' };
-
-        if (backgroundStyle.type === 'gradient' && backgroundStyle.value) {
-             try {
-                const type = backgroundStyle.value.startsWith('linear') ? 'linear' : 'radial';
-                const parts = backgroundStyle.value.match(/\((.*)\)/)?.[1].split(', ');
-                if (!parts) throw new Error("Invalid gradient string");
-                let direction = 'to right';
-                let colors: [string, string] = ['#A06CD5-gradient(circle at center, ', '#45B8AC'];
-                if (type === 'linear') {
-                    if (parts[0].startsWith('to ')) {
-                        direction = parts[0];
-                        colors = [parts[1], parts[2]] as [string, string];
-                    } else {
-                        colors = [parts[0], parts[1]] as [string, string];
-                    }
-                } else {
-                    const colorParts = backgroundStyle.value.match(/#(?:[0-9a-fA-F]{3}){1,2}|rgb\([^)]+\)/g);
-                     if (colorParts && colorParts.length >= 2) {
-                        colors = [colorParts[0], colorParts[1]] as [string, string];
-                    }
-                }
-                grad = { type, colors, direction };
-            } catch {
-                // fallback
-            }
-        }
-        return { gradient: grad };
-    }, [backgroundStyle]);
-
-    const handleTabChange = (tab: 'media' | 'film' | 'color' | 'gradient') => {
-        setActiveTab(tab);
-         if (tab === 'color') {
-            onBackgroundStyleChange({ type: 'solid', value: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' });
-        } else if (tab === 'gradient') {
-            const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
-            onBackgroundStyleChange({ type: 'gradient', value: gradValue });
-        }
-    };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -115,140 +63,17 @@ function ControleTipoFundo(props: {
         reader.readAsDataURL(file);
     };
     
-    const handleSolidColorChange = (color: string) => {
-        onBackgroundStyleChange({ type: 'solid', value: color });
-    };
-
-    const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
-        const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : `circle at center, `}${grad.colors[0]}, ${grad.colors[1]})`;
-        onBackgroundStyleChange({ type: 'gradient', value: gradValue });
-    };
-
-    const handleGradientColorChange = (index: 0 | 1, color: string) => {
-        const newColors = [...gradient.colors] as [string, string];
-        newColors[index] = color;
-        handleGradientChange({ ...gradient, colors: newColors });
-    };
-
-    const handleGradientDirectionChange = (direction: string) => {
-        handleGradientChange({ ...gradient, direction });
-    };
-
-    const handleGradientTypeChange = (type: 'linear' | 'radial') => {
-        handleGradientChange({ ...gradient, type });
-    }
-
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-4 gap-1">
-                <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}>Mídia</Button>
-                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => setActiveTab('film')}>Película</Button>
-                <Button variant={activeTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}>Cor</Button>
-                <Button variant={activeTab === 'gradient' ? 'secondary' : 'ghost'} onClick={() => handleTabChange('gradient')}>Gradiente</Button>
-            </div>
-            
-            <Separator />
-
-            {activeTab === 'media' && (
-                <div className="space-y-4">
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
-                    <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
-                     <Link href="/galeria?fromEditor=true" passHref>
-                        <Button className="w-full" variant="outline">
-                            <ImageIcon className="mr-2 h-4 w-4" />
-                            Carregar da Galeria
-                        </Button>
-                    </Link>
-                </div>
-            )}
-             {activeTab === 'color' && (
-                 <div className="space-y-2">
-                    <Label>Cor de Fundo</Label>
-                    <div className="relative h-10 w-full rounded-md overflow-hidden">
-                        <Input
-                            type="color"
-                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
-                            onChange={(e) => handleSolidColorChange(e.target.value)}
-                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                        />
-                    </div>
-                </div>
-            )}
-
-
-            {activeTab === 'film' && (
-                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <Label>Cor da Película</Label>
-                         <div className="relative h-10 w-full rounded-md overflow-hidden">
-                            <Input
-                                type="color"
-                                value={filmColor}
-                                onChange={(e) => onFilmColorChange(e.target.value)}
-                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <Label htmlFor="film-opacity">Opacidade da Película</Label>
-                            <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
-                        </div>
-                        <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => onFilmOpacityChange(v[0])} />
-                    </div>
-                </div>
-            )}
-            
-            {activeTab === 'gradient' && (
-                 <div className="space-y-4">
-                    <div className="flex items-end gap-2">
-                         <div className="space-y-2">
-                            <Label>Tipo</Label>
-                            <div className="flex gap-1">
-                                <Button size="sm" variant={gradient.type === 'linear' ? 'secondary' : 'outline'} onClick={() => handleGradientTypeChange('linear')}>Linear</Button>
-                                <Button size="sm" variant={gradient.type === 'radial' ? 'secondary' : 'outline'} onClick={() => handleGradientTypeChange('radial')}>Radial</Button>
-                            </div>
-                        </div>
-
-                        {gradient.type === 'linear' && (
-                            <div className="space-y-2 flex-1">
-                                <Label htmlFor="gradient-direction">Direção</Label>
-                                <Select value={gradient.direction} onValueChange={handleGradientDirectionChange}>
-                                    <SelectTrigger id="gradient-direction" className="h-9">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="to right">Direita</SelectItem>
-                                        <SelectItem value="to left">Esquerda</SelectItem>
-                                        <SelectItem value="to bottom">Abaixo</SelectItem>
-                                        <SelectItem value="to top">Acima</SelectItem>
-                                        <SelectItem value="to bottom right">Diag. (↓→)</SelectItem>
-                                        <SelectItem value="to top left">Diag. (↑←)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Cores do Gradiente</Label>
-                        <div className="flex items-center gap-4">
-                            {[0, 1].map((index) => (
-                                <div key={index} className="flex-1 space-y-1">
-                                    <Label className="text-xs text-muted-foreground">Cor {index + 1}</Label>
-                                    <div className="relative h-9 w-full rounded-md overflow-hidden">
-                                        <Input
-                                            type="color"
-                                            value={gradient.colors[index as 0 | 1]}
-                                            onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)}
-                                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
+             <Label>Mídia de Fundo</Label>
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
+            <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
+             <Link href="/galeria?fromEditor=true" passHref>
+                <Button className="w-full" variant="outline">
+                    <ImageIcon className="mr-2 h-4 w-4" />
+                    Carregar da Galeria
+                </Button>
+            </Link>
         </div>
     )
 }
@@ -451,10 +276,6 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
                     return <ControleTipoFundo 
                                 backgroundStyle={props.backgroundStyle} 
                                 onBackgroundStyleChange={props.onBackgroundStyleChange}
-                                filmColor={props.filmColor}
-                                onFilmColorChange={props.onFilmColorChange}
-                                filmOpacity={props.filmOpacity}
-                                onFilmOpacityChange={props.onFilmOpacityChange}
                             />
                 case 'assinatura':
                     return <ControleAssinatura {...props} />
@@ -475,7 +296,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     const subMenu = (
         <div className="flex h-full flex-col items-center gap-1 border-r bg-background/90 backdrop-blur-sm p-2">
             <BotaoRecurso icon={RectangleHorizontal} label="Proporção" onClick={() => handleSetControleAtivo('proporcao')} isActive={controleAtivo === 'proporcao'}/>
-            <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
+            <BotaoRecurso icon={ImageIcon} label="Mídia" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={controleAtivo === 'assinatura'}/>
              <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
         </div>

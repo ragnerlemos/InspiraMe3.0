@@ -16,7 +16,7 @@ import type { PainelEstiloProps } from "./tipos";
 import { BotaoRecurso } from "./botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-type ControleAtivo = 'fonte' | 'tamanho' | 'alinhamento' | 'estilo' | 'posicao' | 'contorno' | 'sombra' | null;
+type ControleAtivo = 'fonte' | 'tamanho' | 'alinhamento' | 'estilo' | 'posicao' | 'sombra' | null;
 
 export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void }) {
     const [controleAtivo, setControleAtivo] = useState<ControleAtivo>('fonte');
@@ -106,28 +106,6 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
                         </div>
                     </div>
                 )}
-                {controleAtivo === 'contorno' && (
-                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
-                             <div className="relative h-10 w-full rounded-md overflow-hidden">
-                                <Input
-                                    type="color"
-                                    value={props.textStrokeColor}
-                                    onChange={(e) => props.onTextStrokeColorChange(e.target.value)}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                                />
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                                <Label htmlFor="stroke-width" className="text-xs text-muted-foreground">Espessura</Label>
-                                <span className="text-xs text-muted-foreground">{props.textStrokeWidth.toFixed(1)} pt</span>
-                            </div>
-                            <Slider id="stroke-width" min={0} max={10} step={0.1} value={[props.textStrokeWidth]} onValueChange={(v) => props.onTextStrokeWidthChange(v[0])} />
-                        </div>
-                    </div>
-                )}
                 {controleAtivo === 'sombra' && (
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
@@ -146,11 +124,9 @@ export function PainelEstilo(props: PainelEstiloProps & { onClose: () => void })
             <div className="flex w-max space-x-1 p-2">
                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => handleSetControleAtivo('fonte')} isActive={controleAtivo === 'fonte'}/>
                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => handleSetControleAtivo('tamanho')} isActive={controleAtivo === 'tamanho'}/>
-                <BotaoRecurso icon={Pipette} label="Cor" onClick={() => { const input = document.createElement('input'); input.type = 'color'; input.value = props.textColor; input.onchange = (e) => props.onTextColorChange((e.target as HTMLInputElement).value); input.click(); }} isActive={false}/>
                 <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => handleSetControleAtivo('alinhamento')} isActive={controleAtivo === 'alinhamento'}/>
                 <BotaoRecurso icon={Bold} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={controleAtivo === 'estilo'}/>
                 <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => handleSetControleAtivo('posicao')} isActive={controleAtivo === 'posicao'}/>
-                <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => handleSetControleAtivo('contorno')} isActive={controleAtivo === 'contorno'}/>
                 <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => handleSetControleAtivo('sombra')} isActive={controleAtivo === 'sombra'}/>
             </div>
             <ScrollBar orientation="horizontal" className="h-2" />

@@ -3,7 +3,7 @@
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
-import { Type, Palette, ImagePlus, ArrowLeft } from "lucide-react";
+import { Type, Palette, ImagePlus, ArrowLeft, Brush } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import type { PainelControlesProps } from "./tipos";
@@ -12,14 +12,15 @@ import { PainelEstilo } from "./painel-estilo";
 import { PainelFundo } from "./painel-fundo";
 import { BotaoRecurso } from './botao-recurso';
 import { useWindowSize } from 'react-use';
+import { PainelCores } from './paineis/painel-cores';
 
 
 export function PainelControles(props: PainelControlesProps) {
-    const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | null>('text');
+    const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | 'colors' | null>('text');
     const { width } = useWindowSize();
     const isDesktop = width >= 768; // Tailwind's md breakpoint
     
-    const handlePanelChange = (panel: 'text' | 'style' | 'background') => {
+    const handlePanelChange = (panel: 'text' | 'style' | 'background' | 'colors') => {
         // No mobile, clicar no mesmo botão não deve fechar o painel.
         // O fechamento será feito pelo botão "voltar" ou deslizando.
         setActivePanel(panel);
@@ -38,6 +39,8 @@ export function PainelControles(props: PainelControlesProps) {
                 return <PainelEstilo {...props} {...commonProps} />;
             case 'background':
                  return <PainelFundo {...props} {...commonProps} />;
+            case 'colors':
+                return <PainelCores {...props} {...commonProps} />;
             default:
                 if (isDesktop) {
                     return <div className="p-4 text-center text-muted-foreground">Selecione uma ferramenta para começar a editar.</div>;
@@ -50,7 +53,8 @@ export function PainelControles(props: PainelControlesProps) {
         switch (activePanel) {
             case 'text': return "Editar Texto";
             case 'style': return "Editar Estilo";
-            case 'background': return "Editar Fundo";
+            case 'background': return "Editar Fundo e Formato";
+            case 'colors': return "Editar Cores";
             default: return "";
         }
     }
@@ -58,15 +62,17 @@ export function PainelControles(props: PainelControlesProps) {
     const mainToolbar = (
         <div className="flex h-16 items-center justify-around px-2 border-b">
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange('text')} isActive={isDesktop && activePanel === 'text'} />
-            <BotaoRecurso icon={Palette} label="Estilo" onClick={() => handlePanelChange('style')} isActive={isDesktop && activePanel === 'style'} />
-            <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => handlePanelChange('background')} isActive={isDesktop && activePanel === 'background'}/>
+            <BotaoRecurso icon={Brush} label="Estilo" onClick={() => handlePanelChange('style')} isActive={isDesktop && activePanel === 'style'} />
+            <BotaoRecurso icon={Palette} label="Cores" onClick={() => handlePanelChange('colors')} isActive={isDesktop && activePanel === 'colors'} />
+            <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => handlePanelChange('background')} isActive={isDesktop && active-panel === 'background'}/>
         </div>
     );
     
     const mobileToolbar = (
          <div className="flex h-16 items-center justify-around px-2 border-t bg-background">
             <BotaoRecurso icon={Type} label="Texto" onClick={() => setActivePanel('text')} isActive={activePanel === 'text'} />
-            <BotaoRecurso icon={Palette} label="Estilo" onClick={() => setActivePanel('style')} isActive={activePanel === 'style'} />
+            <BotaoRecurso icon={Brush} label="Estilo" onClick={() => setActivePanel('style')} isActive={activePanel === 'style'} />
+            <BotaoRecurso icon={Palette} label="Cores" onClick={() => setActivePanel('colors')} isActive={activePanel === 'colors'} />
             <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => setActivePanel('background')} isActive={activePanel === 'background'}/>
         </div>
     )
@@ -77,9 +83,7 @@ export function PainelControles(props: PainelControlesProps) {
             <div className="flex flex-col h-full">
                 {mainToolbar}
                 <div className="flex-1 overflow-y-auto">
-                    {activePanel === 'text' && <PainelTexto {...props} />}
-                    {activePanel === 'style' && <PainelEstilo {...props} onClose={() => setActivePanel(null)} />}
-                    {activePanel === 'background' && <PainelFundo {...props} onClose={() => setActivePanel(null)} />}
+                    {renderPanelContent()}
                     {!activePanel && <div className="p-4 text-center text-muted-foreground">Selecione uma ferramenta para começar a editar.</div>}
                 </div>
             </div>
