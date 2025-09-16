@@ -1,4 +1,5 @@
 
+
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
@@ -16,7 +17,7 @@ import { PainelCanva } from './painel-canva';
 import { PainelAssinatura } from './painel-assinatura';
 
 
-export function PainelControles(props: PainelControlesProps) {
+export function BarraFerramentas(props: PainelControlesProps) {
     const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | 'colors' | 'canvas' | 'signature' | null>('text');
     const { width } = useWindowSize();
     const isDesktop = width >= 768; // Tailwind's md breakpoint

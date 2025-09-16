@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -7,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { quotes } from "@/lib/dados";
 import type { EstiloTexto, ProporcaoTela, EditorState } from "./tipos";
 import { VisualizacaoEditor } from "./visualizacao";
-import { PainelControles } from "./paineis/painel-controles";
+import { BarraFerramentas } from "./paineis/barra-ferramentas";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "../contexts/editor-context";
@@ -324,7 +325,7 @@ export function EditorClient() {
   };
 
   const controlsPanel = (
-     <PainelControles
+     <BarraFerramentas
         text={currentState.text}
         onTextChange={(text) => updateState({ text })}
         fontFamily={currentState.fontFamily}
