@@ -86,7 +86,7 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
                 if (!parts) throw new Error("Invalid gradient string");
                 
                 let direction = 'to right';
-                let colors: [string, string] = ['#A06CD5', '#45B8AC'];
+                let colors: [string, string] = ['#AOCD5', '#45B8AC'];
                 
                 if (gradType === 'linear') {
                     if (parts[0].startsWith('to ')) {
@@ -757,13 +757,6 @@ export function MobileToolbar({
                         className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                     />
                 </div>
-            </div>
-            <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                    <Label htmlFor="film-opacity-mobile">Opacidade da Película</Label>
-                    <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
-                </div>
-                <Slider id="film-opacity-mobile" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
             </div>
         </div>
       ),
