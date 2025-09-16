@@ -1,4 +1,5 @@
 
+
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
