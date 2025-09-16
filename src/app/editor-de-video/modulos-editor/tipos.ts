@@ -93,7 +93,7 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps, PainelCoresProps, PainelCanvaProps {
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps, PainelCoresProps, PainelCanvaProps, PainelAssinaturaProps {
     onUndo: () => void;
     canUndo: boolean;
 }
@@ -151,6 +151,21 @@ export interface PainelCoresProps {
 export interface PainelFundoProps {
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
+    showLogo: boolean;
+    onShowLogoChange: (show: boolean) => void;
+    logoPositionX: number;
+    onLogoPositionXChange: (x: number) => void;
+    logoPositionY: number;
+    onLogoPositionYChange: (y: number) => void;
+    logoScale: number;
+    onLogoScaleChange: (scale: number) => void;
+    logoOpacity: number;
+    onLogoOpacityChange: (opacity: number) => void;
+    profile: ProfileData;
+}
+
+
+export interface PainelAssinaturaProps {
     showProfileSignature: boolean;
     onShowProfileSignatureChange: (show: boolean) => void;
     signaturePositionX: number;
@@ -171,18 +186,9 @@ export interface PainelFundoProps {
     onSignatureBgColorChange: (color: string) => void;
     signatureBgOpacity: number;
     onSignatureBgOpacityChange: (opacity: number) => void;
-    showLogo: boolean;
-    onShowLogoChange: (show: boolean) => void;
-    logoPositionX: number;
-    onLogoPositionXChange: (x: number) => void;
-    logoPositionY: number;
-    onLogoPositionYChange: (y: number) => void;
-    logoScale: number;
-    onLogoScaleChange: (scale: number) => void;
-    logoOpacity: number;
-    onLogoOpacityChange: (opacity: number) => void;
     profile: ProfileData;
 }
+
 
 // Propriedades para o painel do canvas
 export interface PainelCanvaProps {

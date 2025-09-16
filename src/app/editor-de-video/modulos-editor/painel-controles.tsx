@@ -1,9 +1,8 @@
 
-
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
-import { Type, Palette, ImagePlus, ArrowLeft, Brush, RectangleHorizontal } from "lucide-react";
+import { Type, Palette, ImagePlus, ArrowLeft, Brush, RectangleHorizontal, UserCheck } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import type { PainelControlesProps } from "./tipos";
@@ -14,14 +13,15 @@ import { BotaoRecurso } from './botao-recurso';
 import { useWindowSize } from 'react-use';
 import { PainelCores } from './paineis/painel-cores';
 import { PainelCanva } from './paineis/painel-canva';
+import { PainelAssinatura } from './paineis/painel-assinatura';
 
 
 export function PainelControles(props: PainelControlesProps) {
-    const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | 'colors' | 'canvas' | null>('text');
+    const [activePanel, setActivePanel] = useState<'text' | 'style' | 'background' | 'colors' | 'canvas' | 'signature' | null>('text');
     const { width } = useWindowSize();
     const isDesktop = width >= 768; // Tailwind's md breakpoint
     
-    const handlePanelChange = (panel: 'text' | 'style' | 'background' | 'colors' | 'canvas') => {
+    const handlePanelChange = (panel: 'text' | 'style' | 'background' | 'colors' | 'canvas' | 'signature') => {
         // No mobile, clicar no mesmo botão não deve fechar o painel.
         // O fechamento será feito pelo botão "voltar" ou deslizando.
         setActivePanel(panel);
@@ -44,6 +44,8 @@ export function PainelControles(props: PainelControlesProps) {
                 return <PainelCores {...props} {...commonProps} />;
             case 'canvas':
                 return <PainelCanva {...props} {...commonProps} />;
+            case 'signature':
+                return <PainelAssinatura {...props} {...commonProps} />;
             default:
                 if (isDesktop) {
                     return <div className="p-4 text-center text-muted-foreground">Selecione uma ferramenta para começar a editar.</div>;
@@ -59,6 +61,7 @@ export function PainelControles(props: PainelControlesProps) {
             case 'background': return "Editar Fundo";
             case 'colors': return "Editar Cores";
             case 'canvas': return "Editar Canvas";
+            case 'signature': return "Editar Assinatura";
             default: return "";
         }
     }
@@ -70,6 +73,7 @@ export function PainelControles(props: PainelControlesProps) {
             <BotaoRecurso icon={Palette} label="Cores" onClick={() => handlePanelChange('colors')} isActive={isDesktop && activePanel === 'colors'} />
             <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => handlePanelChange('background')} isActive={isDesktop && activePanel === 'background'}/>
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange('canvas')} isActive={isDesktop && activePanel === 'canvas'}/>
+            <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange('signature')} isActive={isDesktop && activePanel === 'signature'}/>
         </div>
     );
     
@@ -80,6 +84,7 @@ export function PainelControles(props: PainelControlesProps) {
             <BotaoRecurso icon={Palette} label="Cores" onClick={() => setActivePanel('colors')} isActive={activePanel === 'colors'} />
             <BotaoRecurso icon={ImagePlus} label="Fundo" onClick={() => setActivePanel('background')} isActive={activePanel === 'background'}/>
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => setActivePanel('canvas')} isActive={activePanel === 'canvas'}/>
+            <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => setActivePanel('signature')} isActive={activePanel === 'signature'}/>
         </div>
     )
 
