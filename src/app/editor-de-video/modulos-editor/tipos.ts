@@ -198,7 +198,7 @@ export interface PainelCanvaProps {
 
 
 // Propriedades para o componente de visualização de perfil
-export interface VisualizacaoPerfilProps {
+export interface ModeloTwitterProps {
   profile: ProfileData;
   text: string;
   textStyle: EstiloTexto;

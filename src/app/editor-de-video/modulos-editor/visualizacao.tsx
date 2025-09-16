@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import type { VisualizacaoEditorProps } from "./tipos";
-import { VisualizacaoPerfil } from "./visualizacao-perfil";
+import { ModeloTwitter } from "./modelo-twitter";
 import { AssinaturaPerfil } from "./assinatura-perfil";
 import { cn } from "@/lib/utils";
 
@@ -102,7 +102,7 @@ export function VisualizacaoEditor({
     if (activeTemplateId === -2) {
       // Visual de perfil (tipo "Twitter")
       return (
-        <VisualizacaoPerfil
+        <ModeloTwitter
           profile={profile}
           text={text}
           textStyle={textStyle}
