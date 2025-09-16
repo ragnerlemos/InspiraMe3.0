@@ -7,17 +7,17 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, ImageUp } from 'lucide-react';
+import { Upload, Image as ImageIcon, ImageUp, Check, Edit, MoveHorizontal, MoveVertical, ZoomIn, BadgePercent } from 'lucide-react';
 import type { PainelFundoProps } from './tipos';
 import { BotaoRecurso } from './botao-recurso';
-import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
 
 
 function ControleTipoFundo(props: {
     backgroundStyle: PainelFundoProps['backgroundStyle'],
     onBackgroundStyleChange: PainelFundoProps['onBackgroundStyleChange'],
 }) {
-    const { backgroundStyle, onBackgroundStyleChange } = props;
+    const { onBackgroundStyleChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
@@ -131,7 +131,7 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
     
     const renderControle = () => {
-        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção ao lado.</p>;
+        if (!controleAtivo) return <p className="text-muted-foreground text-center p-4">Selecione uma opção.</p>;
 
         const Content = () => {
             switch(controleAtivo) {
@@ -155,14 +155,14 @@ export function PainelFundo(props: PainelFundoProps & { onClose: () => void }) {
     }
 
     const subMenu = (
-        <div className="flex h-full flex-col items-center gap-1 border-r bg-background/90 backdrop-blur-sm p-2">
+        <div className="grid grid-cols-2 gap-1 border-b">
             <BotaoRecurso icon={ImageIcon} label="Mídia" onClick={() => handleSetControleAtivo('tipo')} isActive={controleAtivo === 'tipo'}/>
              <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={controleAtivo === 'logo'}/>
         </div>
     );
 
     return (
-       <div className="w-full h-full flex flex-row">
+       <div className="w-full h-full flex flex-col">
             {subMenu}
             <div className="flex-1 overflow-y-auto">
                  {renderControle()}
