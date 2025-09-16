@@ -19,7 +19,7 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
         filmOpacity, onFilmOpacityChange,
     } = props;
     
-    // --- Lógica do Fundo ---
+    // --- LÓGICA DO FUNDO ---
     // Determina qual aba de fundo está ativa (sólida, gradiente) e extrai as propriedades do gradiente.
     const { activeTab, gradient } = useMemo(() => {
         const type = backgroundStyle.type;
@@ -86,12 +86,14 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
         handleGradientChange({ ...gradient, type });
     }
 
+    // --- LÓGICA DO COMPONENTE ---
+    // Extrai o valor da cor sólida apenas se for o tipo ativo, senão usa um fallback.
     const backgroundColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     return (
         <div className="p-4 space-y-4">
             {/* Seção para Cor do Texto */}
-             <div className="space-y-2">
+            <div className="space-y-2">
                 <Label htmlFor="text-color">Cor do Texto</Label>
                 <div className="relative h-10 w-full rounded-md border overflow-hidden">
                     <Input
@@ -107,13 +109,17 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
 
             <Separator />
 
-            {/* Seção para Cor de Fundo */}
+            {/* Seção para Cor de Fundo (com abas para sólido e gradiente) */}
             <div className="space-y-4">
                 <Label>Cor do Fundo</Label>
                 {/* Abas para escolher entre Cor Sólida e Gradiente */}
                 <div className="grid grid-cols-2 gap-2">
-                    <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}><Palette className="mr-2 h-4 w-4" /> Cor Sólida</Button>
-                    <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
+                    <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}>
+                        <Palette className="mr-2 h-4 w-4" /> Cor Sólida
+                    </Button>
+                    <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}>
+                        <Layers className="mr-2 h-4 w-4" /> Gradiente
+                    </Button>
                 </div>
                 
                 {/* Controles para Cor Sólida */}
@@ -136,6 +142,7 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
                 {/* Controles para Gradiente */}
                 {activeTab === 'gradient' && (
                      <div className="space-y-4 pt-2">
+                        {/* Controles para Tipo e Direção do Gradiente */}
                         <div className="flex items-end gap-2">
                              <div className="space-y-2">
                                 <Label>Tipo</Label>
@@ -168,8 +175,8 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
                                    <div key={index} className="flex-1 space-y-1">
                                        <Label className="text-xs text-muted-foreground">Cor {index + 1}</Label>
                                        <div className="relative h-9 w-full rounded-md border overflow-hidden">
-                                           <Input type="color" value={gradient.colors[index]} onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
-                                            <div className="w-full h-full" style={{ backgroundColor: gradient.colors[index] }} />
+                                           <Input type="color" value={gradient.colors[index as 0 | 1]} onChange={(e) => handleGradientColorChange(index as 0 | 1, e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
+                                            <div className="w-full h-full" style={{ backgroundColor: gradient.colors[index as 0 | 1] }} />
                                        </div>
                                    </div>
                                ))}
@@ -181,14 +188,14 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
             
             <Separator />
             
-            {/* Seção para os controles da Película de Cor (filtro). */}
-             <div className="space-y-4">
+            {/* Seção para os controles da Película de Cor (filtro) */}
+            <div className="space-y-4">
                 <Label className="flex items-center"><Film className="mr-2 h-4 w-4" /> Película de Cor</Label>
-                {/* Controle para a Cor da Película. */}
+                {/* Controle para a Cor da Película */}
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
                         <Label htmlFor="film-color" className="text-xs text-muted-foreground">Cor da Película</Label>
-                         <div className="relative h-7 w-10 rounded-md border overflow-hidden">
+                        <div className="relative h-7 w-10 rounded-md border overflow-hidden">
                             <Input
                                 id="film-color"
                                 type="color"
@@ -196,11 +203,11 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
                                 onChange={(e) => onFilmColorChange(e.target.value)}
                                 className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                             />
-                             <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
+                            <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                         </div>
                     </div>
                 </div>
-                {/* Controle para a Opacidade da Película. */}
+                {/* Controle para a Opacidade da Película */}
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
                         <Label htmlFor="film-opacity" className="text-xs text-muted-foreground">Opacidade da Película</Label>
