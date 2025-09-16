@@ -1,4 +1,5 @@
 
+
 // Componente para a aba "Cores", que agrupa todos os controles de cor.
 
 import { useMemo, useState, useRef } from 'react';
@@ -10,7 +11,7 @@ import type { PainelCoresProps } from '../tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { BotaoRecurso } from '../botao-recurso';
-import { Baseline, CaseSensitive, Film, ImageIcon, Layers, PaintBrush, Pipette } from 'lucide-react';
+import { Baseline, CaseSensitive, Film, ImageIcon, Layers, Paintbrush, Pipette } from 'lucide-react';
 import { IconeGradiente } from '../icone-gradiente';
 
 export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
@@ -135,7 +136,7 @@ export function PainelCores(props: PainelCoresProps & { onClose: () => void }) {
             {activeTab === 'background' && (
                 <div className="space-y-4">
                      <div className="grid grid-cols-3 gap-2">
-                        <BotaoRecurso icon={PaintBrush} label="Cor" onClick={() => handleBackgroundTypeChange('solid')} isActive={backgroundStyle.type === 'solid'}/>
+                        <BotaoRecurso icon={Paintbrush} label="Cor" onClick={() => handleBackgroundTypeChange('solid')} isActive={backgroundStyle.type === 'solid'}/>
                         <BotaoRecurso icon={IconeGradiente} label="Gradiente" onClick={() => handleBackgroundTypeChange('gradient')} isActive={backgroundStyle.type === 'gradient'}/>
                         <BotaoRecurso icon={Film} label="Película" onClick={() => { /* This button just activates the section below */ }} isActive={true}/>
                     </div>
