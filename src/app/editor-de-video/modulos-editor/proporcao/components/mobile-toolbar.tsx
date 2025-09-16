@@ -749,14 +749,22 @@ export function MobileToolbar({
          <div className="space-y-4 p-4">
             <div className="space-y-2">
                 <Label>Cor da Película</Label>
-                <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                 <div className="relative h-10 w-full rounded-md border overflow-hidden">
                     <Input
                         type="color"
                         value={filmColor}
                         onChange={(e) => setFilmColor(e.target.value)}
                         className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
                     />
+                     <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                 </div>
+            </div>
+            <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                    <Label htmlFor="film-opacity-mobile" className="text-xs text-muted-foreground">Opacidade</Label>
+                    <span className="text-xs text-muted-foreground">{filmOpacity}%</span>
+                </div>
+                <Slider id="film-opacity-mobile" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
             </div>
         </div>
       ),
