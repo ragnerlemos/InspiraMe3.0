@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { quotes } from "@/lib/dados";
 import type { EstiloTexto, ProporcaoTela, EditorState } from "./tipos";
 import { VisualizacaoEditor } from "./visualizacao";
-import { PainelControles } from "./painel-controles";
+import { PainelControles } from "./paineis/painel-controles";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "../contexts/editor-context";

@@ -1,4 +1,3 @@
-
 // Arquivo para centralizar as definições de tipos compartilhadas entre os componentes do editor.
 import type { ProfileData } from "@/hooks/use-profile";
 
@@ -93,10 +92,7 @@ export interface VisualizacaoEditorProps {
 }
 
 // Define as propriedades para o componente que contém os painéis de controle.
-export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps {
-    onUndo: () => void;
-    canUndo: boolean;
-}
+export interface PainelControlesProps extends PainelTextoProps, PainelEstiloProps, PainelFundoProps, PainelCoresProps {}
 
 // Define as propriedades para o painel de edição de texto.
 export interface PainelTextoProps {
@@ -114,8 +110,6 @@ export interface PainelEstiloProps {
     onFontWeightChange: (weight: "normal" | "bold") => void;
     fontStyle: "normal" | "italic";
     onFontStyleChange: (style: "normal" | "italic") => void;
-    textColor: string;
-    onTextColorChange: (color: string) => void;
     textAlign: "left" | "center" | "right";
     onTextAlignChange: (align: "left" | "center" | "right") => void;
     textShadowBlur: number;
@@ -141,10 +135,6 @@ export interface PainelEstiloProps {
 export interface PainelFundoProps {
     backgroundStyle: EstiloFundo;
     onBackgroundStyleChange: (style: EstiloFundo) => void;
-    filmColor: string;
-    onFilmColorChange: (color: string) => void;
-    filmOpacity: number;
-    onFilmOpacityChange: (opacity: number) => void;
     aspectRatio: ProporcaoTela;
     onAspectRatioChange: (ratio: ProporcaoTela) => void;
     showProfileSignature: boolean;
@@ -180,6 +170,19 @@ export interface PainelFundoProps {
     profile: ProfileData;
 }
 
+// Propriedades para o novo painel de cores
+export interface PainelCoresProps {
+    textColor: string;
+    onTextColorChange: (color: string) => void;
+    backgroundStyle: EstiloFundo;
+    onBackgroundStyleChange: (style: EstiloFundo) => void;
+    filmColor: string;
+    onFilmColorChange: (color: string) => void;
+    filmOpacity: number;
+    onFilmOpacityChange: (opacity: number) => void;
+}
+
+
 // Propriedades para o componente de visualização de perfil
 export interface VisualizacaoPerfilProps {
   profile: ProfileData;
@@ -188,5 +191,3 @@ export interface VisualizacaoPerfilProps {
   textVerticalPosition: number;
   profileVerticalPosition: number;
 }
-
-    
