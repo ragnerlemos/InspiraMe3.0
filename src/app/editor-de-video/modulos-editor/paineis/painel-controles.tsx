@@ -1,4 +1,4 @@
-// Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
+// Componente que gerencia a exibição dos diferentes painéis de controle do editor.
 
 import { useState } from 'react';
 import { Type, Palette, ImagePlus, ArrowLeft, Paintbrush } from "lucide-react";
