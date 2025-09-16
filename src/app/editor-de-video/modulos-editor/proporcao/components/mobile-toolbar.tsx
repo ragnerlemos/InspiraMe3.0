@@ -68,18 +68,31 @@ const aspectRatios = [
   { label: "Vídeo", value: "16 / 9", icon: RectangleHorizontal },
 ];
 
-type ActivePanel = "texto" | "canvas" | "cores" | "filtro" | "fundo" | "assinatura" | "logo" | "estilo" | null;
-type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
+type ActivePanel = "texto" | "canvas" | "cores" | "fundo" | "assinatura" | "logo" | "estilo" | null;
+type TipoFundoAtivo = 'media' | 'film' | 'gradient';
 
 
-function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { backgroundStyle: EstiloFundo, setBackgroundStyle: (style: EstiloFundo) => void }) {
+function ControleTipoFundo({ 
+    backgroundStyle, 
+    setBackgroundStyle,
+    filmColor,
+    setFilmColor,
+    filmOpacity,
+    setFilmOpacity
+}: { 
+    backgroundStyle: EstiloFundo, 
+    setBackgroundStyle: (style: EstiloFundo) => void,
+    filmColor: string,
+    setFilmColor: (color: string) => void,
+    filmOpacity: number,
+    setFilmOpacity: (opacity: number) => void
+}) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     
-    const { activeTab, gradient } = useMemo(() => {
-        const type = backgroundStyle.type;
+    const { gradient } = useMemo(() => {
         let grad = { type: 'linear' as 'linear'|'radial', colors: ['#A06CD5', '#45B8AC'] as [string, string], direction: 'to right' };
-        if (type === 'gradient' && backgroundStyle.value) {
+        if (backgroundStyle.type === 'gradient' && backgroundStyle.value) {
             try {
                 const gradType = backgroundStyle.value.startsWith('linear') ? 'linear' : 'radial';
                 const parts = backgroundStyle.value.match(/\((.*)\)/)?.[1].split(', ');
@@ -105,17 +118,17 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
 
             } catch {}
         }
-        return { activeTab: type, gradient: grad };
+        return { gradient: grad };
     }, [backgroundStyle]);
 
+    const [currentTab, setCurrentTab] = useState<TipoFundoAtivo>('media');
+
+
     const handleTabChange = (tab: TipoFundoAtivo) => {
-        if (tab === 'solid') {
-            setBackgroundStyle({ type: 'solid', value: '#333333' });
-        } else if (tab === 'gradient') {
+        setCurrentTab(tab);
+        if (tab === 'gradient') {
             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             setBackgroundStyle({ type: 'gradient', value: gradValue });
-        } else { // media
-             setBackgroundStyle({ type: 'media', value: '' });
         }
     };
     
@@ -161,14 +174,14 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-3 gap-2">
-                <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}><Palette className="mr-2 h-4 w-4" /> Cor</Button>
-                <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
+                <Button variant={currentTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
+                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => handleTabChange('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
+                <Button variant={currentTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
             </div>
             
             <Separator />
 
-            {activeTab === 'media' && (
+            {currentTab === 'media' && (
                 <div className="space-y-4">
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
                     <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
@@ -179,22 +192,30 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
                     </Link>
                 </div>
             )}
-
-            {activeTab === 'solid' && (
-                 <div className="space-y-2">
-                    <Label className="text-left">Cor do Fundo</Label>
-                    <div className="relative h-10 w-full">
-                       <Input
-                           type="color"
-                           value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333'}
-                           onChange={(e) => handleSolidColorChange(e.target.value)}
-                           className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                       />
-                   </div>
+             {currentTab === 'film' && (
+                 <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label>Cor da Película</Label>
+                         <div className="relative h-10 w-full">
+                            <Input
+                                type="color"
+                                value={filmColor}
+                                onChange={(e) => setFilmColor(e.target.value)}
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <Label htmlFor="film-opacity">Opacidade da Película</Label>
+                            <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
+                        </div>
+                        <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
+                    </div>
                 </div>
             )}
             
-            {activeTab === 'gradient' && (
+            {currentTab === 'gradient' && (
                  <div className="space-y-4">
                     <div className="flex items-end gap-2">
                          <div className="space-y-2">
@@ -745,28 +766,6 @@ export function MobileToolbar({
           </div>
         </div>
       ),
-      filtro: (
-         <div className="space-y-4 p-4">
-            <div className="space-y-2">
-                <Label>Cor da Película</Label>
-                <div className="relative h-10 w-full">
-                    <Input
-                        type="color"
-                        value={filmColor}
-                        onChange={(e) => setFilmColor(e.target.value)}
-                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                    />
-                </div>
-            </div>
-            <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                    <Label htmlFor="film-opacity-mobile">Opacidade da Película</Label>
-                    <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
-                </div>
-                <Slider id="film-opacity-mobile" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
-            </div>
-        </div>
-      ),
       estilo: (
         <div className="w-full h-full flex flex-col">
             <div className="flex-1 overflow-y-auto p-4">
@@ -787,7 +786,7 @@ export function MobileToolbar({
             </ScrollArea>
        </div>
       ),
-      fundo: <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} /></div>,
+      fundo: <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} filmColor={filmColor} setFilmColor={setFilmColor} filmOpacity={filmOpacity} setFilmOpacity={setFilmOpacity} /></div>,
       assinatura: <div className="p-4"><ControleAssinatura {...props} /></div>,
       logo: <div className="p-4"><ControleLogo {...props} /></div>,
     };
@@ -800,7 +799,6 @@ export function MobileToolbar({
       texto: "Editar Texto",
       canvas: "Editar Canvas",
       cores: "Editar Cores",
-      filtro: "Editar Película",
       estilo: "Editar Estilo",
       fundo: "Editar Fundo",
       assinatura: "Editar Assinatura",
@@ -815,7 +813,6 @@ export function MobileToolbar({
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange("texto")} isActive={activePanel === "texto"} />
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange("canvas")} isActive={activePanel === "canvas"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
-            <BotaoRecurso icon={Film} label="Película" onClick={() => handlePanelChange("filtro")} isActive={activePanel === "filtro"} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handlePanelChange("estilo")} isActive={activePanel === "estilo"} />
             <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />

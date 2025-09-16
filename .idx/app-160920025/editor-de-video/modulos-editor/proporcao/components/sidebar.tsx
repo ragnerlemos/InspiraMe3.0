@@ -26,23 +26,9 @@ const aspectRatios = [
     { label: "Vídeo", value: "16 / 9", icon: RectangleHorizontal },
 ];
 
-type TipoFundoAtivo = 'media' | 'film' | 'gradient';
+type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
 
-function ControleTipoFundo({ 
-    backgroundStyle, 
-    setBackgroundStyle,
-    filmColor,
-    setFilmColor,
-    filmOpacity,
-    setFilmOpacity
-}: { 
-    backgroundStyle: EstiloFundo, 
-    setBackgroundStyle: (style: EstiloFundo) => void,
-    filmColor: string,
-    setFilmColor: (color: string) => void,
-    filmOpacity: number,
-    setFilmOpacity: (opacity: number) => void
-}) {
+function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { backgroundStyle: EstiloFundo, setBackgroundStyle: (style: EstiloFundo) => void }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
     
@@ -78,14 +64,14 @@ function ControleTipoFundo({
         return { activeTab: type, gradient: grad };
     }, [backgroundStyle]);
 
-    const [currentTab, setCurrentTab] = useState<TipoFundoAtivo>('media');
-
-
     const handleTabChange = (tab: TipoFundoAtivo) => {
-        setCurrentTab(tab);
-        if (tab === 'gradient') {
+        if (tab === 'solid') {
+            setBackgroundStyle({ type: 'solid', value: '#333333' });
+        } else if (tab === 'gradient') {
             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             setBackgroundStyle({ type: 'gradient', value: gradValue });
+        } else { // media
+             setBackgroundStyle({ type: 'media', value: '' });
         }
     };
     
@@ -132,14 +118,14 @@ function ControleTipoFundo({
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-3 gap-2">
-                <Button variant={currentTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => handleTabChange('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
-                <Button variant={currentTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
+                <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
+                <Button variant={activeTab === 'solid' ? "secondary" : "ghost"} onClick={() => handleTabChange('solid')}><Palette className="mr-2 h-4 w-4" /> Cor</Button>
+                <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
             </div>
             
             <Separator />
 
-            {currentTab === 'media' && (
+            {activeTab === 'media' && (
                 <div className="space-y-4">
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
                     <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
@@ -150,30 +136,17 @@ function ControleTipoFundo({
                     </Link>
                 </div>
             )}
-             {currentTab === 'film' && (
-                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <Label>Cor da Película</Label>
-                         <div className="relative h-10 w-full">
-                            <Input
-                                type="color"
-                                value={filmColor}
-                                onChange={(e) => setFilmColor(e.target.value)}
-                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <Label htmlFor="film-opacity">Opacidade da Película</Label>
-                            <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
-                        </div>
-                        <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
+
+            {activeTab === 'solid' && (
+                 <div className="space-y-2">
+                    <Label className="text-left">Cor do Fundo</Label>
+                    <div className="relative h-10 w-full">
+                        <Input type="color" value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333'} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
                     </div>
                 </div>
             )}
             
-            {currentTab === 'gradient' && (
+            {activeTab === 'gradient' && (
                  <div className="space-y-4">
                     <div className="flex items-end gap-2">
                          <div className="space-y-2">
@@ -737,6 +710,29 @@ export function Sidebar({
                         </div>
                     </div>
                  );
+            case 'filtro':
+                return (
+                    <div className="space-y-4 p-4">
+                        <div className="space-y-2">
+                            <Label>Cor da Película</Label>
+                            <div className="relative h-10 w-full">
+                                <Input
+                                    type="color"
+                                    value={filmColor}
+                                    onChange={(e) => setFilmColor(e.target.value)}
+                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="film-opacity">Opacidade da Película</Label>
+                                <span className="text-sm text-muted-foreground">{filmOpacity}%</span>
+                            </div>
+                            <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
+                        </div>
+                    </div>
+                );
             case 'estilo':
                  return (
                      <div className="w-full flex-1 flex flex-col">
@@ -759,7 +755,7 @@ export function Sidebar({
                      </div>
                  );
             case 'fundo':
-                return <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} filmColor={filmColor} setFilmColor={setFilmColor} filmOpacity={filmOpacity} setFilmOpacity={setFilmOpacity} /></div>;
+                return <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} /></div>;
             case 'assinatura':
                 return <div className="p-4"><ControleAssinatura {...props} /></div>;
             case 'logo':
@@ -775,6 +771,7 @@ export function Sidebar({
                 <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
                 <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
                 <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
+                <BotaoRecurso icon={Film} label="Película" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
                 <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('fundo')} isActive={activeControl === 'fundo'}/>
                 <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={activeControl === 'assinatura'}/>
