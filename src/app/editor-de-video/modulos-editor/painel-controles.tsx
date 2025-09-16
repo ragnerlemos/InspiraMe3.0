@@ -1,5 +1,3 @@
-
-
 // Componente da barra de ferramentas inferior que gerencia os painéis deslizantes.
 
 import { useState } from 'react';
@@ -7,9 +5,9 @@ import { Type, Palette, ImagePlus, ArrowLeft } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import type { PainelControlesProps } from "./tipos";
-import { PainelTexto } from "./painel-texto";
-import { PainelEstilo } from "./painel-estilo";
-import { PainelFundo } from "./painel-fundo";
+import { PainelTexto } from "./paineis/painel-texto";
+import { PainelEstilo } from "./paineis/painel-estilo";
+import { PainelFundo } from "./paineis/painel-fundo";
 import { BotaoRecurso } from './botao-recurso';
 import { useWindowSize } from 'react-use';
 
