@@ -197,11 +197,35 @@ export interface PainelCanvaProps {
 }
 
 
-// Propriedades para o componente de visualização de perfil
+// Propriedades para o componente de visualização de perfil (Twitter)
 export interface ModeloTwitterProps {
   profile: ProfileData;
   text: string;
   textStyle: EstiloTexto;
   textVerticalPosition: number;
   profileVerticalPosition: number;
+}
+
+// Propriedades para o componente de visualização padrão
+export interface ModeloPadraoProps {
+  text: string;
+  textStyle: EstiloTexto;
+  textVerticalPosition: number;
+  showProfileSignature: boolean;
+  profile: ProfileData;
+  signaturePositionX: number;
+  signaturePositionY: number;
+  signatureScale: number;
+  showSignaturePhoto: boolean;
+  showSignatureUsername: boolean;
+  showSignatureSocial: boolean;
+  showSignatureBackground: boolean;
+  signatureBgColor: string;
+  signatureBgOpacity: number;
+  showLogo: boolean;
+  logo: string | null;
+  logoPositionX: number;
+  logoPositionY: number;
+  logoScale: number;
+  logoOpacity: number;
 }

@@ -4,7 +4,7 @@
 import Image from "next/image";
 import type { VisualizacaoEditorProps } from "./tipos";
 import { ModeloTwitter } from "./modelos/modelo-twitter";
-import { AssinaturaPerfil } from "./assinatura-perfil";
+import { ModeloPadrao } from "./modelos/modelo-padrao";
 import { cn } from "@/lib/utils";
 
 // Função para converter cor hexadecimal para RGB
@@ -114,55 +114,28 @@ export function VisualizacaoEditor({
 
     // Padrão
     return (
-      <>
-        <div className="absolute inset-0 flex items-center justify-center p-8">
-          <div className="relative w-full h-full">
-            <div
-              style={{
-                ...textStyle,
-                top: `${textVerticalPosition}%`,
-                transform: "translateY(-50%)",
-              }}
-              className="break-words w-full absolute transition-all duration-200"
-            >
-              {text}
-            </div>
-          </div>
-        </div>
-        {showProfileSignature && (
-            <div
-              className="absolute"
-              style={{
-                top: `${signaturePositionY}%`,
-                left: `${signaturePositionX}%`,
-                transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
-              }}
-            >
-              <AssinaturaPerfil
-                profile={profile}
-                showPhoto={showSignaturePhoto}
-                showUsername={showSignatureUsername}
-                showSocial={showSignatureSocial}
-                showBackground={showSignatureBackground}
-                bgColor={signatureBgColor}
-                bgOpacity={signatureBgOpacity}
-              />
-            </div>
-          )}
-           {showLogo && profile.logo && (
-            <div
-              className="absolute"
-              style={{
-                top: `${logoPositionY}%`,
-                left: `${logoPositionX}%`,
-                transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
-                opacity: logoOpacity / 100,
-              }}
-            >
-                <img src={profile.logo} alt="Logomarca" className="max-w-[150px] max-h-[150px]" />
-            </div>
-          )}
-      </>
+       <ModeloPadrao
+        text={text}
+        textStyle={textStyle}
+        textVerticalPosition={textVerticalPosition}
+        showProfileSignature={showProfileSignature}
+        profile={profile}
+        signaturePositionX={signaturePositionX}
+        signaturePositionY={signaturePositionY}
+        signatureScale={signatureScale}
+        showSignaturePhoto={showSignaturePhoto}
+        showSignatureUsername={showSignatureUsername}
+        showSignatureSocial={showSignatureSocial}
+        showSignatureBackground={showSignatureBackground}
+        signatureBgColor={signatureBgColor}
+        signatureBgOpacity={signatureBgOpacity}
+        showLogo={showLogo}
+        logo={profile.logo}
+        logoPositionX={logoPositionX}
+        logoPositionY={logoPositionY}
+        logoScale={logoScale}
+        logoOpacity={logoOpacity}
+      />
     );
   };
   
