@@ -112,7 +112,7 @@ export function EditorClient() {
   // Função para refazer a última ação.
   const redo = useCallback(() => {
     if (currentStateIndex < history.length - 1) {
-      setCurrentStateIndex(currentStateIndex - 1);
+      setCurrentStateIndex(currentStateIndex + 1);
     }
   }, [currentStateIndex, history.length]);
 
