@@ -15,6 +15,10 @@ export type EstiloFundo = {
     value: string; // URL da mídia, cor sólida, ou string do gradiente
 };
 
+// Define qual painel de controle está ativo
+export type ActivePanel = 'text' | 'style' | 'background' | 'colors' | 'canvas' | 'signature' | null;
+
+
 // Agrupa todo o estado do editor em um único objeto.
 export interface EditorState {
     text: string;

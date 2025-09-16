@@ -5,9 +5,8 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { quotes } from "@/lib/dados";
-import type { EstiloTexto, ProporcaoTela, EditorState } from "./modulos-editor/tipos";
+import type { EstiloTexto, ProporcaoTela, EditorState, PainelControlesProps, ActivePanel } from "./modulos-editor/tipos";
 import { VisualizacaoEditor } from "./modulos-editor/visualizacao";
-import { BarraFerramentas } from "./modulos-editor/paineis/barra-ferramentas";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
 import { useEditor } from "./contexts/editor-context";
@@ -15,6 +14,8 @@ import { useTemplates } from "@/hooks/use-templates";
 import { Panel, PanelGroup, PanelResizeHandle } from "@/components/ui/resizable";
 import { useWindowSize } from "react-use";
 import { useExport } from "@/hooks/use-export";
+import { EditorSidebar } from "./layout/editor-sidebar";
+import { EditorToolbar } from "./layout/editor-toolbar";
 
 
 // Estado inicial para o editor.
@@ -84,6 +85,7 @@ export function EditorClient() {
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
 
+  const [activePanel, setActivePanel] = useState<ActivePanel>('text');
 
   // Histórico de estados para a funcionalidade de desfazer.
   const [history, setHistory] = useState<EditorState[]>([getInitialState()]);
@@ -226,7 +228,7 @@ export function EditorClient() {
      return <EditorSkeleton />;
   }
 
-  const editorProps = {
+  const editorProps: VisualizacaoEditorProps = {
     aspectRatio: currentState.aspectRatio,
     backgroundStyle: currentState.backgroundStyle,
     filmColor: currentState.filmColor,
@@ -254,82 +256,80 @@ export function EditorClient() {
     logoOpacity: currentState.logoOpacity,
   };
 
-  const controlsPanel = (
-     <BarraFerramentas
-        text={currentState.text}
-        onTextChange={(text) => updateState({ text })}
-        fontFamily={currentState.fontFamily}
-        onFontFamilyChange={(fontFamily) => updateState({ fontFamily })}
-        fontSize={currentState.fontSize}
-        onFontSizeChange={(fontSize) => updateState({ fontSize })}
-        fontWeight={currentState.fontWeight}
-        onFontWeightChange={(fontWeight) => updateState({ fontWeight })}
-        fontStyle={currentState.fontStyle}
-        onFontStyleChange={(fontStyle) => updateState({ fontStyle })}
-        textColor={currentState.textColor}
-        onTextColorChange={(textColor) => updateState({ textColor })}
-        textAlign={currentState.textAlign}
-        onTextAlignChange={(textAlign) => updateState({ textAlign })}
-        textShadowBlur={currentState.textShadowBlur}
-        onTextShadowBlurChange={(textShadowBlur) => updateState({ textShadowBlur })}
-        textVerticalPosition={currentState.textVerticalPosition}
-        onTextVerticalPositionChange={(textVerticalPosition) => updateState({ textVerticalPosition })}
-        textStrokeColor={currentState.textStrokeColor}
-        onTextStrokeColorChange={(textStrokeColor) => updateState({ textStrokeColor })}
-        textStrokeWidth={currentState.textStrokeWidth}
-        onTextStrokeWidthChange={(textStrokeWidth) => updateState({ textStrokeWidth })}
-        letterSpacing={currentState.letterSpacing}
-        onLetterSpacingChange={(letterSpacing) => updateState({ letterSpacing })}
-        lineHeight={currentState.lineHeight}
-        onLineHeightChange={(lineHeight) => updateState({ lineHeight })}
-        wordSpacing={currentState.wordSpacing}
-        onWordSpacingChange={(wordSpacing) => updateState({ wordSpacing })}
-        backgroundStyle={currentState.backgroundStyle}
-        onBackgroundStyleChange={(backgroundStyle) => updateState({ backgroundStyle })}
-        filmColor={currentState.filmColor}
-        onFilmColorChange={(filmColor) => updateState({ filmColor })}
-        filmOpacity={currentState.filmOpacity}
-        onFilmOpacityChange={(filmOpacity) => updateState({ filmOpacity })}
-        aspectRatio={currentState.aspectRatio}
-        onAspectRatioChange={(ratio) => updateState({ aspectRatio: ratio })}
-        onUndo={undo}
-        canUndo={canUndo}
-        showProfileSignature={currentState.showProfileSignature}
-        onShowProfileSignatureChange={(show) => updateState({ showProfileSignature: show })}
-        signaturePositionX={currentState.signaturePositionX}
-        onSignaturePositionXChange={(x) => updateState({ signaturePositionX: x })}
-        signaturePositionY={currentState.signaturePositionY}
-        onSignaturePositionYChange={(y) => updateState({ signaturePositionY: y })}
-        signatureScale={currentState.signatureScale}
-        onSignatureScaleChange={(scale) => updateState({ signatureScale: scale })}
-        showSignaturePhoto={currentState.showSignaturePhoto}
-        onShowSignaturePhotoChange={(show) => updateState({ showSignaturePhoto: show })}
-        showSignatureUsername={currentState.showSignatureUsername}
-        onShowSignatureUsernameChange={(show) => updateState({ showSignatureUsername: show })}
-        showSignatureSocial={currentState.showSignatureSocial}
-        onShowSignatureSocialChange={(show) => updateState({ showSignatureSocial: show })}
-        showSignatureBackground={currentState.showSignatureBackground}
-        onShowSignatureBackgroundChange={(show) => updateState({ showSignatureBackground: show })}
-        signatureBgColor={currentState.signatureBgColor}
-        onSignatureBgColorChange={(color) => updateState({ signatureBgColor: color })}
-        signatureBgOpacity={currentState.signatureBgOpacity}
-        onSignatureBgOpacityChange={(opacity) => updateState({ signatureBgOpacity: opacity })}
-        activeTemplateId={typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null}
-        profileVerticalPosition={currentState.profileVerticalPosition}
-        onProfileVerticalPositionChange={(profileVerticalPosition) => updateState({ profileVerticalPosition })}
-        showLogo={currentState.showLogo}
-        onShowLogoChange={(show) => updateState({ showLogo: show })}
-        logoPositionX={currentState.logoPositionX}
-        onLogoPositionXChange={(x) => updateState({ logoPositionX: x })}
-        logoPositionY={currentState.logoPositionY}
-        onLogoPositionYChange={(y) => updateState({ logoPositionY: y })}
-        logoScale={currentState.logoScale}
-        onLogoScaleChange={(scale) => updateState({ logoScale: scale })}
-        logoOpacity={currentState.logoOpacity}
-        onLogoOpacityChange={(opacity) => updateState({ logoOpacity: opacity })}
-        profile={profile}
-    />
-  );
+  const controlsProps: PainelControlesProps = {
+    text: currentState.text,
+    onTextChange: (text) => updateState({ text }),
+    fontFamily: currentState.fontFamily,
+    onFontFamilyChange: (fontFamily) => updateState({ fontFamily }),
+    fontSize: currentState.fontSize,
+    onFontSizeChange: (fontSize) => updateState({ fontSize }),
+    fontWeight: currentState.fontWeight,
+    onFontWeightChange: (fontWeight) => updateState({ fontWeight }),
+    fontStyle: currentState.fontStyle,
+    onFontStyleChange: (fontStyle) => updateState({ fontStyle }),
+    textColor: currentState.textColor,
+    onTextColorChange: (textColor) => updateState({ textColor }),
+    textAlign: currentState.textAlign,
+    onTextAlignChange: (textAlign) => updateState({ textAlign }),
+    textShadowBlur: currentState.textShadowBlur,
+    onTextShadowBlurChange: (textShadowBlur) => updateState({ textShadowBlur }),
+    textVerticalPosition: currentState.textVerticalPosition,
+    onTextVerticalPositionChange: (textVerticalPosition) => updateState({ textVerticalPosition }),
+    textStrokeColor: currentState.textStrokeColor,
+    onTextStrokeColorChange: (textStrokeColor) => updateState({ textStrokeColor }),
+    textStrokeWidth: currentState.textStrokeWidth,
+    onTextStrokeWidthChange: (textStrokeWidth) => updateState({ textStrokeWidth }),
+    letterSpacing: currentState.letterSpacing,
+    onLetterSpacingChange: (letterSpacing) => updateState({ letterSpacing }),
+    lineHeight: currentState.lineHeight,
+    onLineHeightChange: (lineHeight) => updateState({ lineHeight }),
+    wordSpacing: currentState.wordSpacing,
+    onWordSpacingChange: (wordSpacing) => updateState({ wordSpacing }),
+    backgroundStyle: currentState.backgroundStyle,
+    onBackgroundStyleChange: (backgroundStyle) => updateState({ backgroundStyle }),
+    filmColor: currentState.filmColor,
+    onFilmColorChange: (filmColor) => updateState({ filmColor }),
+    filmOpacity: currentState.filmOpacity,
+    onFilmOpacityChange: (filmOpacity) => updateState({ filmOpacity }),
+    aspectRatio: currentState.aspectRatio,
+    onAspectRatioChange: (ratio) => updateState({ aspectRatio: ratio }),
+    onUndo: undo,
+    canUndo: canUndo,
+    showProfileSignature: currentState.showProfileSignature,
+    onShowProfileSignatureChange: (show) => updateState({ showProfileSignature: show }),
+    signaturePositionX: currentState.signaturePositionX,
+    onSignaturePositionXChange: (x) => updateState({ signaturePositionX: x }),
+    signaturePositionY: currentState.signaturePositionY,
+    onSignaturePositionYChange: (y) => updateState({ signaturePositionY: y }),
+    signatureScale: currentState.signatureScale,
+    onSignatureScaleChange: (scale) => updateState({ signatureScale: scale }),
+    showSignaturePhoto: currentState.showSignaturePhoto,
+    onShowSignaturePhotoChange: (show) => updateState({ showSignaturePhoto: show }),
+    showSignatureUsername: currentState.showSignatureUsername,
+    onShowSignatureUsernameChange: (show) => updateState({ showSignatureUsername: show }),
+    showSignatureSocial: currentState.showSignatureSocial,
+    onShowSignatureSocialChange: (show) => updateState({ showSignatureSocial: show }),
+    showSignatureBackground: currentState.showSignatureBackground,
+    onShowSignatureBackgroundChange: (show) => updateState({ showSignatureBackground: show }),
+    signatureBgColor: currentState.signatureBgColor,
+    onSignatureBgColorChange: (color) => updateState({ signatureBgColor: color }),
+    signatureBgOpacity: currentState.signatureBgOpacity,
+    onSignatureBgOpacityChange: (opacity) => updateState({ signatureBgOpacity: opacity }),
+    activeTemplateId: typeof currentState.activeTemplateId === 'number' ? currentState.activeTemplateId : null,
+    profileVerticalPosition: currentState.profileVerticalPosition,
+    onProfileVerticalPositionChange: (profileVerticalPosition) => updateState({ profileVerticalPosition }),
+    showLogo: currentState.showLogo,
+    onShowLogoChange: (show) => updateState({ showLogo: show }),
+    logoPositionX: currentState.logoPositionX,
+    onLogoPositionXChange: (x) => updateState({ logoPositionX: x }),
+    logoPositionY: currentState.logoPositionY,
+    onLogoPositionYChange: (y) => updateState({ logoPositionY: y }),
+    logoScale: currentState.logoScale,
+    onLogoScaleChange: (scale) => updateState({ logoScale: scale }),
+    logoOpacity: currentState.logoOpacity,
+    onLogoOpacityChange: (opacity) => updateState({ logoOpacity: opacity }),
+    profile: profile,
+  };
 
 
   // Layout para Mobile e Desktop
@@ -342,18 +342,27 @@ export function EditorClient() {
                         <VisualizacaoEditor {...editorProps} />
                     </div>
                 </div>
-                {/* O painel de controles para mobile é renderizado aqui e controlado internamente */}
-                {!isDesktop && controlsPanel}
+                {!isDesktop && (
+                  <EditorToolbar
+                    activePanel={activePanel}
+                    setActivePanel={setActivePanel}
+                    isDesktop={isDesktop}
+                    {...controlsProps}
+                  />
+                )}
             </div>
         </Panel>
         {isDesktop && <PanelResizeHandle />}
         {isDesktop && (
           <Panel defaultSize={35} minSize={25} maxSize={40}>
-              <div className="h-full w-full border-l bg-background">
-                   {controlsPanel}
-              </div>
+              <EditorSidebar
+                activePanel={activePanel}
+                setActivePanel={setActivePanel}
+                {...controlsProps}
+              />
           </Panel>
         )}
     </PanelGroup>
   );
 }
+
