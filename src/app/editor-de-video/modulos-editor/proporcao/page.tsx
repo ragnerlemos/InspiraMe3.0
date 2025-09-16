@@ -8,8 +8,6 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTemplates } from "@/hooks/use-templates";
 import { useToast } from "@/hooks/use-toast";
 import { useEditor } from "../../contexts/editor-context";
-import { EditorProvider } from "../../contexts/editor-context";
-import { EditorHeader } from "@/app/cabecalho-app";
 import { Sidebar } from "./components/sidebar";
 import { PreviewCanva } from "./components/preview-canva";
 import { MobileToolbar } from "./components/mobile-toolbar";
@@ -349,14 +347,7 @@ useEffect(() => {
 
 export default function AspectWeaver() {
     return (
-        <EditorProvider>
-            <div className="h-[calc(100vh-4rem)] flex flex-col">
-                <EditorHeader />
-                <div className="flex-1 min-h-0">
-                     <AspectWeaverContent />
-                </div>
-            </div>
-        </EditorProvider>
+        <AspectWeaverContent />
     );
 }
     
