@@ -141,7 +141,13 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
                  <div className="space-y-2">
                     <Label className="text-left">Cor do Fundo</Label>
                     <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                        <Input type="color" value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333'} onChange={e => handleSolidColorChange(e.target.value)} className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer" />
+                        <Input 
+                            type="color" 
+                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333'} 
+                            onChange={e => handleSolidColorChange(e.target.value)} 
+                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                        />
+                        <div className="w-full h-full" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333' }} />
                     </div>
                 </div>
             )}

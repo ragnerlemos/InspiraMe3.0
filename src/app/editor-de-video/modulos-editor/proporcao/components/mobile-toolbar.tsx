@@ -188,8 +188,9 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
                            type="color"
                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333'}
                            onChange={(e) => handleSolidColorChange(e.target.value)}
-                           className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                           className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                        />
+                       <div className="w-full h-full" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#333333' }} />
                    </div>
                 </div>
             )}
