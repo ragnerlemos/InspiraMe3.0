@@ -1,17 +1,16 @@
 
-
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { quotes } from "@/lib/dados";
-import type { EstiloTexto, ProporcaoTela, EditorState } from "./tipos";
-import { VisualizacaoEditor } from "./visualizacao";
-import { BarraFerramentas } from "./paineis/barra-ferramentas";
+import type { EstiloTexto, ProporcaoTela, EditorState } from "./modulos-editor/tipos";
+import { VisualizacaoEditor } from "./modulos-editor/visualizacao";
+import { BarraFerramentas } from "./modulos-editor/paineis/barra-ferramentas";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/use-profile";
-import { useEditor } from "../contexts/editor-context";
+import { useEditor } from "./contexts/editor-context";
 import { useTemplates } from "@/hooks/use-templates";
 import { Panel, PanelGroup, PanelResizeHandle } from "@/components/ui/resizable";
 import { useWindowSize } from "react-use";
@@ -358,5 +357,3 @@ export function EditorClient() {
     </PanelGroup>
   );
 }
-
-    

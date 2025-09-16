@@ -1,7 +1,7 @@
 
 // Componente para o modelo de layout padrão (texto centralizado com assinatura e logo opcionais).
 import type { ModeloPadraoProps } from '../tipos';
-import { AssinaturaPerfil } from '../../assinatura-perfil';
+import { AssinaturaPerfil } from '../assinatura-perfil';
 
 export function ModeloPadrao({
   text,
