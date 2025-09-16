@@ -55,7 +55,7 @@ function ControleTipoFundo(props: {
     const { backgroundStyle, onBackgroundStyleChange, filmColor, onFilmColorChange, filmOpacity, onFilmOpacityChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
-    const [activeTab, setActiveTab] = useState<'media' | 'film' | 'color' | 'gradient'>(backgroundStyle.type);
+    const [activeTab, setActiveTab] = useState<'media' | 'film' | 'color' | 'gradient'>(backgroundStyle.type === 'solid' ? 'color' : backgroundStyle.type);
 
 
      const { gradient } = useMemo(() => {

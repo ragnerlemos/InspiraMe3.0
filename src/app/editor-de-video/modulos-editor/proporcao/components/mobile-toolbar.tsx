@@ -759,7 +759,7 @@ export function MobileToolbar({
         <div className="p-4 grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-left block">Cor do Fundo</Label>
-            <div className="relative h-10 w-full rounded-md border overflow-hidden">
+            <div className="relative h-10 w-full rounded-md overflow-hidden">
                 <Input
                     type="color"
                     value={backgroundColorValue}
@@ -771,7 +771,7 @@ export function MobileToolbar({
           </div>
           <div className="space-y-2">
               <Label className="text-left block">Cor do Texto</Label>
-              <div className="relative h-10 w-full rounded-md border overflow-hidden">
+              <div className="relative h-10 w-full rounded-md overflow-hidden">
                    <Input
                       type="color"
                       value={fgColor}
