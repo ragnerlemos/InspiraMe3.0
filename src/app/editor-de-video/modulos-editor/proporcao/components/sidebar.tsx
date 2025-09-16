@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { BotaoRecurso } from "../../botao-recurso";
-import TextareaAutosize from 'react-textarea-autosize';
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -372,7 +372,7 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                             </div>
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center">
-                                    <Label htmlFor="signature-bg-opacity" className="text-xs flex items-center"><BadgePercent className="mr-2 h-3 w-3" />Opacidade do Fundo</Label>
+                                    <Label htmlFor="signature-bg-opacity">Opacidade do Fundo</Label>
                                     <span className="text-xs text-muted-foreground">{signatureBgOpacity}%</span>
                                 </div>
                                 <Slider id="signature-bg-opacity" min={0} max={100} step={1} value={[signatureBgOpacity]} onValueChange={(v) => onSignatureBgOpacityChange(v[0])}/>
@@ -381,21 +381,21 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                     )}
                      <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="signature-position-x" className="text-xs flex items-center"><MoveHorizontal className="mr-2 h-3 w-3" />Posição Horizontal</Label>
+                            <Label htmlFor="signature-position-x">Posição Horizontal</Label>
                             <span className="text-xs text-muted-foreground">{signaturePositionX}%</span>
                         </div>
                         <Slider id="signature-position-x" min={0} max={100} step={1} value={[signaturePositionX]} onValueChange={(value) => onSignaturePositionXChange(value[0])}/>
                     </div>
                      <div className="space-y-2">
                          <div className="flex justify-between items-center">
-                            <Label htmlFor="signature-position-y" className="text-xs flex items-center"><MoveVertical className="mr-2 h-3 w-3" />Posição Vertical</Label>
+                            <Label htmlFor="signature-position-y">Posição Vertical</Label>
                             <span className="text-xs text-muted-foreground">{signaturePositionY}%</span>
                         </div>
                         <Slider id="signature-position-y" min={0} max={100} step={1} value={[signaturePositionY]} onValueChange={(value) => onSignaturePositionYChange(value[0])}/>
                     </div>
                     <div className="space-y-2">
                          <div className="flex justify-between items-center">
-                            <Label htmlFor="signature-scale" className="text-xs flex items-center"><ZoomIn className="mr-2 h-3 w-3" />Escala</Label>
+                            <Label htmlFor="signature-scale">Escala</Label>
                             <span className="text-xs text-muted-foreground">{signatureScale}%</span>
                         </div>
                         <Slider id="signature-scale" min={50} max={150} step={1} value={[signatureScale]} onValueChange={(value) => onSignatureScaleChange(value[0])}/>
@@ -456,28 +456,28 @@ function ControleLogo(props: ControleLogoProps) {
                 <div className="space-y-4 pt-2 border-t mt-4">
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-position-x" className="text-xs flex items-center"><MoveHorizontal className="mr-2 h-3 w-3" />Posição Horizontal</Label>
+                            <Label htmlFor="logo-position-x">Posição Horizontal</Label>
                             <span className="text-xs text-muted-foreground">{logoPositionX}%</span>
                         </div>
                         <Slider id="logo-position-x" min={0} max={100} step={1} value={[logoPositionX]} onValueChange={(v) => onLogoPositionXChange(v[0])} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-position-y" className="text-xs flex items-center"><MoveVertical className="mr-2 h-3 w-3" />Posição Vertical</Label>
+                            <Label htmlFor="logo-position-y">Posição Vertical</Label>
                             <span className="text-xs text-muted-foreground">{logoPositionY}%</span>
                         </div>
                         <Slider id="logo-position-y" min={0} max={100} step={1} value={[logoPositionY]} onValueChange={(v) => onLogoPositionYChange(v[0])} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-scale" className="text-xs flex items-center"><ZoomIn className="mr-2 h-3 w-3" />Escala</Label>
+                            <Label htmlFor="logo-scale">Escala</Label>
                             <span className="text-xs text-muted-foreground">{logoScale}%</span>
                         </div>
                         <Slider id="logo-scale" min={10} max={200} step={1} value={[logoScale]} onValueChange={(v) => onLogoScaleChange(v[0])} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="logo-opacity" className="text-xs flex items-center"><BadgePercent className="mr-2 h-3 w-3" />Opacidade</Label>
+                            <Label htmlFor="logo-opacity">Opacidade</Label>
                             <span className="text-xs text-muted-foreground">{logoOpacity}%</span>
                         </div>
                         <Slider id="logo-opacity" min={0} max={100} step={1} value={[logoOpacity]} onValueChange={(v) => onLogoOpacityChange(v[0])} />
@@ -545,28 +545,28 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                 <div className="space-y-4">
                     <div>
                         <div className="flex justify-between items-center mb-2">
-                            <Label htmlFor="vertical-position" className="flex items-center"><MoveVertical className="mr-2 h-4 w-4" />Posição Vertical</Label>
+                            <Label htmlFor="vertical-position">Posição Vertical</Label>
                             <span className="text-sm text-muted-foreground">{props.textVerticalPosition}%</span>
                         </div>
                         <Slider id="vertical-position" min={0} max={100} step={1} value={[props.textVerticalPosition]} onValueChange={(v) => props.onTextVerticalPositionChange(v[0])} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="letter-spacing" className="flex items-center"><CaseUpper className="mr-2 h-4 w-4" />Espaç. Letras</Label>
+                            <Label htmlFor="letter-spacing">Espaç. Letras</Label>
                             <span className="text-sm text-muted-foreground">{(props.letterSpacing / 10).toFixed(1)}</span>
                         </div>
                         <Slider id="letter-spacing" min={-10} max={50} step={0.5} value={[props.letterSpacing]} onValueChange={(v) => props.onLetterSpacingChange(v[0])} />
                     </div>
                      <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="word-spacing" className="flex items-center"><Text className="mr-2 h-4 w-4" />Espaç. Palavras</Label>
+                            <Label htmlFor="word-spacing">Espaç. Palavras</Label>
                             <span className="text-sm text-muted-foreground">{(props.wordSpacing / 10).toFixed(1)}</span>
                         </div>
                         <Slider id="word-spacing" min={-10} max={50} step={0.5} value={[props.wordSpacing]} onValueChange={(v) => props.onWordSpacingChange(v[0])} />
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="line-height" className="flex items-center"><Pilcrow className="mr-2 h-4 w-4" />Altura da Linha</Label>
+                            <Label htmlFor="line-height">Altura da Linha</Label>
                             <span className="text-sm text-muted-foreground">{props.lineHeight.toFixed(2)}</span>
                         </div>
                         <Slider id="line-height" min={0.8} max={2.5} step={0.05} value={[props.lineHeight]} onValueChange={(v) => props.onLineHeightChange(v[0])} />
@@ -577,7 +577,7 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
              return (
                  <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
+                        <Label htmlFor="stroke-color">Cor</Label>
                          <div className="relative h-10 w-full rounded-md overflow-hidden">
                             <Input
                                 type="color"
@@ -590,7 +590,7 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                     </div>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <Label htmlFor="stroke-width" className="text-xs text-muted-foreground">Espessura</Label>
+                            <Label htmlFor="stroke-width">Espessura</Label>
                             <span className="text-xs text-muted-foreground">{props.textStrokeWidth.toFixed(1)} pt</span>
                         </div>
                         <Slider id="stroke-width" min={0} max={10} step={0.1} value={[props.textStrokeWidth]} onValueChange={(v) => props.onTextStrokeWidthChange(v[0])} />
@@ -601,7 +601,7 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
              return (
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                        <Label htmlFor="shadow-blur" className="text-xs text-muted-foreground">Desfoque</Label>
+                        <Label htmlFor="shadow-blur">Desfoque</Label>
                         <span className="text-xs text-muted-foreground">{props.textShadowBlur.toFixed(1)} pt</span>
                     </div>
                     <Slider id="shadow-blur" min={0} max={10} step={0.1} value={[props.textShadowBlur]} onValueChange={(v) => props.onTextShadowBlurChange(v[0])} />
@@ -675,11 +675,11 @@ export function Sidebar({
                 return (
                     <div className="p-2 flex-1 flex flex-col">
                         <Label htmlFor="text-input" className="sr-only">Texto da Frase</Label>
-                        <TextareaAutosize
+                        <Textarea
                             id="text-input"
                             value={text}
                             onChange={(e) => setText(e.target.value)}
-                            minRows={6}
+                            rows={6}
                             placeholder="Digite sua frase aqui..."
                             className={cn(
                                 'flex w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
@@ -802,3 +802,4 @@ export function Sidebar({
         </aside>
     );
 }
+

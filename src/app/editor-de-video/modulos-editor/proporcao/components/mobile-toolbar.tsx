@@ -53,7 +53,7 @@ import {
 } from "lucide-react";
 import { BotaoRecurso } from "../../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import TextareaAutosize from 'react-textarea-autosize';
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -707,11 +707,11 @@ export function MobileToolbar({
       texto: (
           <div className="p-2 flex-1 flex flex-col">
               <Label htmlFor="text-input-mobile" className="sr-only">Texto da Frase</Label>
-              <TextareaAutosize
+              <Textarea
                   id="text-input-mobile"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  minRows={6}
+                  rows={6}
                   placeholder="Digite sua frase aqui..."
                   className={cn(
                       'flex w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
@@ -854,3 +854,4 @@ export function MobileToolbar({
     </>
   );
 }
+
