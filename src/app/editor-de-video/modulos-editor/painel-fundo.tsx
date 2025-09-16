@@ -1,5 +1,3 @@
-
-
 // Componente para a aba "Fundo", permitindo o upload de imagem/vídeo ou seleção de cores/gradientes.
 
 import { useRef, useMemo, useState } from 'react';
@@ -8,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow } from 'lucide-react';
+import { Upload, Image as ImageIcon, Palette, Layers, Redo, UserCheck, MoveVertical, MoveHorizontal, CaseSensitive, AtSign, RectangleHorizontal, Check, Edit, Edit2, LayoutTemplate, RectangleVertical, Square, ZoomIn, ImageUp, BadgePercent, User, X, Film, Box, Pipette, Pilcrow, PaintBrush } from 'lucide-react';
 import type { PainelFundoProps, ProporcaoTela } from './tipos';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { templates } from '@/lib/dados';
@@ -55,7 +53,7 @@ function ControleTipoFundo(props: {
     const { backgroundStyle, onBackgroundStyleChange, filmColor, onFilmColorChange, filmOpacity, onFilmOpacityChange } = props;
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
-    const [activeTab, setActiveTab] = useState<'media' | 'film' | 'gradient'>(backgroundStyle.type === 'solid' ? 'media' : backgroundStyle.type);
+    const [activeTab, setActiveTab] = useState<'media' | 'film' | 'color' | 'gradient'>(backgroundStyle.type);
 
 
      const { gradient } = useMemo(() => {
@@ -89,15 +87,13 @@ function ControleTipoFundo(props: {
         return { gradient: grad };
     }, [backgroundStyle]);
 
-    const handleTabChange = (tab: 'media' | 'film' | 'gradient') => {
+    const handleTabChange = (tab: 'media' | 'film' | 'color' | 'gradient') => {
         setActiveTab(tab);
-        if (tab === 'film') {
-            onFilmOpacityChange(filmOpacity > 0 ? filmOpacity : 50);
+         if (tab === 'color') {
+            onBackgroundStyleChange({ type: 'solid', value: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' });
         } else if (tab === 'gradient') {
             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             onBackgroundStyleChange({ type: 'gradient', value: gradValue });
-        } else if (tab === 'media') {
-             // Apenas muda a aba, não altera o fundo a menos que o usuário carregue um novo
         }
     };
 
@@ -116,6 +112,10 @@ function ControleTipoFundo(props: {
         reader.readAsDataURL(file);
     };
     
+    const handleSolidColorChange = (color: string) => {
+        onBackgroundStyleChange({ type: 'solid', value: color });
+    };
+
     const handleGradientChange = (grad: { type: 'linear' | 'radial', colors: [string, string], direction: string }) => {
         const gradValue = `${grad.type}-gradient(${grad.type === 'linear' ? `${grad.direction}, ` : `circle at center, `}${grad.colors[0]}, ${grad.colors[1]})`;
         onBackgroundStyleChange({ type: 'gradient', value: gradValue });
@@ -137,9 +137,10 @@ function ControleTipoFundo(props: {
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-1">
                 <Button variant={activeTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => handleTabChange('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
+                <Button variant={activeTab === 'film' ? "secondary" : "ghost"} onClick={() => setActiveTab('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
+                <Button variant={activeTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}><PaintBrush className="mr-2 h-4 w-4" /> Cor</Button>
                 <Button variant={activeTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
             </div>
             
@@ -157,6 +158,20 @@ function ControleTipoFundo(props: {
                     </Link>
                 </div>
             )}
+             {activeTab === 'color' && (
+                 <div className="space-y-2">
+                    <Label>Cor de Fundo</Label>
+                    <div className="relative h-10 w-full">
+                        <Input
+                            type="color"
+                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
+                            onChange={(e) => handleSolidColorChange(e.target.value)}
+                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                        />
+                    </div>
+                </div>
+            )}
+
 
             {activeTab === 'film' && (
                  <div className="space-y-4">

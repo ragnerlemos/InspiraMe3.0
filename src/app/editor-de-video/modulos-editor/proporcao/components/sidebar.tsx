@@ -26,7 +26,7 @@ const aspectRatios = [
     { label: "Vídeo", value: "16 / 9", icon: RectangleHorizontal },
 ];
 
-type TipoFundoAtivo = 'media' | 'film' | 'gradient';
+type TipoFundoAtivo = 'media' | 'film' | 'color' | 'gradient';
 
 function ControleTipoFundo({ 
     backgroundStyle, 
@@ -45,11 +45,11 @@ function ControleTipoFundo({
 }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+    const [currentTab, setCurrentTab] = useState<TipoFundoAtivo>('media');
     
-    const { activeTab, gradient } = useMemo(() => {
-        const type = backgroundStyle.type;
+    const { gradient } = useMemo(() => {
         let grad = { type: 'linear' as 'linear'|'radial', colors: ['#A06CD5', '#45B8AC'] as [string, string], direction: 'to right' };
-        if (type === 'gradient' && backgroundStyle.value) {
+        if (backgroundStyle.type === 'gradient' && backgroundStyle.value) {
             try {
                 const gradType = backgroundStyle.value.startsWith('linear') ? 'linear' : 'radial';
                 const parts = backgroundStyle.value.match(/\((.*)\)/)?.[1].split(', ');
@@ -75,15 +75,15 @@ function ControleTipoFundo({
 
             } catch {}
         }
-        return { activeTab: type, gradient: grad };
+        return { gradient: grad };
     }, [backgroundStyle]);
-
-    const [currentTab, setCurrentTab] = useState<TipoFundoAtivo>('media');
 
 
     const handleTabChange = (tab: TipoFundoAtivo) => {
         setCurrentTab(tab);
-        if (tab === 'gradient') {
+        if (tab === 'color') {
+            setBackgroundStyle({ type: 'solid', value: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' });
+        } else if (tab === 'gradient') {
             const gradValue = `${gradient.type}-gradient(${gradient.type === 'linear' ? `${gradient.direction}, ` : `circle at center, `}${gradient.colors[0]}, ${gradient.colors[1]})`;
             setBackgroundStyle({ type: 'gradient', value: gradValue });
         }
@@ -131,9 +131,10 @@ function ControleTipoFundo({
 
     return (
         <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-1">
                 <Button variant={currentTab === 'media' ? "secondary" : "ghost"} onClick={() => handleTabChange('media')}><ImageIcon className="mr-2 h-4 w-4" /> Mídia</Button>
-                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => handleTabChange('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
+                <Button variant={currentTab === 'film' ? "secondary" : "ghost"} onClick={() => setCurrentTab('film')}><Film className="mr-2 h-4 w-4" /> Película</Button>
+                <Button variant={currentTab === 'color' ? "secondary" : "ghost"} onClick={() => handleTabChange('color')}><Paintbrush className="mr-2 h-4 w-4" /> Cor</Button>
                 <Button variant={currentTab === 'gradient' ? "secondary" : "ghost"} onClick={() => handleTabChange('gradient')}><Layers className="mr-2 h-4 w-4" /> Gradiente</Button>
             </div>
             
@@ -148,6 +149,19 @@ function ControleTipoFundo({
                             <ImageIcon className="mr-2 h-4 w-4" /> Carregar da Galeria
                         </Button>
                     </Link>
+                </div>
+            )}
+            {currentTab === 'color' && (
+                <div className="space-y-2">
+                    <Label>Cor de Fundo</Label>
+                    <div className="relative h-10 w-full">
+                        <Input
+                            type="color"
+                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
+                            onChange={(e) => handleSolidColorChange(e.target.value)}
+                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer"
+                        />
+                    </div>
                 </div>
             )}
              {currentTab === 'film' && (
