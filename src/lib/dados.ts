@@ -23,7 +23,7 @@ async function loadQuotesFromSheet() {
   if (quotes.length > 0) return { quotes, categories };
 
   try {
-    // Acesso a planilhas públicas só requer a API Key
+    // Para acesso a planilhas públicas, a API key é passada no construtor.
     const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!, { apiKey: process.env.GOOGLE_API_KEY! });
 
     await doc.loadInfo(); // carrega as propriedades do documento
@@ -33,12 +33,14 @@ async function loadQuotesFromSheet() {
       throw new Error("Aba 'Frases' não encontrada na planilha.");
     }
     
+    // Obtém as linhas da planilha
     const rows = await sheet.getRows();
 
     const loadedQuotes: Quote[] = [];
     const loadedCategories = new Set<string>();
 
     rows.forEach((row, index) => {
+      // Mapeia as colunas corretas conforme especificado
       const frase = row.get('Frases');
       const autor = row.get('Assinatura');
       const categoria = row.get('Categoria 1');
@@ -63,7 +65,6 @@ async function loadQuotesFromSheet() {
   } catch (error) {
     console.error('Erro ao carregar dados da planilha:', error);
     // Em caso de erro, retorna arrays vazios para não quebrar a aplicação.
-    // Isso é importante para o build não falhar.
     return { quotes: [], categories: [] };
   }
 }
