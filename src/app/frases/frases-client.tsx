@@ -72,7 +72,8 @@ export function FrasesClientPage({
     }
   };
   
-  const handleSubCategorySelect = (subCategory: string) => {
+  const handleSubCategorySelect = (mainCategory: string, subCategory: string) => {
+    setSelectedMainCategory(mainCategory);
     setSelectedSubCategory(subCategory);
     // Fecha o sheet no mobile ao selecionar
     if (window.innerWidth < 768) {
@@ -80,64 +81,90 @@ export function FrasesClientPage({
     }
   }
 
-  const renderFilters = () => (
-    <div className="space-y-4">
-       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Buscar por frases ou autores..."
-          className="pl-10 w-full"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      <Button
-          variant={selectedMainCategory === 'Todos' ? 'secondary' : 'ghost'}
-          onClick={() => handleMainCategorySelect('Todos')}
-          className="w-full justify-start"
-        >
-          Todos
-      </Button>
-      <Accordion type="single" collapsible className="w-full" defaultValue={initialMainCategories.length > 0 ? "item-0" : undefined}>
-        {initialMainCategories.map((mainCat, index) => {
-          const subCats = initialSubCategories[mainCat] || [];
-          if (mainCat === 'Todos') return null;
+  const renderFilters = () => {
+    const mainCategoriesInAccordion = initialMainCategories.filter(cat => cat !== 'Todos' && cat !== 'Frases');
+    const frasesSubcategories = initialSubCategories['Frases'] || [];
 
-          return (
-            <AccordionItem value={`item-${index}`} key={mainCat}>
-              <AccordionTrigger
-                className={cn(
-                  'font-semibold',
-                  selectedMainCategory === mainCat && 'text-primary'
-                )}
-                onClick={() => handleMainCategorySelect(mainCat)}
-              >
-                {mainCat}
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col items-start gap-1 pl-4">
-                  {subCats.map((subCat) => (
+    return (
+        <div className="space-y-4">
+           <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Buscar por frases ou autores..."
+              className="pl-10 w-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <Button
+              variant={selectedMainCategory === 'Todos' ? 'secondary' : 'ghost'}
+              onClick={() => handleMainCategorySelect('Todos')}
+              className="w-full justify-start"
+            >
+              Todos
+          </Button>
+
+          {/* Subcategorias de 'Frases' */}
+          <div className="flex flex-col items-start gap-1 pl-4 border-l">
+              {frasesSubcategories.map((subCat) => {
+                if (subCat === 'Todos') return null;
+                return (
                     <Button
                       key={subCat}
                       variant="ghost"
-                      onClick={() => handleSubCategorySelect(subCat)}
+                      onClick={() => handleSubCategorySelect('Frases', subCat)}
                       className={cn(
-                        'w-full justify-start',
-                        selectedMainCategory === mainCat && selectedSubCategory === subCat && 'bg-primary/10 text-primary'
+                        'w-full justify-start text-sm',
+                        selectedMainCategory === 'Frases' && selectedSubCategory === subCat && 'bg-primary/10 text-primary font-semibold'
                       )}
                     >
                       {subCat}
                     </Button>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-    </div>
-  );
+                )
+              })}
+          </div>
+
+          <Accordion type="single" collapsible className="w-full">
+            {mainCategoriesInAccordion.map((mainCat, index) => {
+              const subCats = initialSubCategories[mainCat] || [];
+              if (mainCat === 'Todos') return null;
+
+              return (
+                <AccordionItem value={`item-${index}`} key={mainCat}>
+                  <AccordionTrigger
+                    className={cn(
+                      'font-semibold',
+                      selectedMainCategory === mainCat && 'text-primary'
+                    )}
+                    onClick={() => handleMainCategorySelect(mainCat)}
+                  >
+                    {mainCat}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col items-start gap-1 pl-4">
+                       {subCats.map((subCat) => (
+                        <Button
+                          key={subCat}
+                          variant="ghost"
+                          onClick={() => handleSubCategorySelect(mainCat, subCat)}
+                          className={cn(
+                            'w-full justify-start',
+                            selectedMainCategory === mainCat && selectedSubCategory === subCat && 'bg-primary/10 text-primary'
+                          )}
+                        >
+                          {subCat}
+                        </Button>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        </div>
+      );
+  };
 
   return (
     <>
@@ -169,7 +196,7 @@ export function FrasesClientPage({
                         className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300"
                         >
                         <CardContent className="p-4 pb-2">
-                            <p className="text-base font-body italic">{quote.text}</p>
+                            <p className="text-base font-body">{quote.text}</p>
                             <p className="text-right text-xs font-medium text-muted-foreground mt-2">
                             - {quote.author}
                             </p>
