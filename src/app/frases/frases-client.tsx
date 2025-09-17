@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Heart, Search, Copy, Film, Share2 } from 'lucide-react';
+import { Heart, Search, Copy, Film, Share2, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -128,8 +128,6 @@ export function FrasesClientPage({
           <Accordion type="single" collapsible className="w-full">
             {mainCategoriesInAccordion.map((mainCat, index) => {
               const subCats = initialSubCategories[mainCat] || [];
-              if (mainCat === 'Todos') return null;
-
               return (
                 <AccordionItem value={`item-${index}`} key={mainCat}>
                   <AccordionTrigger
@@ -137,7 +135,10 @@ export function FrasesClientPage({
                       'font-semibold',
                       selectedMainCategory === mainCat && 'text-primary'
                     )}
-                    onClick={() => handleMainCategorySelect(mainCat)}
+                    onClick={(e) => {
+                      e.preventDefault(); // Impede que o acordeão feche ao clicar no título
+                      handleMainCategorySelect(mainCat)
+                    }}
                   >
                     {mainCat}
                   </AccordionTrigger>
