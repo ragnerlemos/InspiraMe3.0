@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { nanoid } from 'nanoid';
-import type { EditorState } from "@/app/editor-de-video/modulos-editor/tipos";
+import type { EditorState } from "@/app/editor-de-video/tipos";
 
 const TEMPLATES_KEY = "quotevid_templates";
 

@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import { useToast } from '@/hooks/use-toast';
 import { useTemplates } from '@/hooks/use-templates';
-import type { EditorState } from '@/app/editor-de-video/modulos-editor/tipos';
+import type { EditorState } from '@/app/editor-de-video/tipos';
 
 export const useExport = (editorState: EditorState) => {
     const { toast } = useToast();

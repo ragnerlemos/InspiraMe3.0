@@ -5,16 +5,16 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWindowSize } from "react-use";
 import { useProfile } from "@/hooks/use-profile";
-import { Sidebar } from "./components/sidebar";
-import { PreviewCanva } from "./components/preview-canva";
-import { MobileToolbar } from "./components/mobile-toolbar";
+import { Sidebar } from "@/app/editor-de-video/components/sidebar";
+import { PreviewCanva } from "@/app/editor-de-video/components/preview-canva";
+import { MobileToolbar } from "@/app/editor-de-video/components/mobile-toolbar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Panel,
   PanelGroup,
   PanelResizeHandle,
 } from "@/components/ui/resizable";
-import type { EstiloFundo } from "../tipos";
+import type { EstiloFundo } from "@/app/editor-de-video/tipos";
 
 function ProporcaoSkeleton() {
     return (

@@ -2,9 +2,9 @@
 "use client";
 
 import Image from "next/image";
-import type { VisualizacaoEditorProps } from "./tipos";
-import { ModeloTwitter } from "./modelos/modelo-twitter";
-import { ModeloPadrao } from "./modelos/modelo-padrao";
+import type { VisualizacaoEditorProps } from "../tipos";
+import { ModeloTwitter } from "../modelos/modelo-twitter";
+import { ModeloPadrao } from "../modelos/modelo-padrao";
 import { cn } from "@/lib/utils";
 
 // Função para converter cor hexadecimal para RGB
