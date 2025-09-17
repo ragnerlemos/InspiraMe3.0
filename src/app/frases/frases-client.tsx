@@ -125,7 +125,7 @@ export function FrasesClientPage({
               })}
           </div>
 
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="multiple" className="w-full">
             {mainCategoriesInAccordion.map((mainCat, index) => {
               const subCats = initialSubCategories[mainCat] || [];
               return (
@@ -135,10 +135,7 @@ export function FrasesClientPage({
                       'font-semibold',
                       selectedMainCategory === mainCat && 'text-primary'
                     )}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleMainCategorySelect(mainCat)
-                    }}
+                    onClick={() => handleMainCategorySelect(mainCat)}
                   >
                     {mainCat}
                   </AccordionTrigger>
