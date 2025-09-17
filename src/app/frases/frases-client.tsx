@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Heart, Search, Copy, Film, Share2 } from 'lucide-react';
+import { Heart, Search, Copy, Film, Share2, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -24,8 +24,6 @@ type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
   initialMainCategories: string[];
   initialSubCategories: CategoriesHierarchy;
-  isCategorySheetOpen?: boolean;
-  setIsCategorySheetOpen?: (isOpen: boolean) => void;
 };
 
 // Página principal que exibe uma lista de frases e permite ao usuário filtrá-las.
@@ -33,14 +31,13 @@ export function FrasesClientPage({
   initialQuotes: serverQuotes,
   initialMainCategories,
   initialSubCategories,
-  isCategorySheetOpen = false,
-  setIsCategorySheetOpen = () => {},
 }: FrasesClientPageProps) {
   const [quotes, setQuotes] = useState<QuoteWithAuthor[]>(serverQuotes);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>('Todos');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Todos');
+  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
 
   const { favorites, toggleFavorite } = useFavorites();
   const { toast } = useToast();
@@ -130,7 +127,7 @@ export function FrasesClientPage({
           />
         </div>
         <Button
-          variant={selectedMainCategory === 'Todos' ? 'secondary' : 'ghost'}
+          variant='ghost'
           onClick={() => handleMainCategorySelect('Todos')}
           className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
              selectedMainCategory === 'Todos' && 'bg-primary/10 text-primary'
@@ -138,11 +135,11 @@ export function FrasesClientPage({
         >
           Todos
         </Button>
-        <Accordion type="multiple" className="w-full" defaultValue={['item-0']}>
+        <Accordion type="multiple" className="w-full" defaultValue={initialMainCategories.map((_, i) => `item-${i}`)}>
           {initialMainCategories
             .filter((cat) => cat !== 'Todos')
             .map((mainCat, index) => {
-              const subCats = initialSubCategories[mainCat] || [];
+              const subCats = (initialSubCategories[mainCat] || []).filter(sc => sc !== 'Todos');
               if (subCats.length === 0) {
                 return (
                   <Button
@@ -150,7 +147,7 @@ export function FrasesClientPage({
                     variant='ghost'
                     onClick={() => handleMainCategorySelect(mainCat)}
                     className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
-                      selectedMainCategory === mainCat && 'bg-primary/10 text-primary'
+                      selectedMainCategory === mainCat && selectedSubCategory === 'Todos' && 'bg-primary/10 text-primary'
                     )}
                   >
                     {mainCat}
@@ -213,13 +210,22 @@ export function FrasesClientPage({
               <div className="sticky top-24">{renderFilters()}</div>
             </aside>
             <div>
-              <div className="text-center w-full mb-8">
-                <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
-                  Inspire-se com Frases
-                </h1>
-                <p className="text-muted-foreground mt-2 text-lg">
-                  Explore, favorite e crie vídeos com nossa coleção de frases.
-                </p>
+              <div className="w-full mb-8">
+                 <div className="flex justify-between items-center text-center md:text-left">
+                     <div className="flex-1">
+                        <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
+                          Inspire-se com Frases
+                        </h1>
+                        <p className="text-muted-foreground mt-2 text-lg">
+                          Explore, favorite e crie vídeos com nossa coleção de frases.
+                        </p>
+                    </div>
+                    <div className="md:hidden ml-4">
+                        <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
+                            <LayoutGrid className="h-5 w-5" />
+                        </Button>
+                    </div>
+                 </div>
               </div>
               
               {isLoading ? (

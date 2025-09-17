@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { usePathname } from 'next/navigation';
 import { EditorProvider } from './editor-de-video/contexts/editor-context';
 import { AppHeader, EditorHeader } from './cabecalho-app';
@@ -10,23 +10,6 @@ import { AppHeader, EditorHeader } from './cabecalho-app';
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isEditorPage = pathname.startsWith('/editor-de-video');
-  const isFrasesPage = pathname.startsWith('/frases');
-
-  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
-
-  // Clona o elemento filho para injetar as props de controle do menu
-  const childrenWithProps = React.Children.map(children, child => {
-    if (React.isValidElement(child) && isFrasesPage) {
-      // Força o tipo para ReactElement para acessar 'props'
-      const childAsElement = child as React.ReactElement<any>;
-      return React.cloneElement(childAsElement, { 
-        ...childAsElement.props, // Mantém as props originais
-        isCategorySheetOpen,
-        setIsCategorySheetOpen
-      });
-    }
-    return child;
-  });
 
   if (isEditorPage) {
      return (
@@ -43,12 +26,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col h-full">
-      <AppHeader 
-        showCategoryMenuButton={isFrasesPage} 
-        onCategoryMenuClick={() => setIsCategorySheetOpen(true)} 
-      />
+      <AppHeader />
       <div className="flex-1 flex flex-col min-h-0">
-        {isFrasesPage ? childrenWithProps : children}
+        {children}
       </div>
     </div>
   );
