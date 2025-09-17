@@ -24,15 +24,9 @@ async function loadQuotesFromSheet() {
   if (quotes.length > 0) return { quotes, categories };
 
   try {
-    // A autenticação JWT é necessária mesmo para planilhas públicas quando acessada via SDK no servidor.
-    // Para acesso somente leitura, a conta de serviço só precisa da permissão "Viewer".
-    const serviceAccountAuth = new JWT({
-      email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'), // Corrige a formatação da chave
-      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-    });
-    
-    const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!, serviceAccountAuth);
+    const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!);
+    // Acesso a planilhas públicas só requer a API Key
+    doc.useApiKey(process.env.GOOGLE_API_KEY!);
 
     await doc.loadInfo(); // carrega as propriedades do documento
     const sheet = doc.sheetsByTitle['Frases']; // acessa a aba pelo nome
