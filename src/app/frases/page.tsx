@@ -15,7 +15,8 @@ export default async function FrasesPage() {
   const mainCategories = ['Todos', ...Object.keys(categories)];
   const subCategories: CategoriesHierarchy = {};
   for(const cat in categories) {
-    subCategories[cat] = ['Todos', ...categories[cat]];
+    // Não adiciona mais o 'Todos' aqui
+    subCategories[cat] = [...categories[cat]];
   }
 
   return (
