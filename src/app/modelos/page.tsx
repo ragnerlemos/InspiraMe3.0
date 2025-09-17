@@ -131,8 +131,8 @@ export default function ModelosPage() {
                                         />
                                     </div>
                                     <CardContent className="p-2 bg-card">
-                                        <p className="font-normal text-xs sm:text-sm truncate">{template.name}</p>
-                                        {template.createdAt && <p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(template.createdAt).toLocaleDateString()}</p>}
+                                        <p className="font-normal text-xs truncate">{template.name}</p>
+                                        {template.createdAt && <p className="text-[10px] text-muted-foreground">{new Date(template.createdAt).toLocaleDateString()}</p>}
                                     </CardContent>
                                 </Card>
                             </Link>
@@ -177,8 +177,8 @@ export default function ModelosPage() {
                             )}
                         </div>
                         <CardContent className="p-2 bg-card">
-                            <p className="font-normal text-xs sm:text-sm">{template.name}</p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            <p className="font-normal text-xs">{template.name}</p>
+                            <p className="text-[10px] text-muted-foreground">
                                 Proporção: {template.editorState.aspectRatio}
                             </p>
                         </CardContent>
