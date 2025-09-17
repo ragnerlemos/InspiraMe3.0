@@ -18,7 +18,7 @@ import { useEditor } from "./contexts/editor-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import html2canvas from 'html2canvas';
-import { getQuoteData } from "@/lib/dados";
+import { quotes } from "@/lib/dados";
 import { useSearchParams } from "next/navigation";
 
 
@@ -119,7 +119,7 @@ export default function AspectWeaver() {
 
   const redo = useCallback(() => {
     if (currentStateIndex < history.length - 1) {
-      setCurrentStateIndex(currentStateIndex - 1);
+      setCurrentStateIndex(currentStateIndex + 1);
     }
   }, [currentStateIndex, history.length]);
 
@@ -215,7 +215,7 @@ export default function AspectWeaver() {
     if (!isProfileLoaded || !areTemplatesLoaded) return;
 
     const initialize = async () => {
-        const { quotes } = await getQuoteData(); // Garante que os dados da planilha estão carregados
+        // Acessa as frases da variável global `quotes`, que é preenchida no servidor
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
         

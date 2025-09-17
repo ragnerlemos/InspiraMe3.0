@@ -24,12 +24,19 @@ export default function FavoritesPage() {
   useEffect(() => {
     // Acessa os dados através da variável global que é preenchida na página inicial.
     // Isso assume que o usuário visitou a página inicial primeiro.
-    const getQuotes = async () => {
-      // Se `quotes` ainda não foi preenchido, isso pode falhar.
-      // O ideal seria ter uma função `getQuoteData()` aqui também.
-      // Por simplicidade, vamos usar a variável `quotes` importada.
-      setFavoriteQuotes(quotes.filter((quote) => favorites.includes(quote.id)));
-      setIsLoading(false);
+    const getQuotes = () => {
+      // Se `quotes` ainda não foi preenchido (se o usuário navegar direto para /favoritos)
+      // a lista estará vazia. Uma solução completa exigiria um loader global ou um fetch aqui.
+      // Por simplicidade, assumimos que `quotes` foi preenchido.
+      if (quotes.length > 0) {
+        setFavoriteQuotes(quotes.filter((quote) => favorites.includes(quote.id)));
+        setIsLoading(false);
+      } else {
+         // O ideal seria ter uma função `getQuoteData()` aqui também, mas isso executaria no cliente.
+         // Mantendo simples, se as frases não carregaram, mostramos um estado de carregamento.
+         // O usuário pode precisar visitar a home page primeiro.
+         setIsLoading(true);
+      }
     };
     getQuotes();
   }, [favorites]);
@@ -51,7 +58,7 @@ export default function FavoritesPage() {
     });
   };
 
-  if (isLoading) {
+  if (isLoading && favoriteQuotes.length === 0) {
     return (
        <main className="overflow-y-auto">
         <div className="container mx-auto py-8 px-4">
@@ -63,6 +70,12 @@ export default function FavoritesPage() {
               Carregando sua coleção pessoal de inspiração...
             </p>
           </div>
+           <div className="text-center py-20 bg-card border rounded-lg flex flex-col items-center">
+                <p className="text-muted-foreground mb-6">
+                    Parece que os dados das frases ainda não foram carregados. 
+                    Por favor, visite a <Link href="/" className="text-primary underline">página inicial</Link> primeiro.
+                </p>
+            </div>
         </div>
       </main>
     )
