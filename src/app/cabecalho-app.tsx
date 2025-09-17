@@ -33,7 +33,7 @@ export function EditorHeader() {
     const { canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
 
     return (
-        <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background">
+        <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background shrink-0">
             <Link href="/" className="flex items-center gap-2">
                 <Quote className="h-6 w-6 text-primary" />
                 <span className="font-headline text-xl font-bold">QuoteVid</span>

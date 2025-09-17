@@ -24,7 +24,7 @@ import { useSearchParams } from "next/navigation";
 
 function ProporcaoSkeleton() {
     return (
-        <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)]">
+        <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
             <PanelGroup direction="horizontal" className="flex-1 min-h-0">
                 <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
                      <Skeleton className="h-16 w-full border-b" />
@@ -381,7 +381,7 @@ export default function AspectWeaver() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-background font-body text-foreground h-[calc(100vh-4rem)]">
+    <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
       <PanelGroup direction="horizontal" className="flex-1 min-h-0">
          <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
             <Sidebar {...commonProps} />
