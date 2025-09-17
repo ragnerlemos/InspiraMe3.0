@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import Link from 'next/link';
@@ -86,7 +87,7 @@ export default function ModelosPage() {
         {customTemplates.length > 0 && (
             <div className="mb-12">
                  <h2 className="text-2xl font-headline font-bold mb-4">Meus Modelos</h2>
-                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {customTemplates.map((template) => {
                         const editorUrl = new URLSearchParams();
                         editorUrl.set('templateId', template.id);
@@ -130,8 +131,8 @@ export default function ModelosPage() {
                                         />
                                     </div>
                                     <CardContent className="p-2 bg-card">
-                                        <p className="font-normal text-sm truncate">{template.name}</p>
-                                        {template.createdAt && <p className="text-xs text-muted-foreground">{new Date(template.createdAt).toLocaleDateString()}</p>}
+                                        <p className="font-normal text-xs sm:text-sm truncate">{template.name}</p>
+                                        {template.createdAt && <p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(template.createdAt).toLocaleDateString()}</p>}
                                     </CardContent>
                                 </Card>
                             </Link>
@@ -144,7 +145,7 @@ export default function ModelosPage() {
         {/* Modelos Padrão */}
         <div>
              <h2 className="text-2xl font-headline font-bold mb-4">Modelos Padrão</h2>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {defaultTemplates.map((template) => {
                   const editorUrl = new URLSearchParams();
                   editorUrl.set('templateId', template.id.toString());
@@ -176,8 +177,8 @@ export default function ModelosPage() {
                             )}
                         </div>
                         <CardContent className="p-2 bg-card">
-                            <p className="font-normal text-sm">{template.name}</p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="font-normal text-xs sm:text-sm">{template.name}</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">
                                 Proporção: {template.editorState.aspectRatio}
                             </p>
                         </CardContent>
