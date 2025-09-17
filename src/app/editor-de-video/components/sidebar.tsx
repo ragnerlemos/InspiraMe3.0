@@ -287,13 +287,13 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
             </Button>
             
             {!isProfileConfigured && (
-                <Link href="/perfil" passHref>
-                    <Button variant="link" className="w-full text-center">
-                        <User className="mr-2 h-4 w-4" />
-                        Configurar Assinatura no Perfil
-                    </Button>
-                </Link>
-            )}
+                           <Link href="/perfil" passHref>
+                               <Button variant="link" className="w-full text-center">
+                                   <User className="mr-2 h-4 w-4" />
+                                   Configurar Assinatura no Perfil
+                               </Button>
+                           </Link>
+                       )}
 
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
@@ -608,6 +608,10 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, Commo
 }
 
 export function Sidebar({
+    activeControl,
+    setActiveControl,
+    text,
+    setText,
     aspectRatio,
     setAspectRatio,
     scale,
@@ -620,10 +624,6 @@ export function Sidebar({
     setFilmOpacity,
     fgColor,
     setFgColor,
-    activeControl,
-    setActiveControl,
-    text,
-    setText,
     ...props
 }: SidebarProps) {
 
@@ -645,7 +645,7 @@ export function Sidebar({
         switch (activeControl) {
             case 'texto':
                 return (
-                    <div className="p-2 flex-1 flex flex-col">
+                    <div className="p-4 flex-1 flex flex-col">
                         <Label htmlFor="text-input" className="sr-only">Texto da Frase</Label>
                         <TextareaAutosize
                             id="text-input"
