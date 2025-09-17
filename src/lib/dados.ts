@@ -13,11 +13,11 @@ const sheets = google.sheets({
 });
 
 export type CategoriesHierarchy = { [category: string]: string[] };
-export type QuoteWithAuthor = {
+export interface QuoteWithAuthor {
+  id: string; 
   quote: string;
   author?: string;
-  // Adicionando um id para uso nos hooks de favoritos
-  id: string; 
+  subCategory?: string;
 };
 
 
@@ -89,6 +89,18 @@ export async function getCategories(): Promise<CategoriesHierarchy> {
   }
 }
 
+const mapRowToQuote = (row: any[], rowIndex: number, sheetName: string): QuoteWithAuthor | null => {
+    const quoteText = row[5]; // Quote from col F (index 5)
+    if (!quoteText) return null;
+
+    return {
+        id: `${sheetName}-${rowIndex}`,
+        quote: quoteText,
+        author: row[9] || undefined, // Author from col J (index 9)
+        subCategory: row[2] || undefined, // Subcategory from col C (index 2)
+    };
+};
+
 /**
  * Fetches quotes for a specific subcategory from all sheets.
  * Assumes subcategories are in Column C, quotes in Column F, and authors in Column J.
@@ -117,11 +129,8 @@ export async function getQuotesForCategory(subcategory: string): Promise<QuoteWi
           const sheetQuotes = rows
             .map((row, rowIndex) => ({ row, rowIndex }))
             .filter(({ row }) => row[2] === subcategory && row[5]) // Filter by subcategory (col C, index 2) and ensure quote (col F, index 5) exists
-            .map(({ row, rowIndex }) => ({
-              id: `${sheetName}-${subcategory}-${rowIndex}`, // Unique ID
-              quote: row[5], // Quote from col F (index 5)
-              author: row[9] || undefined, // Author from col J (index 9)
-            }));
+            .map(({ row, rowIndex }) => mapRowToQuote(row, rowIndex, sheetName))
+            .filter((q): q is QuoteWithAuthor => q !== null);
           quotes = quotes.concat(sheetQuotes);
         }
       });
@@ -165,11 +174,8 @@ export async function getQuotesForMainCategory(mainCategory: string): Promise<Qu
           const sheetQuotes = rows
             .map((row, rowIndex) => ({ row, rowIndex }))
             .filter(({ row }) => (row[3] === mainCategory && row[5]) || (row[2] === mainCategory && !row[3] && row[5]))
-            .map(({ row, rowIndex }) => ({
-              id: `${sheetName}-${mainCategory}-${rowIndex}`, // Unique ID
-              quote: row[5], // Quote from col F (index 5)
-              author: row[9] || undefined, // Author from col J (index 9)
-            }));
+            .map(({ row, rowIndex }) => mapRowToQuote(row, rowIndex, sheetName))
+            .filter((q): q is QuoteWithAuthor => q !== null);
           quotes = quotes.concat(sheetQuotes);
         }
       });
@@ -210,14 +216,9 @@ export async function getAllQuotes(): Promise<QuoteWithAuthor[]> {
                 const rows = range.values;
                 if (rows && rows.length > 1) { // Garante que há pelo menos uma linha de dados além do cabeçalho
                     for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
-                        const quoteText = row[5]; // Coluna F
-                        if (quoteText) {
-                            allQuotes.push({
-                                id: `${sheetName}-${i}`, // ID simples
-                                quote: quoteText,
-                                author: row[9] || undefined, // Coluna J
-                            });
+                        const quote = mapRowToQuote(rows[i], i, sheetName);
+                        if (quote) {
+                            allQuotes.push(quote);
                         }
                     }
                 }

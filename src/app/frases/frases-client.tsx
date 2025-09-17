@@ -48,12 +48,27 @@ export function FrasesClientPage({
       setIsLoading(true);
       try {
         let fetchedQuotes: QuoteWithAuthor[] = [];
-        if (selectedMainCategory === 'Todos') {
-          fetchedQuotes = await getAllQuotes();
-        } else if (selectedSubCategory !== 'Todos') {
-          fetchedQuotes = await getQuotesForCategory(selectedSubCategory);
+        if (selectedMainCategory === 'Todos' && searchTerm === '') {
+            fetchedQuotes = await getAllQuotes();
         } else {
-          fetchedQuotes = await getQuotesForMainCategory(selectedMainCategory);
+            let baseQuotes: QuoteWithAuthor[] = [];
+            if (selectedMainCategory === 'Todos') {
+              baseQuotes = await getAllQuotes();
+            } else if (selectedSubCategory !== 'Todos') {
+              baseQuotes = await getQuotesForCategory(selectedSubCategory);
+            } else {
+              baseQuotes = await getQuotesForMainCategory(selectedMainCategory);
+            }
+            // Filtro local para a busca, se necessário
+            if (searchTerm) {
+                 fetchedQuotes = baseQuotes.filter(
+                    (quote) =>
+                        quote.quote.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        quote.author?.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            } else {
+                fetchedQuotes = baseQuotes;
+            }
         }
         setQuotes(fetchedQuotes);
       } catch (error) {
@@ -68,25 +83,9 @@ export function FrasesClientPage({
       }
     };
 
-    // Só busca se não for a renderização inicial com as quotes do servidor
-    if (selectedMainCategory !== 'Todos' || selectedSubCategory !== 'Todos') {
-        fetchQuotes();
-    } else {
-        setQuotes(serverQuotes)
-    }
-  }, [selectedMainCategory, selectedSubCategory, toast, serverQuotes]);
+    fetchQuotes();
+  }, [selectedMainCategory, selectedSubCategory, searchTerm, toast]);
 
-  // Filtra as frases já carregadas com base no termo de busca
-  const filteredQuotes = useMemo(() => {
-    if (!searchTerm) {
-      return quotes;
-    }
-    return quotes.filter(
-      (quote) =>
-        quote.quote.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        quote.author?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [quotes, searchTerm]);
 
   const handleCopy = (text: string, author?: string) => {
     const textToCopy = author ? `${text} - ${author}` : text;
@@ -100,6 +99,7 @@ export function FrasesClientPage({
   const handleMainCategorySelect = (mainCategory: string) => {
     setSelectedMainCategory(mainCategory);
     setSelectedSubCategory('Todos');
+    setSearchTerm(''); 
     if (mainCategory === 'Todos') {
       setSelectedSubCategory('Todos');
     }
@@ -108,6 +108,7 @@ export function FrasesClientPage({
   const handleSubCategorySelect = (mainCategory: string, subCategory: string) => {
     setSelectedMainCategory(mainCategory);
     setSelectedSubCategory(subCategory);
+    setSearchTerm('');
     if (window.innerWidth < 768) {
       setIsCategorySheetOpen(false);
     }
@@ -139,7 +140,7 @@ export function FrasesClientPage({
           {initialMainCategories
             .filter((cat) => cat !== 'Todos')
             .map((mainCat, index) => {
-              const subCats = (initialSubCategories[mainCat] || []).filter(sc => sc !== 'Todos');
+              const subCats = (initialSubCategories[mainCat] || []);
               if (subCats.length === 0) {
                 return (
                   <Button
@@ -210,48 +211,46 @@ export function FrasesClientPage({
               <div className="sticky top-24">{renderFilters()}</div>
             </aside>
             <div>
-              <div className="w-full mb-8">
-                 <div className="flex justify-between items-center text-center">
-                     <div className="flex-1">
-                        <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
-                          Inspire-se com Frases
-                        </h1>
-                        <p className="text-muted-foreground mt-2 text-lg">
-                          Explore, favorite e crie vídeos com nossa coleção de frases.
-                        </p>
-                    </div>
-                    <div className="md:hidden ml-4">
-                        <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
-                            <LayoutGrid className="h-5 w-5" />
-                        </Button>
-                    </div>
-                 </div>
+              <div className="w-full mb-8 flex justify-between items-center">
+                 <div className="flex-1 text-center">
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
+                      Inspire-se com Frases
+                    </h1>
+                    <p className="text-muted-foreground mt-2 text-lg">
+                      Explore, favorite e crie vídeos com nossa coleção de frases.
+                    </p>
+                </div>
+                <div className="md:hidden ml-4">
+                    <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
+                        <LayoutGrid className="h-5 w-5" />
+                    </Button>
+                </div>
               </div>
               
               {isLoading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.from({ length: 9 }).map((_, i) => (
-                        <Card key={i} className="h-40 animate-pulse bg-muted"></Card>
+                        <Card key={i} className="h-48 animate-pulse bg-muted"></Card>
                     ))}
                   </div>
-              ) : filteredQuotes.length > 0 ? (
+              ) : quotes.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredQuotes.map((quote) => {
+                  {quotes.map((quote) => {
                     const isFavorited = favorites.includes(quote.id);
                     return (
                       <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
                         <CardContent className="p-4 pb-0 flex-1">
                           <p className="text-base font-body italic">{quote.quote}</p>
                         </CardContent>
-                        <CardFooter className="p-4 pt-2 flex flex-col items-end w-full gap-2">
+                        <CardFooter className="p-4 pt-2 flex flex-col items-end gap-2">
                            {quote.author && (
-                             <p className="text-right text-sm font-medium text-muted-foreground w-full">
+                             <p className="text-sm font-medium text-muted-foreground">
                                - {quote.author}
                              </p>
                            )}
-                          <div className="flex justify-between items-center w-full">
-                            {quote.subCategory && quote.subCategory !== 'Todos' ? (
-                                <span className="bg-primary/10 px-2 py-0.5 text-xs rounded-full text-primary truncate">
+                          <div className="flex justify-between items-center w-full pt-1">
+                             {quote.subCategory && quote.subCategory !== 'Todos' ? (
+                                <span className="bg-primary/10 px-2 py-0.5 text-xs rounded-full text-primary truncate max-w-[120px]">
                                     {quote.subCategory}
                                 </span>
                             ) : <div/>}

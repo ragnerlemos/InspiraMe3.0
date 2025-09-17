@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Film, Copy, Trash2, Share2, HeartCrack } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 
 // Página para exibir as frases favoritas do usuário.
@@ -25,7 +26,7 @@ export default function FavoritesPage() {
         setIsLoading(true);
         const quotes = await getAllQuotes();
         setAllQuotes(quotes);
-      } catch (error) {
+      } catch (error) => {
         console.error("Failed to load all quotes for favorites", error);
         toast({ variant: 'destructive', title: "Erro ao Carregar", description: "Não foi possível carregar as frases." });
       } finally {
@@ -71,7 +72,7 @@ export default function FavoritesPage() {
           </div>
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                    <Card key={i} className="h-40 animate-pulse bg-muted"></Card>
+                    <Card key={i} className="h-48 animate-pulse bg-muted"></Card>
                 ))}
             </div>
         </div>
@@ -92,48 +93,44 @@ export default function FavoritesPage() {
         </div>
 
         {favoriteQuotes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favoriteQuotes.map((quote) => (
-              <Card
-                key={quote.id}
-                className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300"
-              >
-                <CardContent className="p-6 pb-2">
-                  <p className="text-xl font-body italic">"{quote.quote}"</p>
-                  {quote.author && (
-                     <p className="text-right text-sm font-medium text-muted-foreground mt-4">
-                        - {quote.author}
-                    </p>
-                  )}
-                </CardContent>
-                <CardFooter className="px-6 pb-4 flex justify-end items-center">
-                  <div className="flex items-center">
-                    <Link href={`/modelos?quote=${encodeURIComponent(quote.quote)}`} passHref>
-                      <Button variant="ghost" size="icon">
-                          <Film className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleCopy(quote.quote, quote.author)}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemove(quote.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {favoriteQuotes.map((quote) => {
+                  const isFavorited = favorites.includes(quote.id);
+                  return (
+                      <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
+                          <CardContent className="p-4 pb-0 flex-1">
+                              <p className="text-base font-body italic">{quote.quote}</p>
+                          </CardContent>
+                          <CardFooter className="p-4 pt-2 flex flex-col items-end gap-2">
+                              {quote.author && (
+                                  <p className="text-sm font-medium text-muted-foreground">
+                                      - {quote.author}
+                                  </p>
+                              )}
+                              <div className="flex justify-between items-center w-full pt-1">
+                                  {quote.subCategory && quote.subCategory !== 'Todos' ? (
+                                      <span className="bg-primary/10 px-2 py-0.5 text-xs rounded-full text-primary truncate max-w-[120px]">
+                                          {quote.subCategory}
+                                      </span>
+                                  ) : <div />}
+
+                                  <div className="flex items-center">
+                                      <Link href={`/editor-de-video?quote=${encodeURIComponent(quote.quote)}`} passHref>
+                                          <Button variant="ghost" size="icon"><Film className="h-4 w-4" /></Button>
+                                      </Link>
+                                      <Button variant="ghost" size="icon" onClick={() => handleCopy(quote.quote, quote.author)}>
+                                          <Copy className="h-4 w-4" />
+                                      </Button>
+                                      <Button variant="ghost" size="icon" onClick={() => handleRemove(quote.id)}>
+                                          <Trash2 className={cn("h-4 w-4 text-destructive")} />
+                                      </Button>
+                                      <Button variant="ghost" size="icon"><Share2 className="h-4 w-4" /></Button>
+                                  </div>
+                              </div>
+                          </CardFooter>
+                      </Card>
+                  );
+              })}
           </div>
         ) : (
           <div className="text-center py-20 bg-card border rounded-lg flex flex-col items-center">
