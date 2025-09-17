@@ -11,14 +11,13 @@ export type Quote = {
 // Define o tipo para uma categoria, que é simplesmente uma string.
 export type Category = string;
 
-// Array de categorias de citações - será preenchido dinamicamente.
-export let categories: Category[] = [];
 // Array de citações - será preenchido dinamicamente.
 export let quotes: Quote[] = [];
 
 
 // Adicione aqui os nomes exatos das abas que você quer usar.
-const SHEET_NAMES = ['Datas Comemorativas', 'Dias da Semana', 'Frases'];
+// Temporariamente, vamos usar apenas 'Frases' para evitar erros.
+const SHEET_NAMES = ['Frases'];
 
 
 // Função para buscar os dados da planilha usando a API REST do Google Sheets
@@ -53,12 +52,15 @@ async function loadQuotesFromSheets() {
         if (allRows.length < 2) return;
 
         const headerRow = allRows.shift()!;
-        const fraseIndex = headerRow.findIndex(h => h.toLowerCase().trim() === 'frase');
-        const autorIndex = headerRow.findIndex(h => h.toLowerCase().trim() === 'assinatura');
-        const categoriaIndex = headerRow.findIndex(h => h.toLowerCase().trim() === 'categoria 1');
+        // Normaliza os cabeçalhos para busca
+        const normalizedHeaders = headerRow.map(h => h.toLowerCase().trim());
+        
+        const fraseIndex = normalizedHeaders.indexOf('frase');
+        const autorIndex = normalizedHeaders.indexOf('assinatura');
+        const categoriaIndex = normalizedHeaders.indexOf('categoria 1');
 
         if (fraseIndex === -1 || autorIndex === -1 || categoriaIndex === -1) {
-             console.error(`[ Server ] Colunas necessárias (Frase, Assinatura, Categoria 1) não encontradas na aba "${sheetName}"`);
+             console.error(`[ Server ] Colunas necessárias (Frase, Assinatura, Categoria 1) não encontradas na aba "${sheetName}". Pulando esta aba.`);
              return;
         }
 
@@ -99,15 +101,22 @@ export const getQuoteData = async () => {
 
 // Helper para extrair categorias da lista de frases
 export const getCategoriesFromQuotes = (quotes: Quote[]) => {
-    const mainCategories = ['Todos', ...new Set(quotes.map(q => q.mainCategory))];
+    const mainCategoriesSet = new Set(quotes.map(q => q.mainCategory));
+    const mainCategories = ['Todos', ...Array.from(mainCategoriesSet)];
     
     const subCategoriesByMain: Record<string, string[]> = {};
-    mainCategories.forEach(mainCat => {
-        if (mainCat === 'Todos') return;
+
+    mainCategoriesSet.forEach(mainCat => {
         const subs = quotes
             .filter(q => q.mainCategory === mainCat && q.subCategory)
             .map(q => q.subCategory);
-        subCategoriesByMain[mainCat] = ['Todos', ...new Set(subs)].sort();
+        
+        const uniqueSubs = ['Todos', ...Array.from(new Set(subs))];
+        subCategoriesByMain[mainCat] = uniqueSubs.sort((a, b) => {
+            if (a === 'Todos') return -1;
+            if (b === 'Todos') return 1;
+            return a.localeCompare(b);
+        });
     });
 
     return { mainCategories, subCategoriesByMain };
