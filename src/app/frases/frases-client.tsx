@@ -41,16 +41,22 @@ export function FrasesClientPage({
   // Filtra as frases com base no termo de busca e nas categorias selecionadas.
   const filteredQuotes = useMemo(() => {
     return initialQuotes.filter((quote) => {
+      // Filtro de busca
       const searchMatch =
         quote.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
         quote.author.toLowerCase().includes(searchTerm.toLowerCase());
-
+  
+      // Filtro da aba principal
       const mainCategoryMatch =
-        selectedMainCategory === 'Todos' || quote.mainCategory === selectedMainCategory;
-
-      const subCategoryMatch =
-        !selectedSubCategory || selectedSubCategory === 'Todos' || quote.subCategory === selectedSubCategory;
-
+        selectedMainCategory === 'Todos' ||
+        quote.mainCategory === selectedMainCategory;
+  
+      // Filtro das subcategorias
+      let subCategoryMatch = true;
+      if (selectedSubCategory && selectedSubCategory !== 'Todos') {
+        subCategoryMatch = quote.subCategory === selectedSubCategory;
+      }
+  
       return searchMatch && mainCategoryMatch && subCategoryMatch;
     });
   }, [searchTerm, selectedMainCategory, selectedSubCategory, initialQuotes]);
@@ -191,7 +197,9 @@ const renderFilters = () => {
                   <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="p-4 pb-0">
                       <p className="text-base font-body italic">"{quote.text}"</p>
-                      <p className="text-right text-xs font-medium text-muted-foreground mt-2">- {quote.author}</p>
+                      <p className="text-right text-sm font-medium text-muted-foreground mt-2">
+                        - {quote.author}
+                      </p>
                     </CardContent>
                     <CardFooter className="p-2 pt-0 flex justify-between items-center">
                        <span className="bg-primary/10 px-2 py-0.5 text-xs rounded-full text-primary">{quote.subCategory}</span>
