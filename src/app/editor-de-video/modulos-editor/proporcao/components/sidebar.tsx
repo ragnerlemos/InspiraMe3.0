@@ -592,8 +592,6 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, Commo
     setAspectRatio: (ratio: string) => void;
     scale: number;
     setScale: (scale: number) => void;
-    backgroundColorValue: string;
-    setBackgroundColorValue: (color: string) => void;
     backgroundStyle: EstiloFundo;
     setBackgroundStyle: (style: EstiloFundo) => void;
     filmColor: string;
@@ -614,8 +612,6 @@ export function Sidebar({
     setAspectRatio,
     scale,
     setScale,
-    backgroundColorValue,
-    setBackgroundColorValue,
     backgroundStyle,
     setBackgroundStyle,
     filmColor,
@@ -639,6 +635,8 @@ export function Sidebar({
             setActiveSubControl(null);
         }
     }
+    
+    const bgColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     const renderActiveControl = () => {
         if (!activeControl) {
@@ -698,11 +696,11 @@ export function Sidebar({
                              <div className="relative h-10 w-full rounded-md border overflow-hidden">
                                  <Input
                                     type="color"
-                                    value={backgroundColorValue}
-                                    onChange={(e) => setBackgroundColorValue(e.target.value)}
+                                    value={bgColor}
+                                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
                                     className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                                 />
-                                <div className="w-full h-full" style={{ backgroundColor: backgroundColorValue }} />
+                                <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
                             </div>
                         </div>
                         <div className="space-y-2">

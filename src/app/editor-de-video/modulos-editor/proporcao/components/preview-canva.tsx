@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 import type { ProfileData } from "@/hooks/use-profile";
-import { AssinaturaPerfil } from "../../modelos/assinatura-perfil";
+import { AssinaturaPerfil } from "../../assinatura-perfil";
 import type { EstiloFundo } from '../../tipos';
 
 

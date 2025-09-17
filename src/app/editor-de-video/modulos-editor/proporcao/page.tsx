@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -58,7 +59,6 @@ export default function AspectWeaver() {
   const [textVerticalPosition, setTextVerticalPosition] = useState(50);
   
   // Color State
-  const [backgroundColorValue, setBackgroundColorValue] = useState("#ffffff");
   const [fgColor, setFgColor] = useState("#ffffff");
 
   // Background state
@@ -151,7 +151,6 @@ export default function AspectWeaver() {
   const commonProps = {
     aspectRatio, setAspectRatio,
     scale, setScale,
-    backgroundColorValue, setBackgroundColorValue,
     backgroundStyle, setBackgroundStyle,
     filmColor, setFilmColor,
     filmOpacity, setFilmOpacity,
@@ -232,5 +231,3 @@ export default function AspectWeaver() {
     </div>
   );
 }
-
-    
