@@ -286,14 +286,12 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                 {showProfileSignature ? 'Assinatura Ativada' : 'Ativar Assinatura'}
             </Button>
             
-            {!isProfileConfigured && (
-                           <Link href="/perfil" passHref>
-                               <Button variant="link" className="w-full text-center">
-                                   <User className="mr-2 h-4 w-4" />
-                                   Configurar Assinatura no Perfil
-                               </Button>
-                           </Link>
-                       )}
+            <Link href="/perfil" passHref>
+               <Button variant="link" className="w-full text-center">
+                   <User className="mr-2 h-4 w-4" />
+                   Configurar Assinatura no Perfil
+               </Button>
+           </Link>
 
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
