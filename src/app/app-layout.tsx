@@ -15,6 +15,22 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   // O botão de categoria só deve aparecer na página de frases.
   const showCategoryButton = pathname.startsWith('/frases');
 
+  // Injeta as props no children se for a página de frases
+  const childrenWithProps = React.Children.map(children, child => {
+    if (React.isValidElement(child) && showCategoryButton) {
+      // Verifica se o componente é FrasesPage para injetar props
+      // O Next.js pode envolver o componente, então verificamos o tipo.
+      // Assumindo que FrasesPage não terá um displayName customizado,
+      // mas podemos nos basear na estrutura esperada.
+      return React.cloneElement(child as React.ReactElement<any>, { 
+        isCategorySheetOpen, 
+        setIsCategorySheetOpen 
+      });
+    }
+    return child;
+  });
+
+
   return (
     <div className="flex flex-col h-full">
        {isEditorPage ? (
@@ -31,16 +47,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               onCategoryMenuClick={() => setIsCategorySheetOpen(true)} 
             />
              <div className="flex-1 flex flex-col min-h-0">
-                {/* Passa o estado e a função para o children, que é a página */}
-                {React.Children.map(children, child => {
-                    if (React.isValidElement(child)) {
-                        // Injeta as props apenas se for a página que as espera
-                        if (showCategoryButton && child.type.displayName !== 'FrasesPage') {
-                             return React.cloneElement(child as React.ReactElement<any>, { isCategorySheetOpen, setIsCategorySheetOpen });
-                        }
-                    }
-                    return child;
-                })}
+                {childrenWithProps}
             </div>
           </>
        )}
