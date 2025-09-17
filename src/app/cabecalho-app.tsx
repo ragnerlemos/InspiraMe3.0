@@ -113,7 +113,7 @@ export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onC
   );
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm">
+    <header className="w-full border-b bg-background/95 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo e link para a página inicial. */}
         <Link href="/" className="flex items-center gap-2">
