@@ -47,7 +47,7 @@ export function AssinaturaPerfil({
 
   return (
     <div 
-        className={cn("flex items-center gap-3 p-2 rounded-lg max-w-max backdrop-blur-sm")}
+        className={cn("flex items-center gap-3 p-2 rounded-lg max-w-max")}
         style={{
             backgroundColor: showBackground ? backgroundColor : 'transparent',
         }}
