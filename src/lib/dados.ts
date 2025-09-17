@@ -1,6 +1,5 @@
 
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-import { JWT } from 'google-auth-library';
 
 // Define o tipo para uma citação, incluindo seu ID, texto e categoria.
 export type Quote = {
@@ -24,9 +23,8 @@ async function loadQuotesFromSheet() {
   if (quotes.length > 0) return { quotes, categories };
 
   try {
-    const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!);
     // Acesso a planilhas públicas só requer a API Key
-    doc.useApiKey(process.env.GOOGLE_API_KEY!);
+    const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!, { apiKey: process.env.GOOGLE_API_KEY! });
 
     await doc.loadInfo(); // carrega as propriedades do documento
     const sheet = doc.sheetsByTitle['Frases']; // acessa a aba pelo nome
