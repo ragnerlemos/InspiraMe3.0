@@ -58,7 +58,7 @@ async function loadQuotesFromSheets() {
         const categoriaIndex = headerRow.findIndex(h => h.toLowerCase().trim() === 'categoria 1');
 
         if (fraseIndex === -1 || autorIndex === -1 || categoriaIndex === -1) {
-             console.error(`Colunas necessárias (Frase, Assinatura, Categoria 1) não encontradas na aba "${sheetName}"`);
+             console.error(`[ Server ] Colunas necessárias (Frase, Assinatura, Categoria 1) não encontradas na aba "${sheetName}"`);
              return;
         }
 
