@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -19,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
@@ -196,11 +198,13 @@ export function FrasesClientPage({
   return (
     <>
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="left">
+        <SheetContent side="left" className="flex flex-col">
           <SheetHeader>
             <SheetTitle>Categorias</SheetTitle>
           </SheetHeader>
-          <div className="py-4">{renderFilters()}</div>
+          <ScrollArea className="flex-1 pr-4 -mr-4">
+            <div className="py-4">{renderFilters()}</div>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
 
@@ -240,11 +244,11 @@ export function FrasesClientPage({
                     return (
                       <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
                         <CardContent className="p-4 pb-0 flex-1">
-                          <p className="text-base font-body italic">{quote.quote}</p>
+                          <p className="text-base font-body">{quote.quote}</p>
                         </CardContent>
-                        <CardFooter className="p-4 pt-2 flex flex-col items-end gap-2">
+                        <CardFooter className="p-4 pt-2 flex flex-col items-stretch gap-2">
                            {quote.author && (
-                             <p className="text-sm font-medium text-muted-foreground">
+                             <p className="text-sm font-medium text-muted-foreground self-end">
                                - {quote.author}
                              </p>
                            )}
