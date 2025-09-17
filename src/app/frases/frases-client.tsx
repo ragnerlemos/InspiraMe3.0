@@ -143,7 +143,7 @@ export function FrasesClientPage({
     <>
       <main className="flex-1">
         <div className="container mx-auto py-8 px-4">
-          <div className="grid md:grid-cols-[280px_1fr] gap-8">
+          <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
             {/* Sidebar de Filtros (Desktop) */}
             <aside className="hidden md:block">
                 <div className="sticky top-24">
