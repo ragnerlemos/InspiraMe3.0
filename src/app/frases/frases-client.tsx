@@ -24,8 +24,6 @@ type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
   initialMainCategories: string[];
   initialSubCategories: CategoriesHierarchy;
-  isCategorySheetOpen?: boolean;
-  setIsCategorySheetOpen?: (isOpen: boolean) => void;
 };
 
 // Página principal que exibe uma lista de frases e permite ao usuário filtrá-las.
@@ -113,7 +111,6 @@ export function FrasesClientPage({
   const renderFilters = () => {
     return (
       <div className="space-y-1">
-        {/* Busca */}
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -124,32 +121,27 @@ export function FrasesClientPage({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-  
-        {/* Botão "Todos" */}
         <Button
           variant='ghost'
           onClick={() => handleMainCategorySelect('Todos')}
-          className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md',
+          className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
              selectedMainCategory === 'Todos' && 'bg-primary/10 text-primary'
           )}
         >
           Todos
         </Button>
-  
-        {/* Abas principais */}
         <Accordion type="multiple" className="w-full">
           {initialMainCategories
             .filter((cat) => cat !== 'Todos')
             .map((mainCat, index) => {
               const subCats = initialSubCategories[mainCat] || [];
-  
-              if (subCats.length === 0 || (subCats.length === 1 && subCats[0] === 'Todos')) {
+              if (subCats.length === 0) {
                 return (
                   <Button
                     key={mainCat}
                     variant='ghost'
                     onClick={() => handleMainCategorySelect(mainCat)}
-                    className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md',
+                    className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
                       selectedMainCategory === mainCat && 'bg-primary/10 text-primary'
                     )}
                   >
@@ -157,7 +149,6 @@ export function FrasesClientPage({
                   </Button>
                 );
               }
-              
               return (
                 <AccordionItem value={`item-${index}`} key={mainCat} className='border-none'>
                   <AccordionTrigger
@@ -202,15 +193,12 @@ export function FrasesClientPage({
       <main className="flex-1">
         <div className="container mx-auto py-8 px-4">
           <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
-            {/* Sidebar de Filtros (Desktop) */}
             <aside className="hidden md:block">
               <div className="sticky top-24">{renderFilters()}</div>
             </aside>
-
-            {/* Conteúdo Principal */}
             <div>
               <div className="flex justify-between items-center mb-8">
-                <div className="text-center md:text-left">
+                <div className="text-center w-full">
                   <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
                     Inspire-se com Frases
                   </h1>
@@ -239,7 +227,7 @@ export function FrasesClientPage({
                     return (
                       <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
                         <CardContent className="p-4 pb-0">
-                          <p className="text-base font-body italic">"{quote.quote}"</p>
+                          <p className="text-base font-body italic">{quote.quote}</p>
                         </CardContent>
                         <CardFooter className="p-2 pt-2 flex flex-col items-start w-full">
                            {quote.author && (
