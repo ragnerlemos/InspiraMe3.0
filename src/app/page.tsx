@@ -1,20 +1,26 @@
 
-import { getQuoteData, getCategoriesFromQuotes } from '@/lib/dados';
-import { HomePageClient } from './pages/page-home';
+'use client';
 
-// Componente de Servidor: Busca os dados antes de renderizar a página.
-export default async function HomePage() {
-  // Busca os dados da planilha no lado do servidor.
-  const { quotes } = await getQuoteData();
-  
-  // Extrai as categorias e subcategorias dos dados obtidos.
-  const { mainCategories, subCategoriesByMain } = getCategoriesFromQuotes(quotes);
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
+// Página raiz que redireciona para /frases.
+export default function RootPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/frases');
+  }, [router]);
+
+  // Exibe um loader enquanto o redirecionamento acontece.
   return (
-    <HomePageClient 
-      initialQuotes={quotes}
-      initialMainCategories={mainCategories}
-      initialSubCategories={subCategoriesByMain}
-    />
+    <div className="flex flex-col h-full w-full items-center justify-center space-y-6 p-4">
+        <Skeleton className="h-12 w-3/4" />
+        <div className="w-full space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-40 w-full" />
+        </div>
+    </div>
   );
 }

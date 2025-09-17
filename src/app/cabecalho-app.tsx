@@ -19,7 +19,7 @@ import {
 
 // Itens de navegação exibidos no cabeçalho.
 const navItems = [
-  { href: "/", label: "Frases", icon: Quote },
+  { href: "/frases", label: "Frases", icon: Quote },
   { href: "/favoritos", label: "Favoritos", icon: Star },
   { href: "/modelos", label: "Modelos", icon: GalleryVertical },
   { href: "/galeria", label: "Galeria", icon: GalleryHorizontal },
@@ -92,7 +92,7 @@ export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onC
     <>
       {navItems.map((item) => {
         // Verifica se o item de navegação atual é a página ativa.
-        const isActive = item.href === '/' ? pathname === item.href : pathname.startsWith(item.href);
+        const isActive = pathname.startsWith(item.href);
         return (
             <Link
             key={item.href}
@@ -123,7 +123,7 @@ export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onC
         {/* Navegação para telas maiores (desktop). */}
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => {
-             const isActive = item.href === '/' ? pathname === item.href : pathname.startsWith(item.href);
+             const isActive = pathname.startsWith(item.href);
              return (
               <Link
                 key={item.href}
