@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
+import { IconeTwitter } from './icone-twitter';
 
 function TemplateSkeleton() {
     return (
@@ -157,7 +158,11 @@ export default function ModelosPage() {
                         <div className={cn(
                             "relative w-full aspect-square"
                         )}>
-                            {template.thumbnail ? (
+                            {template.id === 'template-twitter' ? (
+                                <div className="flex items-center justify-center h-full bg-muted transition-colors group-hover:bg-muted/80 p-4">
+                                    <IconeTwitter className="h-full w-full text-muted-foreground/80" />
+                                </div>
+                            ) : template.thumbnail ? (
                                 <Image
                                     src={template.thumbnail}
                                     alt={template.name}
