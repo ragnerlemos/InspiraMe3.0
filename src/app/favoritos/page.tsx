@@ -19,22 +19,14 @@ export default function FavoritesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Filtra as frases da lista principal para obter apenas as favoritas.
-  // Como os dados agora são assíncronos, precisamos garantir que `quotes` esteja carregado.
-  // Esta abordagem é uma simplificação. Uma abordagem mais robusta usaria um contexto ou SWR.
   useEffect(() => {
-    // Acessa os dados através da variável global que é preenchida na página inicial.
-    // Isso assume que o usuário visitou a página inicial primeiro.
     const getQuotes = () => {
-      // Se `quotes` ainda não foi preenchido (se o usuário navegar direto para /favoritos)
-      // a lista estará vazia. Uma solução completa exigiria um loader global ou um fetch aqui.
-      // Por simplicidade, assumimos que `quotes` foi preenchido.
+      // Como 'quotes' é carregado no servidor na página inicial, aqui apenas filtramos.
       if (quotes.length > 0) {
         setFavoriteQuotes(quotes.filter((quote) => favorites.includes(quote.id)));
         setIsLoading(false);
       } else {
-         // O ideal seria ter uma função `getQuoteData()` aqui também, mas isso executaria no cliente.
-         // Mantendo simples, se as frases não carregaram, mostramos um estado de carregamento.
-         // O usuário pode precisar visitar a home page primeiro.
+         // Se 'quotes' está vazio, o usuário provavelmente não visitou a home page.
          setIsLoading(true);
       }
     };
@@ -50,7 +42,7 @@ export default function FavoritesPage() {
     });
   };
 
-  const handleRemove = (id: number) => {
+  const handleRemove = (id: string) => {
     removeFavorite(id);
     toast({
       title: "Removido!",
@@ -58,7 +50,7 @@ export default function FavoritesPage() {
     });
   };
 
-  if (isLoading && favoriteQuotes.length === 0) {
+  if (isLoading && favoriteQuotes.length === 0 && quotes.length === 0) {
     return (
        <main className="overflow-y-auto">
         <div className="container mx-auto py-8 px-4">
@@ -107,8 +99,8 @@ export default function FavoritesPage() {
                   </p>
                 </CardContent>
                 <CardFooter className="px-6 pb-4 flex justify-between items-center">
-                  <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">
-                    {quote.category}
+                  <span className="bg-primary/10 px-2 py-1 text-xs rounded-full text-primary">
+                    {quote.mainCategory}
                   </span>
                   <div className="flex items-center">
                     <Link href={`/modelos?quote=${encodeURIComponent(quote.text)}`} passHref>

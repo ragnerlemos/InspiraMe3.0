@@ -7,32 +7,49 @@ import { Heart, Search, Copy, Film, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import type { Quote, Category } from "@/lib/dados";
+import type { Quote } from "@/lib/dados";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 interface HomePageClientProps {
   initialQuotes: Quote[];
-  initialCategories: Category[];
+  initialMainCategories: string[];
+  initialSubCategories: Record<string, string[]>;
 }
 
 // Componente Cliente para a página principal, responsável pela interatividade.
-export function HomePageClient({ initialQuotes, initialCategories }: HomePageClientProps) {
+export function HomePageClient({ initialQuotes, initialMainCategories, initialSubCategories }: HomePageClientProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<Category>("Todos");
+  const [selectedMainCategory, setSelectedMainCategory] = useState<string>(initialMainCategories[0] || 'Todos');
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string>("Todos");
+  
   const { favorites, toggleFavorite } = useFavorites();
   const { toast } = useToast();
 
-  // Filtra as frases com base no termo de busca e na categoria selecionada.
+  // Atualiza a subcategoria para "Todos" quando a categoria principal muda
+  const handleMainCategoryChange = (category: string) => {
+    setSelectedMainCategory(category);
+    setSelectedSubCategory("Todos");
+  };
+
+  // Filtra as frases com base em tudo
   const filteredQuotes = useMemo(() => {
-    return initialQuotes.filter(
-      (quote) =>
-        (quote.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          quote.author.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        (selectedCategory === "Todos" || quote.category === selectedCategory)
-    );
-  }, [searchTerm, selectedCategory, initialQuotes]);
+    return initialQuotes.filter((quote) => {
+        const searchMatch = quote.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            quote.author.toLowerCase().includes(searchTerm.toLowerCase());
+        const mainCategoryMatch = selectedMainCategory === 'Todos' || quote.mainCategory === selectedMainCategory;
+        const subCategoryMatch = selectedSubCategory === 'Todos' || quote.subCategory === selectedSubCategory;
+
+        return searchMatch && mainCategoryMatch && subCategoryMatch;
+    });
+  }, [searchTerm, selectedMainCategory, selectedSubCategory, initialQuotes]);
+  
+  const currentSubCategories = useMemo(() => {
+    return initialSubCategories[selectedMainCategory] || [];
+  }, [selectedMainCategory, initialSubCategories]);
+
 
   // Função para copiar o texto de uma frase para a área de transferência.
   const handleCopy = (text: string, author: string) => {
@@ -65,8 +82,8 @@ export function HomePageClient({ initialQuotes, initialCategories }: HomePageCli
             </p>
           </div>
 
-          {/* Controles de filtro (busca e categorias). */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
+          {/* Controles de filtro */}
+          <div className="space-y-4 mb-8">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -77,25 +94,40 @@ export function HomePageClient({ initialQuotes, initialCategories }: HomePageCli
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            
+            {/* Filtro de Categorias Principais */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
-               <Button
-                  variant={selectedCategory === "Todos" ? "default" : "outline"}
-                  onClick={() => setSelectedCategory("Todos")}
-                  className="whitespace-nowrap"
-                >
-                  Todos
-                </Button>
-              {initialCategories.map((category) => (
+              {initialMainCategories.map((category) => (
                 <Button
                   key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  onClick={() => setSelectedCategory(category)}
+                  variant={selectedMainCategory === category ? "default" : "outline"}
+                  onClick={() => handleMainCategoryChange(category)}
                   className="whitespace-nowrap"
                 >
                   {category}
                 </Button>
               ))}
             </div>
+
+            {/* Filtro de Subcategorias */}
+            {selectedMainCategory !== 'Todos' && currentSubCategories.length > 1 && (
+              <>
+                <Separator />
+                <div className="flex items-center gap-2 overflow-x-auto pb-2">
+                  {currentSubCategories.map((category) => (
+                    <Button
+                      key={category}
+                      variant={selectedSubCategory === category ? "secondary" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedSubCategory(category)}
+                      className="whitespace-nowrap"
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Grid de frases filtradas. */}
@@ -113,7 +145,7 @@ export function HomePageClient({ initialQuotes, initialCategories }: HomePageCli
                 </CardContent>
                 <CardFooter className="px-6 pb-4 flex justify-between items-center">
                     <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">
-                        {quote.category}
+                        {quote.subCategory}
                     </span>
                     <div className="flex items-center">
                          <Button variant="ghost" size="icon" onClick={() => toggleFavorite(quote.id)}>
