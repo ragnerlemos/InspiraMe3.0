@@ -161,7 +161,7 @@ export function HomePageClient({
   );
 
   const renderQuoteGrid = () => (
-     <div className="container mx-auto py-8 px-4 h-full">
+     <div className="container mx-auto py-8 px-4">
         {/* Grid de frases filtradas. */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredQuotes.map((quote) => (
@@ -214,7 +214,7 @@ export function HomePageClient({
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col">
         {/* Cabeçalho da página com título e descrição. */}
         <div className="text-center py-8">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">

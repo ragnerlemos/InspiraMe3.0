@@ -5,7 +5,6 @@
 @layer base {
   html, body {
     height: 100%;
-    overflow: hidden; /* remove qualquer scroll */
   }
   :root {
     --background: 275 67% 95%; /* #F2E7FA */
