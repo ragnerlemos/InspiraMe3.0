@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Heart, Search, Copy, Film, Share2, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,8 @@ type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
   initialMainCategories: string[];
   initialSubCategories: CategoriesHierarchy;
+  isCategorySheetOpen?: boolean;
+  setIsCategorySheetOpen?: (isOpen: boolean) => void;
 };
 
 // Página principal que exibe uma lista de frases e permite ao usuário filtrá-las.
@@ -31,13 +33,14 @@ export function FrasesClientPage({
   initialQuotes: serverQuotes,
   initialMainCategories,
   initialSubCategories,
+  isCategorySheetOpen = false,
+  setIsCategorySheetOpen = () => {},
 }: FrasesClientPageProps) {
   const [quotes, setQuotes] = useState<QuoteWithAuthor[]>(serverQuotes);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>('Todos');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Todos');
-  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
 
   const { favorites, toggleFavorite } = useFavorites();
   const { toast } = useToast();
@@ -84,7 +87,7 @@ export function FrasesClientPage({
   }, [quotes, searchTerm]);
 
   const handleCopy = (text: string, author?: string) => {
-    const textToCopy = author ? `"${text}" - ${author}` : `"${text}"`;
+    const textToCopy = author ? `${text} - ${author}` : text;
     navigator.clipboard.writeText(textToCopy);
     toast({
       title: 'Copiado!',
@@ -205,12 +208,6 @@ export function FrasesClientPage({
                   <p className="text-muted-foreground mt-2 text-lg">
                     Explore, favorite e crie vídeos com nossa coleção de frases.
                   </p>
-                </div>
-                 <div className="md:hidden">
-                    <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
-                        <LayoutGrid className="h-5 w-5" />
-                        <span className="sr-only">Abrir categorias</span>
-                    </Button>
                 </div>
               </div>
               
