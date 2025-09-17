@@ -166,12 +166,12 @@ export function FrasesClientPage({
                 >
                   <CardContent className="p-4 pb-2">
                     <p className="text-base font-body italic">{quote.text}</p>
-                    <p className="text-right text-xs font-medium text-muted-foreground mt-4">
+                    <p className="text-right text-xs font-medium text-muted-foreground mt-2">
                       - {quote.author}
                     </p>
                   </CardContent>
-                  <CardFooter className="px-4 pb-4 flex justify-between items-center">
-                    <span className="bg-muted px-2 py-1 text-xs rounded-full text-muted-foreground">
+                  <CardFooter className="p-2 pt-0 flex justify-between items-center">
+                    <span className="bg-muted px-2 py-0.5 text-xs rounded-full text-muted-foreground">
                       {quote.subCategory}
                     </span>
                     <div className="flex items-center">
