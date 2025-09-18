@@ -88,31 +88,6 @@ export function AppHeader() {
     return null;
   }
 
-  // Função que renderiza os links de navegação.
-  const navLinks = (className?: string) => (
-    <>
-      {navItems.map((item) => {
-        // Verifica se o item de navegação atual é a página ativa.
-        const isActive = pathname.startsWith(item.href);
-        return (
-            <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setIsSheetOpen(false)} // Fecha o menu ao clicar
-            className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                isActive && "bg-primary/10 text-primary",
-                className
-            )}
-            >
-            <item.icon className="h-4 w-4" />
-            {item.label}
-            </Link>
-        )
-      })}
-    </>
-  );
-
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
@@ -156,7 +131,23 @@ export function AppHeader() {
                     <SheetTitle>Navegação</SheetTitle>
                 </SheetHeader>
                 <nav className="grid gap-2 text-lg font-medium pt-8">
-                    {navLinks("text-base")}
+                     {navItems.map((item) => {
+                        const isActive = pathname.startsWith(item.href);
+                        return (
+                            <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsSheetOpen(false)} // Fecha o menu ao clicar
+                            className={cn(
+                                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-base",
+                                isActive && "bg-primary/10 text-primary"
+                            )}
+                            >
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                            </Link>
+                        )
+                    })}
                 </nav>
             </SheetContent>
           </Sheet>
