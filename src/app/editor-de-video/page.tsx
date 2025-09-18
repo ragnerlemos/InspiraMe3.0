@@ -14,12 +14,12 @@ import {
   PanelResizeHandle,
 } from "@/components/ui/resizable";
 import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
-import { useEditor } from "./contexts/editor-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates, type Template } from "@/hooks/use-templates";
 import html2canvas from 'html2canvas';
 import { getAllQuotes } from "@/lib/dados";
 import { useSearchParams } from "next/navigation";
+import type { EditorControlState } from "./contexts/editor-context";
 
 
 function ProporcaoSkeleton() {
@@ -84,13 +84,12 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
 });
 
 
-export default function AspectWeaver() {
+export default function AspectWeaver({ setControls }: { setControls: (controls: Partial<EditorControlState>) => void }) {
   const { width } = useWindowSize();
   const isDesktop = width >= 768;
   const { profile, isLoaded: isProfileLoaded } = useProfile();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { setControls } = useEditor();
   const { templates: allTemplates, isLoaded: areTemplatesLoaded, addTemplate } = useTemplates();
 
   // Histórico de estados
@@ -200,23 +199,25 @@ export default function AspectWeaver() {
     
     // Efeito para atualizar o contexto do editor
     useEffect(() => {
-        setControls({
-            canUndo,
-            undo,
-            canRedo,
-            redo,
-            onSaveAsTemplate: handleSaveAsTemplate,
-            onExportJPG,
-            onExportPNG,
-            onExportMP4,
-        });
-    }, [canUndo, undo, canRedo, redo, handleSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setControls]);
+        if (setControls) {
+            setControls({
+                canUndo,
+                undo,
+                canRedo,
+                redo,
+                onSaveAsTemplate: handleSaveAsTemplate,
+                onExportJPG,
+                onExportPNG,
+                onExportMP4,
+            });
+        }
+    }, [canUndo, undo, canRedo, redo, handleSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
 
   // Efeito de inicialização
   useEffect(() => {
     if (!isProfileLoaded || !areTemplatesLoaded) return;
 
-    const initialize = async () => {
+    const initialize = async (templates: Template[]) => {
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
         
@@ -231,7 +232,7 @@ export default function AspectWeaver() {
                 : "A inspiração está a caminho...";
         
         if (templateIdParam) {
-          const template = allTemplates.find(t => t.id === templateIdParam);
+          const template = templates.find(t => t.id === templateIdParam);
           if (template) {
             initialState = { ...baseState, ...template.editorState, text, activeTemplateId: template.id };
           } else {
@@ -246,8 +247,8 @@ export default function AspectWeaver() {
         setIsReady(true);
     }
 
-    initialize();
-  }, [searchParams, isProfileLoaded, areTemplatesLoaded, allTemplates]);
+    initialize(allTemplates);
+  }, [searchParams, isProfileLoaded, areTemplatesLoaded]);
 
 
   useEffect(() => {
