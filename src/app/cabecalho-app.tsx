@@ -130,12 +130,13 @@ export function AppHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-primary"
                 )}
               >
+                <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
              )
