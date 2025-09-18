@@ -18,7 +18,7 @@ import { useEditor } from "./contexts/editor-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import html2canvas from 'html2canvas';
-import { quotes } from "@/lib/dados";
+import { getAllQuotes } from "@/lib/dados";
 import { useSearchParams } from "next/navigation";
 
 
@@ -215,17 +215,17 @@ export default function AspectWeaver() {
     if (!isProfileLoaded || !areTemplatesLoaded) return;
 
     const initialize = async () => {
-        // Acessa as frases da variável global `quotes`, que é preenchida no servidor
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
         
         let initialState: EditorState;
         const baseState = getInitialState();
 
+        const allQuotes = await getAllQuotes();
         const text = quoteParam 
             ? decodeURIComponent(quoteParam) 
-            : quotes.length > 0 
-                ? quotes[Math.floor(Math.random() * quotes.length)].text 
+            : allQuotes.length > 0 
+                ? allQuotes[Math.floor(Math.random() * allQuotes.length)].quote
                 : "A inspiração está a caminho...";
         
         if (templateIdParam) {
@@ -398,3 +398,6 @@ export default function AspectWeaver() {
     </div>
   );
 }
+
+    
+    
