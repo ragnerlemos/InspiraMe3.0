@@ -17,8 +17,8 @@ import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
 import { useEditor } from "./contexts/editor-context";
 import { useTemplates } from "@/hooks/use-templates";
 import html2canvas from 'html2canvas';
-import { getAllQuotes } from "@/lib/dados";
 import { useSearchParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 
 function ProporcaoSkeleton() {
@@ -97,7 +97,7 @@ function EditorCore() {
     const [historyIndex, setHistoryIndex] = useState(-1);
     const [activeControl, setActiveControl] = useState<string | null>('texto');
     const [scale, setScale] = useState(1);
-
+    
     const setInitialState = useCallback((state: EditorState) => {
         const fullInitialState = { ...currentState, ...state };
         setCurrentState(fullInitialState);
@@ -146,7 +146,7 @@ function EditorCore() {
             return canvas.toDataURL('image/jpeg', 0.8); // Qualidade de 80%
         } catch (error) {
             console.error("Erro ao capturar screenshot:", error);
-            toast({ variant: 'destructive', title: "Erro ao Salvar", description: "Não foi possível gerar a imagem do modelo." });
+            toast({ variant: 'destructive', title: "Erro ao Salvar", description: "Não foi possível gerar la imagem do modelo." });
             return null;
         }
     };
@@ -208,19 +208,11 @@ function EditorCore() {
     useEffect(() => {
         if (!isProfileLoaded || !areTemplatesLoaded || isReady) return;
 
-        const initialize = async () => {
+        const initialize = () => {
             const quoteParam = searchParams.get("quote");
             const templateIdParam = searchParams.get("templateId");
             
-            let text = "A inspiração está a caminho...";
-            if (quoteParam) {
-                text = decodeURIComponent(quoteParam);
-            } else {
-                const allQuotes = await getAllQuotes();
-                if (allQuotes.length > 0) {
-                    text = allQuotes[Math.floor(Math.random() * allQuotes.length)].text;
-                }
-            }
+            let text = quoteParam ? decodeURIComponent(quoteParam) : "A única maneira de fazer um ótimo trabalho é amar o que você faz.";
             
             let initialState: EditorState;
             if (templateIdParam) {
@@ -400,3 +392,5 @@ export default function AspectWeaver() {
         </Suspense>
     )
 }
+
+    

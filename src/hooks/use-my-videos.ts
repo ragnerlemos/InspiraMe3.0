@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type { SavedVideo } from "@/app/editor-de-video/components/tipos";
+import type { SavedVideo } from "@/app/editor-de-video/tipos";
 
 const MY_VIDEOS_KEY = "quotevid_my_videos";
 
@@ -52,3 +52,5 @@ export const useMyVideos = () => {
 
   return { savedVideos, addVideo, removeVideo };
 };
+
+    
