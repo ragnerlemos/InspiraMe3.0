@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useCallback, ReactNode, use
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState } from '../tipos';
-import { captureAndDownload, captureThumbnail } from '../lib/exportar';
+import { captureAndDownload, captureThumbnail } from '../exportar';
 
 // Interface for the shared editor state and controls
 export interface EditorContextType {
