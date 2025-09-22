@@ -98,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex + 1);
+      setCurrentStateIndex(currentStateIndex - 1);
     }
   }, [canRedo, currentStateIndex]);
 
@@ -114,21 +114,41 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     }
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
 
+    // Salvar estado original para restauração
     const originalTransform = previewElement.style.transform;
     const originalTransformOrigin = previewElement.style.transformOrigin;
+    const originalClassName = previewElement.className;
 
     try {
-      // Reset scale for full-resolution capture, ensuring correct aspect ratio
+      // Garantir que fontes externas estejam prontas
+      await document.fonts.ready;
+
+      // Medir as dimensões reais do elemento com a proporção aplicada
+      const rect = previewElement.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      // Resetar transformações e classes de aspecto, e forçar dimensões fixas
       previewElement.style.transform = 'scale(1)';
       previewElement.style.transformOrigin = 'center';
       
-      // Ensure fonts are ready before capturing
-      await document.fonts.ready;
+      // Remover classes que definem aspect-ratio para evitar conflitos
+      previewElement.className = originalClassName
+        .replace(/aspect-\[.*?\]/g, '')
+        .replace(/aspect-square/g, '');
+
+      // Aplicar dimensões exatas via style
+      previewElement.style.width = `${width}px`;
+      previewElement.style.height = `${height}px`;
       
       const canvas = await html2canvas(previewElement, {
         useCORS: true, 
-        scale: 2, // Increase for higher resolution
-        backgroundColor: null, // Use transparent background
+        scale: 2, // Aumentar resolução
+        backgroundColor: null, // Fundo transparente
+        width: width,
+        height: height,
+        windowWidth: width,
+        windowHeight: height,
       });
 
       const dataUrl = format === 'png' 
@@ -155,9 +175,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         description: 'Não foi possível gerar a imagem.'
       });
     } finally {
-        // Restore original transform
+        // Restaurar estado original do elemento
         previewElement.style.transform = originalTransform;
         previewElement.style.transformOrigin = originalTransformOrigin;
+        previewElement.className = originalClassName;
+        previewElement.style.width = '';
+        previewElement.style.height = '';
     }
   }, [toast, currentState]);
 
