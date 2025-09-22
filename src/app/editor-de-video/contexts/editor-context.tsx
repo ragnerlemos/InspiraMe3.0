@@ -129,6 +129,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         return;
     }
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+    
+    // This filter function helps to skip the @font-face nodes that cause the security error.
+    const fontFilter = (node: HTMLElement): boolean => {
+        return node.tagName !== 'STYLE' || !(node.sheet && (node.sheet as any)?.cssRules[0]?.cssText.startsWith('@font-face'));
+    };
+
     try {
         const { width, height } = previewElement.getBoundingClientRect();
         
@@ -136,6 +142,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             width,
             height,
             pixelRatio: 2, 
+            filter: fontFilter,
         };
 
         const dataUrl = format === 'png' 
