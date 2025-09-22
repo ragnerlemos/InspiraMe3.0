@@ -102,7 +102,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     }
   }, [canRedo, currentStateIndex]);
 
-  const captureCanvas = useCallback(async (format: 'jpeg' | 'png', scale = 2) => {
+  const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
     const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
     if (!previewElement || !currentState) {
       toast({
@@ -132,12 +132,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
       const canvas = await html2canvas(clone, {
         useCORS: true, 
-        scale,
+        scale: 2, // Para alta resolução
         backgroundColor: null,
         width: rect.width,
         height: rect.height,
-        windowWidth: rect.width,
-        windowHeight: rect.height,
+        windowWidth: clone.scrollWidth,
+        windowHeight: clone.scrollHeight,
       });
 
       const dataUrl = format === 'png' 
@@ -167,7 +167,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     const templateName = prompt("Digite um nome para o novo modelo:");
     if (!templateName) return;
 
-    const thumbnail = await captureCanvas('png', 0.5); // Gera thumbnail com menor resolução
+    const thumbnail = await captureCanvas('png'); 
     if (!thumbnail) return;
     
     addTemplate(templateName, currentState, thumbnail);
