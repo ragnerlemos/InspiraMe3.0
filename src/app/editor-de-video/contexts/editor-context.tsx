@@ -98,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex - 1);
+      setCurrentStateIndex(currentStateIndex + 1);
     }
   }, [canRedo, currentStateIndex]);
 
