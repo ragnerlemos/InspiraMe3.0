@@ -78,7 +78,7 @@ export function EditorHeader() {
 }
 
 // Componente do cabeçalho da aplicação.
-export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onCategoryMenuClick?: () => void; showCategoryMenuButton?: boolean; }) {
+export function AppHeader() {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -142,12 +142,6 @@ export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onC
         </nav>
         {/* Navegação para telas menores (mobile) usando um menu lateral. */}
         <div className="md:hidden flex items-center gap-2">
-          {showCategoryMenuButton && (
-            <Button variant="outline" size="icon" onClick={onCategoryMenuClick}>
-              <LayoutGrid className="h-5 w-5" />
-              <span className="sr-only">Abrir categorias</span>
-            </Button>
-          )}
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">

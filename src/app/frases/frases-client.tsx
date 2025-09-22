@@ -24,8 +24,6 @@ type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
   initialMainCategories: string[];
   initialSubCategories: CategoriesHierarchy;
-  isCategorySheetOpen?: boolean;
-  setIsCategorySheetOpen?: (isOpen: boolean) => void;
 };
 
 // Página principal que exibe uma lista de frases e permite ao usuário filtrá-las.
@@ -33,14 +31,13 @@ export function FrasesClientPage({
   initialQuotes: serverQuotes,
   initialMainCategories,
   initialSubCategories,
-  isCategorySheetOpen = false,
-  setIsCategorySheetOpen = () => {},
 }: FrasesClientPageProps) {
   const [quotes, setQuotes] = useState<QuoteWithAuthor[]>(serverQuotes);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>('Todos');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Todos');
+  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
 
   const { favorites, toggleFavorite } = useFavorites();
   const { toast } = useToast();
@@ -222,13 +219,21 @@ export function FrasesClientPage({
               <div className="sticky top-24">{renderFilters()}</div>
             </aside>
             <div>
-              <div className="text-center w-full mb-8">
-                <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
-                  Inspire-se com Frases
-                </h1>
-                <p className="text-muted-foreground mt-2 text-lg">
-                  Explore, favorite e crie vídeos com nossa coleção de frases.
-                </p>
+              <div className="flex w-full justify-between items-center mb-8">
+                <div className="flex-1 text-center md:text-left">
+                  <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
+                    Inspire-se com Frases
+                  </h1>
+                  <p className="text-muted-foreground mt-2 text-lg">
+                    Explore, favorite e crie vídeos com nossa coleção de frases.
+                  </p>
+                </div>
+                <div className="md:hidden ml-4">
+                  <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
+                    <LayoutGrid className="h-5 w-5" />
+                    <span className="sr-only">Abrir categorias</span>
+                  </Button>
+                </div>
               </div>
               
               {isLoading ? (

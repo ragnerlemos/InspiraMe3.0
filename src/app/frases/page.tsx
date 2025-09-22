@@ -3,13 +3,8 @@ import { getCategories, getAllQuotes } from '@/lib/dados';
 import { FrasesClientPage } from './frases-client';
 import type { CategoriesHierarchy } from '@/lib/dados';
 
-interface FrasesPageProps {
-  isCategorySheetOpen?: boolean;
-  setIsCategorySheetOpen?: (isOpen: boolean) => void;
-}
-
 // Componente de Servidor: Busca os dados iniciais antes de renderizar a página.
-export default async function FrasesPage({ isCategorySheetOpen, setIsCategorySheetOpen }: FrasesPageProps) {
+export default async function FrasesPage() {
   // Busca a hierarquia de categorias e as frases iniciais (todas)
   const [categories, initialQuotes] = await Promise.all([
     getCategories(),
@@ -28,8 +23,6 @@ export default async function FrasesPage({ isCategorySheetOpen, setIsCategoryShe
       initialQuotes={initialQuotes}
       initialMainCategories={mainCategories}
       initialSubCategories={subCategories}
-      isCategorySheetOpen={isCategorySheetOpen}
-      setIsCategorySheetOpen={setIsCategorySheetOpen}
     />
   );
 }
