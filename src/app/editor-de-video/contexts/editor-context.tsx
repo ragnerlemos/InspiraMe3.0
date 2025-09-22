@@ -126,7 +126,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       clone.style.left = '-9999px';
       clone.style.width = `${previewElement.offsetWidth}px`;
       clone.style.height = `${previewElement.offsetHeight}px`;
-      clone.style.transform = 'none'; // Remove any scale to capture at full resolution
+      clone.style.transform = 'none';
       document.body.appendChild(clone);
 
       const canvas = await html2canvas(clone, {
@@ -178,7 +178,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     const templateName = prompt("Digite um nome para o novo modelo:");
     if (!templateName) return;
 
-    const thumbnail = await captureCanvas('png');
+    const thumbnail = await captureCanvas('jpeg'); // Use jpeg for smaller thumbnail size
     if (!thumbnail) return;
     
     addTemplate(templateName, currentState, thumbnail);
