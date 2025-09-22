@@ -63,51 +63,6 @@ const defaultState: EditorState = {
     logoOpacity: 100,
 };
 
-const fontEmbedCSS = `
-  @font-face {
-    font-family: 'Poppins';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJfecg.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'Poppins';
-    font-style: normal;
-    font-weight: 700;
-    src: url(https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7V1w.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'PT Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D_ci.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'PT Sans';
-    font-style: normal;
-    font-weight: 700;
-    src: url(https://fonts.gstatic.com/s/ptsans/v17/jizfRExUiTo99u79B_mh1uSt.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'Merriweather';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/merriweather/v30/u-440qyriQwlOrhSvowK_l5-eCZO.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'Merriweather';
-    font-style: normal;
-    font-weight: 700;
-    src: url(https://fonts.gstatic.com/s/merriweather/v30/u-4n0qyriQwlOrhSvowK_l52xwNZV8f_.woff2) format('woff2');
-  }
-  @font-face {
-    font-family: 'Lobster';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/lobster/v30/neILzCirqoswsqX9zoamMw.woff2) format('woff2');
-  }
-`;
-
 
 // Editor Provider Component
 export function EditorProvider({ children }: { children: ReactNode }) {
@@ -157,7 +112,6 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             const thumbnail = await toJpeg(previewElement, { 
                 quality: 0.8,
                 pixelRatio: 1, // Use a lower resolution for thumbnails
-                fontEmbedCSS: fontEmbedCSS,
             });
             addTemplate(templateName, currentState, thumbnail);
             toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
@@ -178,6 +132,13 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     
     try {
         const { width, height } = previewElement.getBoundingClientRect();
+        
+        const fontEmbedCSS = `
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+        `;
         
         const options = {
             width,
