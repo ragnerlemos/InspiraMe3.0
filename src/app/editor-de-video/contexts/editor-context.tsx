@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, useCallback, ReactNode, use
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState } from '../tipos';
-import { captureAndDownload, captureThumbnail } from '../exportar';
+import { captureAndDownload, captureThumbnail, captureAndDownload_v1, captureAndDownload_v2 } from '../exportar';
 
 // Interface for the shared editor state and controls
 export interface EditorContextType {
@@ -21,6 +21,8 @@ export interface EditorContextType {
   onExportJPG: () => void;
   onExportPNG: () => void;
   onExportMP4: () => void;
+  onExportJPG_v1: () => void;
+  onExportJPG_v2: () => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -118,6 +120,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const onExportJPG = useCallback(() => captureAndDownload('jpeg', toast), [toast]);
   const onExportPNG = useCallback(() => captureAndDownload('png', toast), [toast]);
 
+  const onExportJPG_v1 = useCallback(() => captureAndDownload_v1('jpeg', toast), [toast]);
+  const onExportJPG_v2 = useCallback(() => captureAndDownload_v2('jpeg', toast), [toast]);
+
   const onExportMP4 = useCallback(() => {
     toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
   }, [toast]);
@@ -135,7 +140,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     onExportJPG,
     onExportPNG,
     onExportMP4,
-  }), [isReady, canUndo, canRedo, currentState, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
+    onExportJPG_v1,
+    onExportJPG_v2,
+  }), [isReady, canUndo, canRedo, currentState, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, onExportJPG_v1, onExportJPG_v2]);
 
   return (
     <EditorContext.Provider value={value}>
