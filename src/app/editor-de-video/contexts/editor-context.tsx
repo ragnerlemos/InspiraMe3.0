@@ -124,7 +124,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
     const previewElement = document.getElementById('editor-preview-content');
-    if (!previewElement) {
+    if (!previewElement || !currentState) {
         toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
         return;
     }
@@ -136,14 +136,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             width,
             height,
             pixelRatio: 2, 
-            fetchRequestInit: {
-                headers: {
-                  'cache-control': 'no-cache',
-                },
-            },
+            skipFonts: true,
             style: {
                 transform: `scale(1)`,
                 transformOrigin: 'top left',
+                fontFamily: currentState.fontFamily,
             }
         };
 
@@ -162,7 +159,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         console.error('Erro ao exportar imagem:', error);
         toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
     }
-  }, [toast]);
+  }, [toast, currentState]);
 
   const onExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
   const onExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
