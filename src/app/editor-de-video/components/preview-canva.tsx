@@ -94,7 +94,7 @@ export function PreviewCanva(props: PreviewCanvaProps) {
           transformOrigin: "top center",
         }}
         className={cn(
-          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-auto md:w-auto",
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl md:w-auto",
            {
             "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
             "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
