@@ -16,23 +16,18 @@ const getClonedElement = async (toast: (props: Parameters<typeof Toast>[0]) => v
         });
         return null;
     }
-
-    // Garante que todas as fontes customizadas estejam carregadas antes de clonar
-    await document.fonts.ready;
-
+    
     const clone = previewElement.cloneNode(true) as HTMLElement;
     clone.style.position = 'absolute';
-    clone.style.top = '-9999px'; // Move o clone para fora da tela
+    clone.style.top = '-9999px'; 
     clone.style.left = '-9999px';
-    clone.style.transform = 'none'; // Remove qualquer escala que o preview possa ter
+    clone.style.transform = 'none'; 
     document.body.appendChild(clone);
     
-    // Aguarda um ciclo de renderização para garantir que o clone esteja no DOM e com estilos aplicados
     await delay(100); 
 
     return { clone, original: previewElement };
 }
-
 
 const downloadDataUrl = (dataUrl: string, format: 'jpeg' | 'png', toast: (props: Parameters<typeof Toast>[0]) => void) => {
     const link = document.createElement('a');
@@ -48,7 +43,6 @@ const downloadDataUrl = (dataUrl: string, format: 'jpeg' | 'png', toast: (props:
     });
 };
 
-
 /**
  * Captura a imagem do preview e inicia o download.
  */
@@ -61,11 +55,21 @@ export const captureAndDownload = async (format: 'jpeg' | 'png', toast: (props: 
     const { clone, original } = elements;
     clone.style.width = `${original.offsetWidth}px`;
     clone.style.height = `${original.offsetHeight}px`;
+    
+    // Aguarda fontes e imagens
+    await document.fonts.ready;
+    const images = Array.from(clone.getElementsByTagName('img'));
+    await Promise.all(images.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(resolve => { img.onload = img.onerror = resolve; });
+    }));
+
 
     try {
+        await delay(50); // Delay extra para renderização
         const canvas = await html2canvas(clone, {
             useCORS: true,
-            scale: 2, // Captura em dobro da resolução para maior qualidade
+            scale: 2, 
             backgroundColor: null,
             logging: false,
         });
@@ -89,22 +93,21 @@ export const captureThumbnail = async (toast: (props: Parameters<typeof Toast>[0
   const { clone } = elements;
   
   try {
-    // Define um tamanho fixo para a thumbnail para consistência
     clone.style.width = '400px'; 
     clone.style.height = '400px';
     
+    await document.fonts.ready;
     await delay(100);
 
     const canvas = await html2canvas(clone, {
       useCORS: true,
-      scale: 1, // Thumbnails não precisam de alta resolução
+      scale: 1, 
       backgroundColor: null,
       logging: false,
     });
     
     document.body.removeChild(clone);
 
-    // Retorna a imagem em formato JPEG com qualidade reduzida para economizar espaço
     return canvas.toDataURL('image/jpeg', 0.8);
 
   } catch (error) {
@@ -118,3 +121,46 @@ export const captureThumbnail = async (toast: (props: Parameters<typeof Toast>[0
     return null;
   }
 };
+
+
+// VERSÃO FINAL - Baseada na análise do usuário
+export const captureAndDownload_final = async (format: 'jpeg' | 'png', toast: (props: Parameters<typeof Toast>[0]) => void) => {
+    toast({ title: 'Exportando (Final)...', description: `Gerando imagem ${format.toUpperCase()}, por favor aguarde.` });
+
+    const previewElement = document.getElementById('editor-preview-content');
+    if (!previewElement) {
+        toast({ variant: 'destructive', title: 'Erro', description: 'Elemento de preview não encontrado.' });
+        return;
+    }
+
+    try {
+        // 1. Garantir que fontes externas estão carregadas
+        await document.fonts.ready;
+
+        // 2. Garantir que todas as imagens no elemento estão carregadas
+        const images = Array.from(previewElement.getElementsByTagName('img'));
+        await Promise.all(images.map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => {
+                img.onload = img.onerror = resolve;
+            });
+        }));
+
+        // 3. Chamar html2canvas com as melhores configurações
+        const canvas = await html2canvas(previewElement, {
+            scale: 2, // Para maior nitidez
+            useCORS: true, // Para imagens de outras origens
+            backgroundColor: null, // Para fundos transparentes (se aplicável)
+            logging: false,
+        });
+
+        // 4. Iniciar o download
+        const dataUrl = format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.95);
+        downloadDataUrl(dataUrl, format, toast);
+
+    } catch (error) {
+        console.error('Erro ao exportar imagem (versão final):', error);
+        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+    }
+};
+

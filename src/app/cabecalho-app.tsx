@@ -30,7 +30,7 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    const { isReady, canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
+    const { isReady, canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, onExportJPG_final } = useEditor();
 
     return (
         <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background shrink-0">
@@ -67,6 +67,11 @@ export function EditorHeader() {
                         <DropdownMenuItem onClick={onExportMP4}>
                            <Video className="mr-2 h-4 w-4" />
                            Exportar Vídeo (MP4)
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={onExportJPG_final}>
+                           <TestTube2 className="mr-2 h-4 w-4" />
+                           Exportar JPG (Final)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={onSaveAsTemplate}>Salvar como Modelo</DropdownMenuItem>
