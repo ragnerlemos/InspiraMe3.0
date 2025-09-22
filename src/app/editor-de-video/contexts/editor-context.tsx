@@ -105,35 +105,50 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
     const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
     if (!previewElement || !currentState) {
-      toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
+      toast({
+        variant: 'destructive',
+        title: 'Erro',
+        description: 'Não foi possível encontrar a área de visualização.'
+      });
       return;
     }
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
-  
-    const originalTransform = previewElement.style.transform;
-    previewElement.style.transform = 'scale(1)';
 
     try {
+      // 1. Salva o transform original (se houver zoom/escala no preview)
+      const originalTransform = previewElement.style.transform;
+  
+      // 2. Reseta a escala para capturar no tamanho real
+      previewElement.style.transform = 'scale(1)';
+      previewElement.style.transformOrigin = 'top left';
+  
+      // 3. Espera as fontes carregarem
       await document.fonts.ready;
   
-      const rect = previewElement.getBoundingClientRect();
-      const width = Math.round(rect.width);
-      const height = Math.round(rect.height);
-
+      // 4. Mede as dimensões reais do preview
+      const { width, height } = previewElement.getBoundingClientRect();
+  
+      // 5. Opções robustas para captura
       const options = {
-        width,
-        height,
+        width: Math.round(width),
+        height: Math.round(height),
         pixelRatio: 3,
-        style: {
-            transform: 'scale(1)',
-            transformOrigin: 'center center',
-        }
+        cacheBust: true,
+        fontEmbedCSS: `
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+        `,
       };
   
-      const dataUrl = format === 'png'
-        ? await toPng(previewElement, options)
-        : await toJpeg(previewElement, { ...options, quality: 0.95 });
+      // 6. Gera o dataURL
+      const dataUrl =
+        format === 'png'
+          ? await toPng(previewElement, options)
+          : await toJpeg(previewElement, { ...options, quality: 0.95 });
   
+      // 7. Baixa o arquivo
       const link = document.createElement('a');
       link.href = dataUrl;
       link.download = `inspire-me-export.${format}`;
@@ -141,12 +156,24 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       link.click();
       document.body.removeChild(link);
   
-      toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+      toast({
+        title: 'Sucesso!',
+        description: `A imagem foi baixada como ${link.download}.`
+      });
+  
+      // 8. Restaura o transform original
+      previewElement.style.transform = originalTransform;
     } catch (error) {
       console.error('Erro ao exportar imagem:', error);
-      toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
-    } finally {
-        previewElement.style.transform = originalTransform;
+      toast({
+        variant: 'destructive',
+        title: 'Erro de Exportação',
+        description: 'Não foi possível gerar a imagem.'
+      });
+      // Garante que o transform seja restaurado mesmo em caso de erro
+      if (previewElement) {
+        previewElement.style.transform = (previewElement.dataset.originalTransform || '');
+      }
     }
   }, [toast, currentState]);
 
