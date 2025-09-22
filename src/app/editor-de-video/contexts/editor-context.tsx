@@ -102,7 +102,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     }
   }, [canRedo, currentStateIndex]);
 
-  const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
+  const captureCanvas = useCallback(async (format: 'jpeg' | 'png', scale = 2) => {
     const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
     if (!previewElement || !currentState) {
       toast({
@@ -110,13 +110,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         title: 'Erro',
         description: 'Não foi possível encontrar a área de visualização.'
       });
-      return;
+      return null;
     }
+    
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
     
     const clone = previewElement.cloneNode(true) as HTMLElement;
-    
-    // Get original dimensions to apply to the clone
     const rect = previewElement.getBoundingClientRect();
     
     clone.style.position = 'absolute';
@@ -124,7 +123,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     clone.style.left = '-9999px';
     clone.style.width = `${rect.width}px`;
     clone.style.height = `${rect.height}px`;
-    clone.style.transform = 'scale(1)'; // Remove any scaling from the clone
+    clone.style.transform = 'scale(1)';
     
     document.body.appendChild(clone);
 
@@ -133,8 +132,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
       const canvas = await html2canvas(clone, {
         useCORS: true, 
-        scale: 2, // Aumentar resolução
-        backgroundColor: null, // Fundo transparente
+        scale,
+        backgroundColor: null,
         width: rect.width,
         height: rect.height,
         windowWidth: rect.width,
@@ -144,18 +143,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       const dataUrl = format === 'png' 
         ? canvas.toDataURL('image/png')
         : canvas.toDataURL('image/jpeg', 0.95);
-
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = `inspire-me-export.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      toast({
-        title: 'Sucesso!',
-        description: `A imagem foi baixada como ${link.download}.`
-      });
+      
+      return dataUrl;
 
     } catch (error) {
       console.error('Erro ao exportar imagem:', error);
@@ -164,6 +153,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         title: 'Erro de Exportação',
         description: 'Não foi possível gerar a imagem.'
       });
+      return null;
     } finally {
         if (document.body.contains(clone)) {
             document.body.removeChild(clone);
@@ -177,42 +167,34 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     const templateName = prompt("Digite um nome para o novo modelo:");
     if (!templateName) return;
 
-    const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
-    if (!previewElement) {
-        toast({ variant: "destructive", title: "Erro ao Salvar", description: "Elemento de preview não encontrado." });
-        return;
-    }
+    const thumbnail = await captureCanvas('png', 0.5); // Gera thumbnail com menor resolução
+    if (!thumbnail) return;
     
-    const clone = previewElement.cloneNode(true) as HTMLElement;
-    clone.style.position = 'absolute';
-    clone.style.top = '-9999px';
-    clone.style.left = '-9999px';
-    const rect = previewElement.getBoundingClientRect();
-    clone.style.width = `${rect.width}px`;
-    clone.style.height = `${rect.height}px`;
-    clone.style.transform = 'scale(1)';
-    document.body.appendChild(clone);
+    addTemplate(templateName, currentState, thumbnail);
+    toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
 
-    try {
-        await document.fonts.ready;
-        const canvas = await html2canvas(clone, { scale: 0.5, backgroundColor: null, useCORS: true, width: rect.width, height: rect.height });
-        const thumbnail = canvas.toDataURL('image/png');
-        
-        addTemplate(templateName, currentState, thumbnail);
-        toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
-    } catch (error) {
-        console.error("Erro ao criar thumbnail:", error);
-        toast({ variant: "destructive", title: "Erro ao Salvar", description: "Não foi possível gerar a pré-visualização." });
-    } finally {
-        if (document.body.contains(clone)) {
-            document.body.removeChild(clone);
-        }
-    }
-  }, [addTemplate, currentState, toast]);
+  }, [addTemplate, currentState, toast, captureCanvas]);
 
 
-  const onExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
-  const onExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
+  const handleExport = useCallback(async (format: 'jpeg' | 'png') => {
+    const dataUrl = await captureCanvas(format);
+    if (!dataUrl) return;
+
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `inspire-me-export.${format}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: 'Sucesso!',
+      description: `A imagem foi baixada como ${link.download}.`
+    });
+  }, [captureCanvas, toast]);
+
+  const onExportJPG = useCallback(() => handleExport('jpeg'), [handleExport]);
+  const onExportPNG = useCallback(() => handleExport('png'), [handleExport]);
 
   const onExportMP4 = useCallback(() => {
     toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
