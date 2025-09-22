@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -20,12 +19,13 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 type FrasesClientPageProps = {
   initialQuotes: QuoteWithAuthor[];
   initialMainCategories: string[];
   initialSubCategories: CategoriesHierarchy;
+  isCategorySheetOpen?: boolean;
+  setIsCategorySheetOpen?: (isOpen: boolean) => void;
 };
 
 // Página principal que exibe uma lista de frases e permite ao usuário filtrá-las.
@@ -33,13 +33,14 @@ export function FrasesClientPage({
   initialQuotes: serverQuotes,
   initialMainCategories,
   initialSubCategories,
+  isCategorySheetOpen = false,
+  setIsCategorySheetOpen = () => {},
 }: FrasesClientPageProps) {
   const [quotes, setQuotes] = useState<QuoteWithAuthor[]>(serverQuotes);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>('Todos');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Todos');
-  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
 
   const { favorites, toggleFavorite } = useFavorites();
   const { toast } = useToast();
@@ -50,27 +51,12 @@ export function FrasesClientPage({
       setIsLoading(true);
       try {
         let fetchedQuotes: QuoteWithAuthor[] = [];
-        if (selectedMainCategory === 'Todos' && searchTerm === '') {
-            fetchedQuotes = await getAllQuotes();
+        if (selectedMainCategory === 'Todos') {
+          fetchedQuotes = await getAllQuotes();
+        } else if (selectedSubCategory !== 'Todos') {
+          fetchedQuotes = await getQuotesForCategory(selectedSubCategory);
         } else {
-            let baseQuotes: QuoteWithAuthor[] = [];
-            if (selectedMainCategory === 'Todos') {
-              baseQuotes = await getAllQuotes();
-            } else if (selectedSubCategory !== 'Todos') {
-              baseQuotes = await getQuotesForCategory(selectedSubCategory);
-            } else {
-              baseQuotes = await getQuotesForMainCategory(selectedMainCategory);
-            }
-            // Filtro local para a busca, se necessário
-            if (searchTerm) {
-                 fetchedQuotes = baseQuotes.filter(
-                    (quote) =>
-                        quote.quote.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        quote.author?.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-            } else {
-                fetchedQuotes = baseQuotes;
-            }
+          fetchedQuotes = await getQuotesForMainCategory(selectedMainCategory);
         }
         setQuotes(fetchedQuotes);
       } catch (error) {
@@ -85,23 +71,47 @@ export function FrasesClientPage({
       }
     };
 
-    fetchQuotes();
-  }, [selectedMainCategory, selectedSubCategory, searchTerm, toast]);
+    // Só busca se não for a renderização inicial com as quotes do servidor
+    if (selectedMainCategory !== 'Todos' || selectedSubCategory !== 'Todos' || searchTerm) {
+        fetchQuotes();
+    } else {
+        setQuotes(serverQuotes)
+    }
+  }, [selectedMainCategory, selectedSubCategory, toast, serverQuotes, searchTerm]);
 
+  // Filtra as frases já carregadas com base no termo de busca
+  const filteredQuotes = useMemo(() => {
+    if (!searchTerm) {
+      return quotes;
+    }
+    return quotes.filter(
+      (quote) =>
+        quote.quote.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        quote.author?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [quotes, searchTerm]);
 
   const handleCopy = (text: string, author?: string) => {
-    const textToCopy = author ? `${text} - ${author}` : text;
-    navigator.clipboard.writeText(textToCopy);
-    toast({
-      title: 'Copiado!',
-      description: 'A frase foi copiada para a sua área de transferência.',
-    });
+    try {
+      const textToCopy = author ? `${text} - ${author}` : text;
+      navigator.clipboard.writeText(textToCopy);
+      toast({
+        title: 'Copiado!',
+        description: 'A frase foi copiada para a sua área de transferência.',
+      });
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      toast({
+        variant: "destructive",
+        title: "Erro ao copiar",
+        description: "Não foi possível copiar a frase.",
+      });
+    }
   };
 
   const handleMainCategorySelect = (mainCategory: string) => {
     setSelectedMainCategory(mainCategory);
     setSelectedSubCategory('Todos');
-    setSearchTerm(''); 
     if (mainCategory === 'Todos') {
       setSelectedSubCategory('Todos');
     }
@@ -110,7 +120,6 @@ export function FrasesClientPage({
   const handleSubCategorySelect = (mainCategory: string, subCategory: string) => {
     setSelectedMainCategory(mainCategory);
     setSelectedSubCategory(subCategory);
-    setSearchTerm('');
     if (window.innerWidth < 768) {
       setIsCategorySheetOpen(false);
     }
@@ -130,7 +139,7 @@ export function FrasesClientPage({
           />
         </div>
         <Button
-          variant='ghost'
+          variant={selectedMainCategory === 'Todos' ? 'secondary' : 'ghost'}
           onClick={() => handleMainCategorySelect('Todos')}
           className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
              selectedMainCategory === 'Todos' && 'bg-primary/10 text-primary'
@@ -138,11 +147,11 @@ export function FrasesClientPage({
         >
           Todos
         </Button>
-        <Accordion type="multiple" className="w-full" defaultValue={initialMainCategories.map((_, i) => `item-${i}`)}>
+        <Accordion type="multiple" className="w-full" defaultValue={['item-0']}>
           {initialMainCategories
             .filter((cat) => cat !== 'Todos')
             .map((mainCat, index) => {
-              const subCats = (initialSubCategories[mainCat] || []);
+              const subCats = initialSubCategories[mainCat] || [];
               if (subCats.length === 0) {
                 return (
                   <Button
@@ -150,7 +159,7 @@ export function FrasesClientPage({
                     variant='ghost'
                     onClick={() => handleMainCategorySelect(mainCat)}
                     className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
-                      selectedMainCategory === mainCat && selectedSubCategory === 'Todos' && 'bg-primary/10 text-primary'
+                      selectedMainCategory === mainCat && 'bg-primary/10 text-primary'
                     )}
                   >
                     {mainCat}
@@ -198,13 +207,11 @@ export function FrasesClientPage({
   return (
     <>
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="left" className="flex flex-col">
+        <SheetContent side="left">
           <SheetHeader>
             <SheetTitle>Categorias</SheetTitle>
           </SheetHeader>
-          <ScrollArea className="flex-1 pr-4 -mr-4">
-            <div className="py-4">{renderFilters()}</div>
-          </ScrollArea>
+          <div className="py-4">{renderFilters()}</div>
         </SheetContent>
       </Sheet>
 
@@ -215,50 +222,38 @@ export function FrasesClientPage({
               <div className="sticky top-24">{renderFilters()}</div>
             </aside>
             <div>
-              <div className="w-full mb-8 flex justify-between items-center">
-                 <div className="flex-1 text-center">
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
-                      Inspire-se com Frases
-                    </h1>
-                    <p className="text-muted-foreground mt-2 text-lg">
-                      Explore, favorite e crie vídeos com nossa coleção de frases.
-                    </p>
-                </div>
-                <div className="md:hidden ml-4">
-                    <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
-                        <LayoutGrid className="h-5 w-5" />
-                    </Button>
-                </div>
+              <div className="text-center w-full mb-8">
+                <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
+                  Inspire-se com Frases
+                </h1>
+                <p className="text-muted-foreground mt-2 text-lg">
+                  Explore, favorite e crie vídeos com nossa coleção de frases.
+                </p>
               </div>
               
               {isLoading ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.from({ length: 9 }).map((_, i) => (
-                        <Card key={i} className="h-48 animate-pulse bg-muted"></Card>
+                        <Card key={i} className="h-40 animate-pulse bg-muted"></Card>
                     ))}
                   </div>
-              ) : quotes.length > 0 ? (
+              ) : filteredQuotes.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {quotes.map((quote) => {
+                  {filteredQuotes.map((quote) => {
                     const isFavorited = favorites.includes(quote.id);
                     return (
                       <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
-                        <CardContent className="p-4 pb-0 flex-1">
-                          <p className="text-base font-body">{quote.quote}</p>
+                        <CardContent className="p-4 pb-0">
+                          <p className="text-base font-body italic">{quote.quote}</p>
                         </CardContent>
-                        <CardFooter className="p-4 pt-2 flex flex-col items-stretch gap-2">
+                        <CardFooter className="p-2 pt-2 flex flex-col items-start w-full">
                            {quote.author && (
-                             <p className="text-sm font-medium text-muted-foreground self-end">
+                             <p className="text-right text-sm font-medium text-muted-foreground w-full mb-2">
                                - {quote.author}
                              </p>
                            )}
-                          <div className="flex justify-between items-center w-full pt-1">
-                             {quote.subCategory && quote.subCategory !== 'Todos' ? (
-                                <span className="bg-primary/10 px-2 py-0.5 text-xs rounded-full text-primary truncate max-w-[120px]">
-                                    {quote.subCategory}
-                                </span>
-                            ) : <div/>}
-
+                          <div className="flex justify-between items-center w-full">
+                             <div/>
                             <div className="flex items-center">
                               <Link href={`/editor-de-video?quote=${encodeURIComponent(quote.quote)}`} passHref>
                                 <Button variant="ghost" size="icon"><Film className="h-4 w-4" /></Button>

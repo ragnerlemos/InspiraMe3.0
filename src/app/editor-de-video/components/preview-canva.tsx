@@ -5,17 +5,9 @@ import Image from 'next/image';
 import { cn } from "@/lib/utils";
 import type { ProfileData } from "@/hooks/use-profile";
 import { AssinaturaPerfil } from "../modelos/assinatura-perfil";
+import type { EstiloFundo, VisualizacaoEditorProps } from '../tipos';
 import { ModeloTwitter } from '../modelos/modelo-twitter';
 import { ModeloPadrao } from '../modelos/modelo-padrao';
-import type { EditorState, EstiloTexto } from '../tipos';
-import React from 'react';
-
-interface PreviewCanvaProps extends EditorState {
-    profile: ProfileData;
-    textStyle: EstiloTexto;
-    scale: number;
-    containerRef: React.RefObject<HTMLDivElement>;
-}
 
 
 // Função para converter cor hexadecimal para RGB
@@ -45,14 +37,13 @@ const getMediaType = (src: string): "image" | "video" | "unknown" => {
 };
 
 
-export function PreviewCanva(props: PreviewCanvaProps) {
+export function PreviewCanva(props: VisualizacaoEditorProps) {
     const { 
         aspectRatio, 
         backgroundStyle, 
         filmColor, 
         filmOpacity, 
-        scale,
-        containerRef
+        scale 
     } = props;
   
   const filmRgb = hexToRgb(filmColor);
@@ -87,33 +78,28 @@ export function PreviewCanva(props: PreviewCanvaProps) {
 
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
-      <div 
+      <div
+        id="editor-preview-content"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top center",
         }}
-        className="transition-transform duration-300 ease-in-out"
+        className={cn(
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container",
+          {
+            "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
+            "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
+            "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
+          }
+        )}
       >
-        <div
-          ref={containerRef}
-          id="editor-preview-content"
-          className={cn(
-            "relative shadow-2xl rounded-xl overflow-hidden w-[400px]",
-            {
-              "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
-              "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
-              "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
-            }
-          )}
-        >
-            {renderBackground()}
+        {renderBackground()}
 
-            {filmOpacity > 0 && 
-                <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
-            }
-            <div className="relative z-20 h-full w-full">
-                {renderContent()}
-            </div>
+        {filmOpacity > 0 && 
+            <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
+        }
+        <div className="relative z-20 h-full w-full">
+            {renderContent()}
         </div>
       </div>
     </main>

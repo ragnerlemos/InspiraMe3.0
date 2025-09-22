@@ -286,9 +286,12 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                 {showProfileSignature ? 'Assinatura Ativada' : 'Ativar Assinatura'}
             </Button>
             
-            <LinkConfigurarPerfil />
-
-
+            <Link href="/perfil" passHref>
+               <Button variant="link" className="w-full text-center">
+                   <User className="mr-2 h-4 w-4" />
+                   Configurar Assinatura no Perfil
+               </Button>
+           </Link>
 
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
@@ -394,8 +397,14 @@ function ControleLogo(props: ControleLogoProps) {
                 {showLogo ? 'Logomarca Ativada' : 'Ativar Logomarca'}
             </Button>
             
-            {!isLogoConfigured && <LinkConfigurarPerfil />}
-
+             {!isLogoConfigured && (
+                <Link href="/perfil" passHref>
+                    <Button variant="link" className="w-full text-center">
+                        <ImageUp className="mr-2 h-4 w-4" />
+                        Adicionar Logomarca no Perfil
+                    </Button>
+                </Link>
+            )}
 
             {showLogo && isLogoConfigured && (
                 <div className="space-y-4 pt-2 border-t mt-4">
@@ -575,18 +584,6 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
     }
 }
 
-function LinkConfigurarPerfil() {
-    return (
-      <Link href="/perfil" passHref>
-        <Button variant="link" className="w-full text-center">
-          <ImageUp className="mr-2 h-4 w-4" />
-          Configurar Perfil
-        </Button>
-      </Link>
-    );
-  }
-  
-  
 
 interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, CommonStyleProps {
     aspectRatio: string;

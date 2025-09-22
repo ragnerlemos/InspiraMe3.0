@@ -1,3 +1,4 @@
+
 // Componente que exibe a assinatura do perfil do usuário na tela de visualização.
 // Inclui avatar, nome de usuário e rede social, com opções de customização.
 
@@ -43,37 +44,36 @@ export function AssinaturaPerfil({
   const bgRgb = hexToRgb(bgColor);
   const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
 
+
   return (
     <div 
-        className="flex items-center gap-3 p-3 rounded-lg max-w-max"
+        className={cn("flex items-center gap-3 p-2 rounded-lg max-w-max")}
         style={{
             backgroundColor: showBackground ? backgroundColor : 'transparent',
         }}
     >
       {showPhoto && (
-        <Avatar className="h-10 w-10 flex-shrink-0">
+        <Avatar className="h-10 w-10">
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
           <AvatarFallback>
             <User className="text-white" />
           </AvatarFallback>
         </Avatar>
       )}
-      
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col">
         {showUsername && (
-          <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
+          <p className="font-bold text-white text-sm leading-tight whitespace-nowrap">
             {profile.username}
           </p>
         )}
         {showSocial && (
-          <p className="text-gray-300 text-xs leading-tight m-0 p-0">
+          <p className="text-gray-300 text-xs leading-tight">
             {profile.social}
           </p>
         )}
       </div>
-
        {shouldShowIcon && (
-         <div className="pl-2 flex items-center justify-center">
+         <div className="pl-2">
             {profile.iconUrl ? (
                 <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
             ) : (

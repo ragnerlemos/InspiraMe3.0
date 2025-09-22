@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, TestTube2, LayoutGrid, Feather } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, TestTube2, LayoutGrid } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,27 +30,27 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    const { isReady, canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, onExportJPG_final } = useEditor();
+    const { canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
 
     return (
         <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background shrink-0">
             <Link href="/" className="flex items-center gap-2">
-                <Feather className="h-6 w-6 text-primary" />
-                <span className="font-headline text-xl font-bold">InspireMe</span>
+                <Quote className="h-6 w-6 text-primary" />
+                <span className="font-headline text-xl font-bold">QuoteVid</span>
             </Link>
 
             <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" onClick={undo} disabled={!canUndo || !isReady}>
+                <Button variant="ghost" size="icon" onClick={undo} disabled={!canUndo}>
                     <Undo className="h-5 w-5" />
                     <span className="sr-only">Desfazer</span>
                 </Button>
-                 <Button variant="ghost" size="icon" onClick={redo} disabled={!canRedo || !isReady}>
+                 <Button variant="ghost" size="icon" onClick={redo} disabled={!canRedo}>
                     <Redo className="h-5 w-5" />
                     <span className="sr-only">Refazer</span>
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button disabled={!isReady}>
+                        <Button>
                             <Save className="mr-2 h-4 w-4" />
                             Salvar
                         </Button>
@@ -69,11 +69,6 @@ export function EditorHeader() {
                            Exportar Vídeo (MP4)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={onExportJPG_final}>
-                           <TestTube2 className="mr-2 h-4 w-4" />
-                           Exportar JPG (Final)
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={onSaveAsTemplate}>Salvar como Modelo</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -83,73 +78,76 @@ export function EditorHeader() {
 }
 
 // Componente do cabeçalho da aplicação.
-export function AppHeader() {
+export function AppHeader({ onCategoryMenuClick, showCategoryMenuButton }: { onCategoryMenuClick?: () => void; showCategoryMenuButton?: boolean; }) {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-
-  const renderNavLinks = (isMobile = false) => {
-    return navItems.map((item) => {
-        const isActive = pathname.startsWith(item.href);
-        const commonClasses = "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary";
-        
-        if (isMobile) {
-            return (
-                <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsSheetOpen(false)}
-                    className={cn(
-                        commonClasses,
-                        "text-muted-foreground text-base",
-                        isActive && "bg-primary/10 text-primary"
-                    )}
-                >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                </Link>
-            )
-        }
-        
-        return (
-            <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                    commonClasses,
-                    "text-sm font-medium",
-                    isActive ? "text-primary" : "text-muted-foreground"
-                )}
-            >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-            </Link>
-        )
-    });
-  }
 
   // Renderiza o cabeçalho do editor apenas na página /editor-de-video
   if (pathname.startsWith('/editor-de-video')) {
     return null;
   }
-  
-  if (pathname.startsWith('/boas-vindas')) {
-    return null;
-  }
+
+  // Função que renderiza os links de navegação.
+  const navLinks = (className?: string) => (
+    <>
+      {navItems.map((item) => {
+        // Verifica se o item de navegação atual é a página ativa.
+        const isActive = pathname.startsWith(item.href);
+        return (
+            <Link
+            key={item.href}
+            href={item.href}
+            onClick={() => setIsSheetOpen(false)} // Fecha o menu ao clicar
+            className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                isActive && "bg-primary/10 text-primary",
+                className
+            )}
+            >
+            <item.icon className="h-4 w-4" />
+            {item.label}
+            </Link>
+        )
+      })}
+    </>
+  );
 
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo e link para a página inicial. */}
         <Link href="/" className="flex items-center gap-2">
-          <Feather className="h-6 w-6 text-primary" />
-          <span className="font-headline text-xl font-bold">InspireMe</span>
+          <Quote className="h-6 w-6 text-primary" />
+          <span className="font-headline text-xl font-bold">QuoteVid</span>
         </Link>
         {/* Navegação para telas maiores (desktop). */}
         <nav className="hidden items-center gap-1 md:flex">
-            {renderNavLinks(false)}
+          {navItems.map((item) => {
+             const isActive = pathname.startsWith(item.href);
+             return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-primary"
+                )}
+              >
+                {item.label}
+              </Link>
+             )
+          })}
         </nav>
         {/* Navegação para telas menores (mobile) usando um menu lateral. */}
         <div className="md:hidden flex items-center gap-2">
+          {showCategoryMenuButton && (
+            <Button variant="outline" size="icon" onClick={onCategoryMenuClick}>
+              <LayoutGrid className="h-5 w-5" />
+              <span className="sr-only">Abrir categorias</span>
+            </Button>
+          )}
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -162,7 +160,7 @@ export function AppHeader() {
                     <SheetTitle>Navegação</SheetTitle>
                 </SheetHeader>
                 <nav className="grid gap-2 text-lg font-medium pt-8">
-                     {renderNavLinks(true)}
+                    {navLinks("text-base")}
                 </nav>
             </SheetContent>
           </Sheet>
