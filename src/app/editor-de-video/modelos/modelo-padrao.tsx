@@ -27,16 +27,16 @@ export function ModeloPadrao({
   logoScale,
   logoOpacity,
 }: ModeloPadraoProps) {
+  
+  const textSpacer = Math.max(0, signaturePositionY - 50 - 25);
+  const logoSpacer = Math.max(0, 50 - logoPositionY - 25);
 
-  // Convert percentages to flex-grow values. This creates a more stable layout for html2canvas.
-  const topSpacer = Math.max(0, logoPositionY - 25);
-  const textSpacer = Math.max(0, signaturePositionY - logoPositionY - 25);
 
   return (
-    <div className="relative w-full h-full flex flex-col">
+    <div className="relative w-full h-full flex flex-col p-8">
       
         {/* Spacer to push logo down */}
-        <div style={{ flexGrow: topSpacer }}></div>
+        <div style={{ flexGrow: logoPositionY > 50 ? logoSpacer : logoPositionY - 5 }}></div>
 
         {/* Logo Container */}
         {showLogo && profile.logo && (
@@ -60,7 +60,7 @@ export function ModeloPadrao({
         <div style={{ flexGrow: 10 }}></div>
       
         {/* Main Text Container */}
-        <div className="flex justify-center px-8" style={{ flexGrow: 0 }}>
+        <div className="flex-grow flex items-center justify-center">
             <div
                 style={textStyle}
                 className="break-words"
@@ -94,7 +94,7 @@ export function ModeloPadrao({
         )}
 
         {/* Bottom spacer */}
-        <div style={{ flexGrow: 25 }}></div>
+        <div style={{ flexGrow: 100 - signaturePositionY }}></div>
     </div>
   );
 }
