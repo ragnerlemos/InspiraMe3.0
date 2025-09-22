@@ -182,7 +182,6 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             width,
             height,
             pixelRatio: 3, 
-            skipFonts: true,
             fontEmbedCSS: fontEmbedCSS,
         };
 
