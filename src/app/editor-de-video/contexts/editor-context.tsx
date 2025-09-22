@@ -98,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex + 1);
+      setCurrentStateIndex(currentStateIndex - 1);
     }
   }, [canRedo, currentStateIndex]);
 
@@ -122,102 +122,102 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     }
   }, [addTemplate, currentState, toast]);
 
-  const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
-    const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
-    if (!previewElement || !currentState) {
-      toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
-      return;
+const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
+  const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
+  if (!previewElement || !currentState) {
+    toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
+    return;
+  }
+  toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+
+  try {
+    // 1) Garantir que as fontes estejam carregadas.
+    const fontsToLoad = [
+      '1em "Poppins"',
+      '700 1em "Poppins"',
+      '1em "PT Sans"',
+      '700 1em "PT Sans"',
+      '1em "Merriweather"',
+      'italic 1em "Merriweather"',
+      '700 1em "Merriweather"',
+      '1em "Lobster"'
+    ];
+    await Promise.all(fontsToLoad.map(f => document.fonts.load(f).catch(() => {})));
+    await document.fonts.ready;
+
+    // 2) Medir o elemento e preparar dimensões fixas em px
+    const rect = previewElement.getBoundingClientRect();
+    const width = Math.round(rect.width);
+    const height = Math.round(rect.height);
+
+    // 3) Função para copiar estilos computados em linha (recursiva)
+    const cssProps = [
+      'font-family','font-size','font-weight','font-style','letter-spacing','line-height','text-align',
+      'color','direction','padding','margin','box-sizing','width','height','white-space','word-break',
+      'word-wrap','text-transform','display','vertical-align','background','background-image',
+      'background-size','background-position','background-repeat', 'text-shadow', 'transform'
+    ];
+
+    function inlineStylesRecursively(sourceEl: Element, targetEl: HTMLElement) {
+      const computed = window.getComputedStyle(sourceEl);
+      let cssText = '';
+      cssProps.forEach(prop => {
+        const val = computed.getPropertyValue(prop);
+        if (val) cssText += `${prop}:${val};`;
+      });
+      targetEl.style.cssText += cssText;
+
+      // processar filhos
+      Array.from(sourceEl.children).forEach((child, i) => {
+        const targetChild = targetEl.children[i] as HTMLElement | undefined;
+        if (targetChild) {
+          inlineStylesRecursively(child, targetChild);
+        }
+      });
     }
-    toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
-  
-    try {
-      // 1) Garantir que as fontes estejam carregadas.
-      const fontsToLoad = [
-        '1em "Poppins"',
-        '700 1em "Poppins"',
-        '1em "PT Sans"',
-        '700 1em "PT Sans"',
-        '1em "Merriweather"',
-        'italic 1em "Merriweather"',
-        '700 1em "Merriweather"',
-        '1em "Lobster"'
-      ];
-      await Promise.all(fontsToLoad.map(f => document.fonts.load(f).catch(() => {})));
-      await document.fonts.ready;
-  
-      // 2) Medir o elemento e preparar dimensões fixas em px
-      const rect = previewElement.getBoundingClientRect();
-      const width = Math.round(rect.width);
-      const height = Math.round(rect.height);
-  
-      // 3) Função para copiar estilos computados em linha (recursiva)
-      const cssProps = [
-        'font-family','font-size','font-weight','font-style','letter-spacing','line-height','text-align',
-        'color','direction','padding','margin','box-sizing','width','height','white-space','word-break',
-        'word-wrap','text-transform','display','vertical-align','background','background-image',
-        'background-size','background-position','background-repeat', 'text-shadow', 'transform'
-      ];
-  
-      function inlineStylesRecursively(sourceEl: Element, targetEl: HTMLElement) {
-        const computed = window.getComputedStyle(sourceEl);
-        let cssText = '';
-        cssProps.forEach(prop => {
-          const val = computed.getPropertyValue(prop);
-          if (val) cssText += `${prop}:${val};`;
-        });
-        targetEl.style.cssText += cssText;
-  
-        // processar filhos
-        Array.from(sourceEl.children).forEach((child, i) => {
-          const targetChild = targetEl.children[i] as HTMLElement | undefined;
-          if (targetChild) {
-            inlineStylesRecursively(child, targetChild);
-          }
-        });
-      }
-  
-      // 4) Clonar e inlinear estilos
-      const clone = previewElement.cloneNode(true) as HTMLElement;
-      clone.style.width = `${width}px`;
-      clone.style.height = `${height}px`;
-      clone.style.boxSizing = 'border-box';
-  
-      inlineStylesRecursively(previewElement, clone);
-  
-      // 5) Colocar o clone em um wrapper com dimensões exatas
-      const wrapper = document.createElement('div');
-      wrapper.style.width = `${width}px`;
-      wrapper.style.height = `${height}px`;
-      wrapper.style.overflow = 'hidden';
-      wrapper.style.boxSizing = 'border-box';
-      wrapper.appendChild(clone);
-  
-      // 7) Gerar a imagem com html-to-image
-      const options: any = {
-        width,
-        height,
-        pixelRatio: 3,
-        cacheBust: true,
-      };
-  
-      const dataUrl = format === 'png'
-        ? await toPng(wrapper, options)
-        : await toJpeg(wrapper, { ...options, quality: 0.95 });
-  
-      // 8) Forçar download
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = `inspire-me-export.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  
-      toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
-    } catch (error) {
-      console.error('Erro ao exportar imagem:', error);
-      toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
-    }
-  }, [toast, currentState]);
+
+    // 4) Clonar e inlinear estilos
+    const clone = previewElement.cloneNode(true) as HTMLElement;
+    clone.style.width = `${width}px`;
+    clone.style.height = `${height}px`;
+    clone.style.boxSizing = 'border-box';
+
+    inlineStylesRecursively(previewElement, clone);
+
+    // 5) Colocar o clone em um wrapper com dimensões exatas
+    const wrapper = document.createElement('div');
+    wrapper.style.width = `${width}px`;
+    wrapper.style.height = `${height}px`;
+    wrapper.style.overflow = 'hidden';
+    wrapper.style.boxSizing = 'border-box';
+    wrapper.appendChild(clone);
+
+    // 7) Gerar a imagem com html-to-image
+    const options: any = {
+      width,
+      height,
+      pixelRatio: 3,
+      cacheBust: true,
+    };
+
+    const dataUrl = format === 'png'
+      ? await toPng(wrapper, options)
+      : await toJpeg(wrapper, { ...options, quality: 0.95 });
+
+    // 8) Forçar download
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `inspire-me-export.${format}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+  } catch (error) {
+    console.error('Erro ao exportar imagem:', error);
+    toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+  }
+}, [toast, currentState]);
 
   const onExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
   const onExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
