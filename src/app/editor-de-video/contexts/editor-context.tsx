@@ -1,10 +1,10 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useMemo } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
-import html2canvas from 'html2canvas';
+import { toPng, toJpeg } from 'html-to-image';
 import type { EditorState } from '../tipos';
 
 // Interface for the shared editor state and controls
@@ -109,8 +109,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     const previewElement = document.getElementById('editor-preview-content');
     if (previewElement) {
         try {
-            const canvas = await html2canvas(previewElement, { scale: 0.5, useCORS: true, backgroundColor: null });
-            const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
+            const thumbnail = await toJpeg(previewElement, { 
+                quality: 0.8,
+                pixelRatio: 1, // Use a lower resolution for thumbnails
+            });
             addTemplate(templateName, currentState, thumbnail);
             toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
         } catch (error) {
@@ -129,18 +131,24 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
     try {
         const { width, height } = previewElement.getBoundingClientRect();
-        const canvas = await html2canvas(previewElement, { 
-            useCORS: true, 
-            backgroundColor: null, 
-            scale: 2, // Aumenta a resolução da captura
-            width: width,
-            height: height,
-            windowWidth: width,
-            windowHeight: height,
-        });
-        const image = canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
+        
+        const options = {
+            width,
+            height,
+            pixelRatio: 2, // Aumenta a resolução para melhor qualidade
+            style: {
+                // We need to re-apply the transform or it won't be scaled correctly
+                transform: `scale(1)`,
+                transformOrigin: 'top left',
+            }
+        };
+
+        const dataUrl = format === 'png' 
+            ? await toPng(previewElement, options) 
+            : await toJpeg(previewElement, { ...options, quality: 0.95 });
+
         const link = document.createElement('a');
-        link.href = image;
+        link.href = dataUrl;
         link.download = `inspire-me-export.${format}`;
         document.body.appendChild(link);
         link.click();
