@@ -4,6 +4,8 @@
 import html2canvas from 'html2canvas';
 import type { Toast } from '@/hooks/use-toast';
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 /**
  * Captura o conteúdo de um elemento HTML, converte para imagem e inicia o download.
  * @param format - O formato da imagem ('jpeg' ou 'png').
@@ -35,6 +37,9 @@ export const captureAndDownload = async (format: 'jpeg' | 'png', toast: (props: 
     clone.style.height = `${previewElement.offsetHeight}px`;
     clone.style.transform = 'none'; // Remove qualquer escala aplicada no preview
     document.body.appendChild(clone);
+
+    // Adiciona um pequeno delay para garantir que o clone seja totalmente renderizado no DOM
+    await delay(100);
 
     // 3. Capturar o canvas do clone
     const canvas = await html2canvas(clone, {
@@ -101,6 +106,8 @@ export const captureThumbnail = async (toast: (props: Parameters<typeof Toast>[0
     clone.style.height = '400px'; // Tamanho fixo para thumbnail
     clone.style.transform = 'none';
     document.body.appendChild(clone);
+    
+    await delay(100);
 
     const canvas = await html2canvas(clone, {
       useCORS: true,
