@@ -20,7 +20,7 @@ export default function FavoritesPage() {
 
   // Filtra as frases da lista principal para obter apenas as favoritas.
   useEffect(() => {
-    const getQuotes = () => {
+    const getQuotes = async () => {
       // Como 'quotes' é carregado no servidor na página inicial, aqui apenas filtramos.
       if (quotes.length > 0) {
         setFavoriteQuotes(quotes.filter((quote) => favorites.includes(quote.id)));
@@ -35,11 +35,20 @@ export default function FavoritesPage() {
 
 
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copiado!",
-      description: "A frase foi copiada para a área de transferência.",
-    });
+    try {
+        navigator.clipboard.writeText(text);
+        toast({
+          title: "Copiado!",
+          description: "A frase foi copiada para a área de transferência.",
+        });
+    } catch (error) {
+        console.error("Falha ao copiar:", error);
+        toast({
+            variant: "destructive",
+            title: "Erro ao copiar",
+            description: "Não foi possível copiar o texto. Tente novamente."
+        })
+    }
   };
 
   const handleRemove = (id: string) => {
@@ -146,3 +155,5 @@ export default function FavoritesPage() {
     </main>
   );
 }
+
+    
