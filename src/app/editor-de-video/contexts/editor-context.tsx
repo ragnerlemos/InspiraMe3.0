@@ -136,12 +136,6 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             width,
             height,
             pixelRatio: 2, 
-            skipFonts: true,
-            style: {
-                transform: `scale(1)`,
-                transformOrigin: 'top left',
-                fontFamily: currentState.fontFamily,
-            }
         };
 
         const dataUrl = format === 'png' 
