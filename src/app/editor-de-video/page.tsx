@@ -16,6 +16,7 @@ import {
 import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
 import { useEditor } from "./contexts/editor-context";
 import { useTemplates } from "@/hooks/use-templates";
+import html2canvas from 'html2canvas';
 import { getAllQuotes } from "@/lib/dados";
 import { useSearchParams } from "next/navigation";
 
