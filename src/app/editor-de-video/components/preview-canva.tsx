@@ -88,28 +88,33 @@ export function PreviewCanva(props: PreviewCanvaProps) {
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
       <div
-        id="editor-preview-content"
         ref={containerRef}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top center",
         }}
         className={cn(
-          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden",
-          {
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-auto md:w-auto"
+        )}
+      >
+        <div 
+          id="editor-preview-content"
+          className={cn(
+          "relative overflow-hidden w-full h-full rounded-xl",
+           {
             "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
             "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
             "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
           }
-        )}
-      >
-        {renderBackground()}
+        )}>
+          {renderBackground()}
 
-        {filmOpacity > 0 && 
-            <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
-        }
-        <div className="relative z-20 h-full w-full">
-            {renderContent()}
+          {filmOpacity > 0 && 
+              <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
+          }
+          <div className="relative z-20 h-full w-full">
+              {renderContent()}
+          </div>
         </div>
       </div>
     </main>

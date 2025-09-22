@@ -17,13 +17,24 @@ const getClonedElement = async (toast: (props: Parameters<typeof Toast>[0]) => v
         return null;
     }
     
+    // Garante que todas as imagens dentro do elemento estão carregadas
+    const images = Array.from(previewElement.getElementsByTagName('img'));
+    await Promise.all(images.map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(resolve => { img.onload = img.onerror = resolve; });
+    }));
+    
+    // Garante que as fontes estão carregadas
+    await document.fonts.ready;
+    
     const clone = previewElement.cloneNode(true) as HTMLElement;
     clone.style.position = 'absolute';
     clone.style.top = '-9999px'; 
     clone.style.left = '-9999px';
-    clone.style.transform = 'none'; 
+    clone.style.transform = 'none'; // Importante: remove qualquer transformação de escala
     document.body.appendChild(clone);
     
+    // Pequeno delay para garantir que o navegador renderizou o clone
     await delay(100); 
 
     return { clone, original: previewElement };
@@ -52,21 +63,9 @@ export const captureAndDownload = async (format: 'jpeg' | 'png', toast: (props: 
     const elements = await getClonedElement(toast);
     if (!elements) return;
 
-    const { clone, original } = elements;
-    clone.style.width = `${original.offsetWidth}px`;
-    clone.style.height = `${original.offsetHeight}px`;
+    const { clone } = elements;
     
-    // Aguarda fontes e imagens
-    await document.fonts.ready;
-    const images = Array.from(clone.getElementsByTagName('img'));
-    await Promise.all(images.map(img => {
-      if (img.complete) return Promise.resolve();
-      return new Promise(resolve => { img.onload = img.onerror = resolve; });
-    }));
-
-
     try {
-        await delay(50); // Delay extra para renderização
         const canvas = await html2canvas(clone, {
             useCORS: true,
             scale: 2, 
@@ -93,12 +92,10 @@ export const captureThumbnail = async (toast: (props: Parameters<typeof Toast>[0
   const { clone } = elements;
   
   try {
+    // Para thumbnail, podemos usar dimensões menores
     clone.style.width = '400px'; 
     clone.style.height = '400px';
     
-    await document.fonts.ready;
-    await delay(100);
-
     const canvas = await html2canvas(clone, {
       useCORS: true,
       scale: 1, 
@@ -123,7 +120,7 @@ export const captureThumbnail = async (toast: (props: Parameters<typeof Toast>[0
 };
 
 
-// VERSÃO FINAL - Baseada na análise do usuário
+// VERSÃO FINAL - Implementando a lógica sugerida pelo usuário
 export const captureAndDownload_final = async (format: 'jpeg' | 'png', toast: (props: Parameters<typeof Toast>[0]) => void) => {
     toast({ title: 'Exportando (Final)...', description: `Gerando imagem ${format.toUpperCase()}, por favor aguarde.` });
 
@@ -134,33 +131,49 @@ export const captureAndDownload_final = async (format: 'jpeg' | 'png', toast: (p
     }
 
     try {
-        // 1. Garantir que fontes externas estão carregadas
         await document.fonts.ready;
-
-        // 2. Garantir que todas as imagens no elemento estão carregadas
         const images = Array.from(previewElement.getElementsByTagName('img'));
         await Promise.all(images.map(img => {
             if (img.complete) return Promise.resolve();
-            return new Promise(resolve => {
-                img.onload = img.onerror = resolve;
-            });
+            return new Promise(resolve => { img.onload = img.onerror = resolve; });
         }));
 
-        // 3. Chamar html2canvas com as melhores configurações
-        const canvas = await html2canvas(previewElement, {
-            scale: 2, // Para maior nitidez
-            useCORS: true, // Para imagens de outras origens
-            backgroundColor: null, // Para fundos transparentes (se aplicável)
+        // 1. Criar um wrapper temporário com tamanho fixo e flexbox para centralizar
+        const wrapper = document.createElement('div');
+        wrapper.style.width = `${previewElement.offsetWidth}px`;
+        wrapper.style.height = `${previewElement.offsetHeight}px`;
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.alignItems = 'center';
+        
+        // 2. Adicionar o wrapper invisível ao corpo do documento
+        wrapper.style.position = 'absolute';
+        wrapper.style.left = '-9999px';
+        wrapper.style.top = '-9999px';
+        document.body.appendChild(wrapper);
+
+        // 3. Clonar o conteúdo do preview DENTRO do wrapper
+        wrapper.appendChild(previewElement.cloneNode(true));
+        
+        await delay(100); // Dar um tempo mínimo para renderização
+
+        // 4. Capturar o WRAPPER, não o elemento original
+        const canvas = await html2canvas(wrapper, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: null,
             logging: false,
         });
 
-        // 4. Iniciar o download
+        // 5. Baixar a imagem e limpar
         const dataUrl = format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.95);
         downloadDataUrl(dataUrl, format, toast);
+
+        // 6. Remover o wrapper do DOM
+        document.body.removeChild(wrapper);
 
     } catch (error) {
         console.error('Erro ao exportar imagem (versão final):', error);
         toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
     }
 };
-
