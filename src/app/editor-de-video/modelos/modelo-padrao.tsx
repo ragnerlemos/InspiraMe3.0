@@ -40,17 +40,14 @@ export function ModeloPadrao({
   };
 
   return (
-    <div className="relative w-full h-full p-8 flex flex-col justify-center items-center">
+    <div className="relative w-full h-full p-8 flex flex-col">
       
       {/* Container de Texto Principal */}
       <div 
-        className={cn("w-full flex", getJustifyClass(textStyle.textAlign))}
+        className="w-full flex-grow flex"
         style={{
-          position: 'absolute',
-          top: `${textVerticalPosition}%`,
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          padding: '0 2rem', // Adiciona padding para evitar que o texto toque as bordas
+          alignItems: 'center', // Centraliza verticalmente no espaço disponível
+          justifyContent: getJustifyClass(textStyle.textAlign),
         }}
       >
         <div
@@ -64,12 +61,13 @@ export function ModeloPadrao({
       {/* Container da Assinatura */}
       {showProfileSignature && (
         <div
-          className="absolute w-full flex justify-center"
+          className="w-full flex justify-center"
           style={{
-            top: `${signaturePositionY}%`,
-            left: `${signaturePositionX}%`,
-            transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
-            transformOrigin: 'center center',
+            flexGrow: 0, // Não permite que cresça
+            flexShrink: 0, // Não permite que encolha
+            transform: `scale(${signatureScale / 100})`,
+            transformOrigin: 'bottom center',
+            paddingBottom: `${100 - signaturePositionY}%` // Usa padding para empurrar para a posição correta
           }}
         >
           <AssinaturaPerfil
@@ -84,15 +82,14 @@ export function ModeloPadrao({
         </div>
       )}
 
-      {/* Container da Logo */}
+      {/* Container da Logo (Posicionamento Absoluto ainda é melhor aqui) */}
       {showLogo && profile.logo && (
          <div
-          className="absolute w-full flex justify-center"
+          className="absolute"
           style={{
             top: `${logoPositionY}%`,
             left: `${logoPositionX}%`,
             transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
-            transformOrigin: 'center center',
             opacity: logoOpacity / 100,
           }}
         >
