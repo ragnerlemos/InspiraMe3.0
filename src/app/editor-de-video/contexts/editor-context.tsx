@@ -98,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex - 1);
+      setCurrentStateIndex(currentStateIndex + 1);
     }
   }, [canRedo, currentStateIndex]);
 
@@ -118,22 +118,17 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     const originalTransformOrigin = previewElement.style.transformOrigin;
 
     try {
-      // Reset scale and origin for full-resolution capture
+      // Reset scale for full-resolution capture, ensuring correct aspect ratio
       previewElement.style.transform = 'scale(1)';
       previewElement.style.transformOrigin = 'center';
       
-      // Ensure fonts are ready
+      // Ensure fonts are ready before capturing
       await document.fonts.ready;
       
-      // Get the real dimensions of the element
-      const rect = previewElement.getBoundingClientRect();
-
       const canvas = await html2canvas(previewElement, {
-        useCORS: true, // Important for external images (like picsum)
+        useCORS: true, 
         scale: 2, // Increase for higher resolution
         backgroundColor: null, // Use transparent background
-        width: rect.width,
-        height: rect.height,
       });
 
       const dataUrl = format === 'png' 
