@@ -157,6 +157,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             const thumbnail = await toJpeg(previewElement, { 
                 quality: 0.8,
                 pixelRatio: 1, // Use a lower resolution for thumbnails
+                fontEmbedCSS: fontEmbedCSS,
             });
             addTemplate(templateName, currentState, thumbnail);
             toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
