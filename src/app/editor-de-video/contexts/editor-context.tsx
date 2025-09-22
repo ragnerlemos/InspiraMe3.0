@@ -98,11 +98,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex - 1);
+      setCurrentStateIndex(currentStateIndex + 1);
     }
   }, [canRedo, currentStateIndex]);
 
-  const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
+  const captureCanvas = useCallback(async (format: 'png' | 'jpeg', download: boolean = false): Promise<string | null> => {
     const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
     if (!previewElement || !currentState) {
       toast({
@@ -113,34 +113,31 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       return null;
     }
     
-    toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+    if (download) {
+      toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+    }
     
-    const clone = previewElement.cloneNode(true) as HTMLElement;
-    const rect = previewElement.getBoundingClientRect();
-    
-    clone.style.position = 'absolute';
-    clone.style.top = '-9999px';
-    clone.style.left = '-9999px';
-    clone.style.width = `${rect.width}px`;
-    clone.style.height = `${rect.height}px`;
-    clone.style.transform = 'scale(1)';
-    
-    document.body.appendChild(clone);
-
     try {
-      // Força o navegador a carregar todas as fontes antes da captura.
-      // Isso é crucial para que o html2canvas calcule o layout corretamente.
       await document.fonts.ready;
+
+      const clone = previewElement.cloneNode(true) as HTMLElement;
+      clone.style.position = 'absolute';
+      clone.style.top = '-9999px';
+      clone.style.left = '-9999px';
+      clone.style.width = `${previewElement.offsetWidth}px`;
+      clone.style.height = `${previewElement.offsetHeight}px`;
+      clone.style.transform = 'none'; // Remove any scale to capture at full resolution
+      document.body.appendChild(clone);
 
       const canvas = await html2canvas(clone, {
         useCORS: true, 
-        scale: 2, // Para alta resolução
+        scale: 2, // For high resolution
         backgroundColor: null,
-        width: rect.width,
-        height: rect.height,
         windowWidth: clone.scrollWidth,
         windowHeight: clone.scrollHeight,
       });
+      
+      document.body.removeChild(clone);
 
       const dataUrl = format === 'png' 
         ? canvas.toDataURL('image/png')
@@ -156,30 +153,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         description: 'Não foi possível gerar a imagem.'
       });
       return null;
-    } finally {
-        if (document.body.contains(clone)) {
-            document.body.removeChild(clone);
-        }
     }
   }, [toast, currentState]);
 
-
-  const onSaveAsTemplate = useCallback(async () => {
-    if (!currentState) return;
-    const templateName = prompt("Digite um nome para o novo modelo:");
-    if (!templateName) return;
-
-    const thumbnail = await captureCanvas('png'); 
-    if (!thumbnail) return;
-    
-    addTemplate(templateName, currentState, thumbnail);
-    toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
-
-  }, [addTemplate, currentState, toast, captureCanvas]);
-
-
   const handleExport = useCallback(async (format: 'jpeg' | 'png') => {
-    const dataUrl = await captureCanvas(format);
+    const dataUrl = await captureCanvas(format, true);
     if (!dataUrl) return;
 
     const link = document.createElement('a');
@@ -194,6 +172,19 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       description: `A imagem foi baixada como ${link.download}.`
     });
   }, [captureCanvas, toast]);
+
+  const onSaveAsTemplate = useCallback(async () => {
+    if (!currentState) return;
+    const templateName = prompt("Digite um nome para o novo modelo:");
+    if (!templateName) return;
+
+    const thumbnail = await captureCanvas('png');
+    if (!thumbnail) return;
+    
+    addTemplate(templateName, currentState, thumbnail);
+    toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
+
+  }, [addTemplate, currentState, toast, captureCanvas]);
 
   const onExportJPG = useCallback(() => handleExport('jpeg'), [handleExport]);
   const onExportPNG = useCallback(() => handleExport('png'), [handleExport]);
