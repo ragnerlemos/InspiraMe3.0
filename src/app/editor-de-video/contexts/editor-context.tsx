@@ -98,7 +98,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (canRedo) {
-      setCurrentStateIndex(currentStateIndex + 1);
+      setCurrentStateIndex(currentStateIndex - 1);
     }
   }, [canRedo, currentStateIndex]);
 
@@ -115,15 +115,17 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
     
     const clone = previewElement.cloneNode(true) as HTMLElement;
+    
+    // Get original dimensions to apply to the clone
+    const rect = previewElement.getBoundingClientRect();
+    
     clone.style.position = 'absolute';
     clone.style.top = '-9999px';
     clone.style.left = '-9999px';
-    // Importante: garantir que o clone tenha as mesmas dimensões do original
-    const rect = previewElement.getBoundingClientRect();
     clone.style.width = `${rect.width}px`;
     clone.style.height = `${rect.height}px`;
-    clone.style.transform = 'scale(1)'; // Remover qualquer escala do clone
-
+    clone.style.transform = 'scale(1)'; // Remove any scaling from the clone
+    
     document.body.appendChild(clone);
 
     try {
@@ -163,7 +165,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         description: 'Não foi possível gerar a imagem.'
       });
     } finally {
-        document.body.removeChild(clone);
+        if (document.body.contains(clone)) {
+            document.body.removeChild(clone);
+        }
     }
   }, [toast, currentState]);
 
@@ -191,7 +195,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
     try {
         await document.fonts.ready;
-        const canvas = await html2canvas(clone, { scale: 0.5, backgroundColor: null, useCORS: true });
+        const canvas = await html2canvas(clone, { scale: 0.5, backgroundColor: null, useCORS: true, width: rect.width, height: rect.height });
         const thumbnail = canvas.toDataURL('image/png');
         
         addTemplate(templateName, currentState, thumbnail);
@@ -200,7 +204,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         console.error("Erro ao criar thumbnail:", error);
         toast({ variant: "destructive", title: "Erro ao Salvar", description: "Não foi possível gerar a pré-visualização." });
     } finally {
-        document.body.removeChild(clone);
+        if (document.body.contains(clone)) {
+            document.body.removeChild(clone);
+        }
     }
   }, [addTemplate, currentState, toast]);
 

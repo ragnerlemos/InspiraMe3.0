@@ -73,7 +73,7 @@ export function AssinaturaPerfil({
         )}
       </div>
        {shouldShowIcon && (
-         <div className="pl-2">
+         <div className="pl-2 flex items-center h-full">
             {profile.iconUrl ? (
                 <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
             ) : (
