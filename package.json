@@ -40,7 +40,7 @@
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
     "googleapis": "^140.0.1",
-    "html-to-image": "^1.11.11",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.417.0",
     "nanoid": "^5.0.7",
     "next": "15.3.3",
