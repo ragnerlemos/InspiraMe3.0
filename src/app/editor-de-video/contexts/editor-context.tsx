@@ -124,11 +124,16 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       
       // Ensure fonts are ready
       await document.fonts.ready;
+      
+      // Get the real dimensions of the element
+      const rect = previewElement.getBoundingClientRect();
 
       const canvas = await html2canvas(previewElement, {
         useCORS: true, // Important for external images (like picsum)
         scale: 2, // Increase for higher resolution
         backgroundColor: null, // Use transparent background
+        width: rect.width,
+        height: rect.height,
       });
 
       const dataUrl = format === 'png' 
@@ -173,7 +178,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
         await document.fonts.ready;
         
-        const canvas = await html2canvas(previewElement, { scale: 0.5, backgroundColor: null });
+        const canvas = await html2canvas(previewElement, { scale: 0.5, backgroundColor: null, useCORS: true });
         const thumbnail = canvas.toDataURL('image/png');
         
         addTemplate(templateName, currentState, thumbnail);
