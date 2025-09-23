@@ -98,7 +98,7 @@ export function PreviewCanva(props: VisualizacaoEditorProps) {
         {filmOpacity > 0 && 
             <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
         }
-        <div className="relative z-20 h-full w-full">
+        <div className="relative z-20 h-full w-full flex items-center justify-center">
             {renderContent()}
         </div>
       </div>
