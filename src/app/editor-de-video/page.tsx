@@ -13,12 +13,12 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "@/components/ui/resizable";
-import type { EditorState, EstiloFundo, ProporcaoTela } from "@/app/editor-de-video/tipos";
+import type { EditorState, EstiloFundo, ProporcaoTela, VisualizacaoEditorProps } from "@/app/editor-de-video/tipos";
 import { useToast } from "@/hooks/use-toast";
-import { useTemplates, type Template } from "@/hooks/use-templates";
-import html2canvas from 'html2canvas';
+import { useTemplates } from "@/hooks/use-templates";
 import { useSearchParams } from "next/navigation";
 import { useEditor } from "./contexts/editor-context";
+import { exportPreviewAsImage } from "./lib/export";
 
 
 function ProporcaoSkeleton() {
@@ -82,12 +82,6 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     logoOpacity: 100,
 });
 
-const exportDimensions: Record<ProporcaoTela, { width: number, height: number, scale: number }> = {
-    "9 / 16": { width: 1080, height: 1920, scale: 2 }, // Stories/Reels
-    "1 / 1": { width: 1080, height: 1080, scale: 2 },   // Post Quadrado
-    "16 / 9": { width: 1920, height: 1080, scale: 2 }, // Vídeo Horizontal
-};
-
 
 export default function AspectWeaver() {
   const { width } = useWindowSize();
@@ -132,64 +126,94 @@ export default function AspectWeaver() {
   const canUndo = currentStateIndex > 0;
   const canRedo = currentStateIndex < history.length - 1;
   
-  const captureCanvas = useCallback(async (format: 'jpeg' | 'png', isThumbnail: boolean = false) => {
-    const element = document.getElementById('editor-preview-content');
-    if (!element) {
-        toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
-        return null;
+  const textStyle = useMemo(() => {
+    const createTextStrokeShadow = (width: number, color: string): string => {
+        if (width === 0) return "none";
+        const shadows = [];
+        const numPoints = 12;
+        for (let i = 0; i < numPoints; i++) {
+            const angle = (i / numPoints) * 2 * Math.PI;
+            const x = Math.cos(angle) * (width * 0.1);
+            const y = Math.sin(angle) * (width * 0.1);
+            shadows.push(`${x.toFixed(2)}cqw ${y.toFixed(2)}cqw 0 ${color}`);
+        }
+        return shadows.join(', ');
+    };
+    const createMainShadow = (blur: number): string => {
+        if (blur === 0) return "none";
+        return `0 0 ${blur * 0.1}cqw rgba(0,0,0,0.5)`;
+    };
+    const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
+    const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0);
+
+    return {
+        fontFamily: currentState.fontFamily,
+        fontSize: `${currentState.fontSize}cqw`,
+        fontWeight: currentState.fontWeight,
+        fontStyle: currentState.fontStyle,
+        color: currentState.textColor,
+        textAlign: currentState.textAlign,
+        lineHeight: currentState.lineHeight,
+        letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
+        wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
+        textShadow: textStrokeShadow !== "none" && mainTextShadow !== "none" ? `${textStrokeShadow}, ${mainTextShadow}` : textStrokeShadow !== "none" ? textStrokeShadow : mainTextShadow,
     }
+  }, [
+    currentState.fontFamily, currentState.fontSize, currentState.fontWeight, 
+    currentState.fontStyle, currentState.textColor, currentState.textAlign, 
+    currentState.textShadowBlur, currentState.textStrokeColor, currentState.textStrokeWidth, 
+    currentState.letterSpacing, currentState.lineHeight, currentState.wordSpacing
+  ]);
 
-    if (!isThumbnail) {
-        toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
-    }
-
-    const originalWidth = element.style.width;
-    const originalHeight = element.style.height;
-
-    const { width, height, scale } = exportDimensions[currentState.aspectRatio as ProporcaoTela];
-    
-    element.style.width = `${width}px`;
-    element.style.height = `${height}px`;
-
-    await document.fonts.ready;
-
-    try {
-        const canvas = await html2canvas(element, {
-            backgroundColor: null,
-            useCORS: true,
-            width: width,
-            height: height,
-            scale: isThumbnail ? 0.5 : scale,
-        });
-        
-        return canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
-
-    } catch (error) {
-        console.error('Erro ao exportar imagem:', error);
-        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar la imagem.' });
-        return null;
-    } finally {
-        element.style.width = originalWidth;
-        element.style.height = originalHeight;
-    }
-  }, [toast, currentState.aspectRatio]);
+  const previewProps: VisualizacaoEditorProps = useMemo(() => ({
+    aspectRatio: currentState.aspectRatio,
+    backgroundStyle: currentState.backgroundStyle,
+    filmColor: currentState.filmColor,
+    filmOpacity: currentState.filmOpacity,
+    text: currentState.text,
+    textStyle: textStyle,
+    textVerticalPosition: currentState.textVerticalPosition,
+    profile,
+    showProfileSignature: currentState.showProfileSignature,
+    signaturePositionX: currentState.signaturePositionX,
+    signaturePositionY: currentState.signaturePositionY,
+    signatureScale: currentState.signatureScale,
+    showSignaturePhoto: currentState.showSignaturePhoto,
+    showSignatureUsername: currentState.showSignatureUsername,
+    showSignatureSocial: currentState.showSignatureSocial,
+    showSignatureBackground: currentState.showSignatureBackground,
+    signatureBgColor: currentState.signatureBgColor,
+    signatureBgOpacity: currentState.signatureBgOpacity,
+    showLogo: currentState.showLogo,
+    logoPositionX: currentState.logoPositionX,
+    logoPositionY: currentState.logoPositionY,
+    logoScale: currentState.logoScale,
+    logoOpacity: currentState.logoOpacity,
+    activeTemplateId: currentState.activeTemplateId,
+    profileVerticalPosition: currentState.profileVerticalPosition,
+    scale,
+  }), [currentState, profile, textStyle, scale]);
 
     const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
         if (!templateName) return;
         
-        const thumbnail = await captureCanvas('jpeg', true);
+        toast({ title: 'Salvando modelo...', description: 'Gerando miniatura...' });
+        const thumbnail = await exportPreviewAsImage(previewProps, 'jpeg', true);
         if (thumbnail) {
             addTemplate(templateName, currentState, thumbnail);
             toast({
                 title: "Modelo Salvo!",
                 description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
             });
+        } else {
+            toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível gerar a miniatura do modelo.' });
         }
-    }, [addTemplate, currentState, toast, captureCanvas]);
+    }, [addTemplate, currentState, toast, previewProps]);
     
     const onExportJPG = useCallback(async () => {
-        const image = await captureCanvas('jpeg');
+        toast({ title: 'Exportando...', description: `Gerando imagem JPG.` });
+        const image = await exportPreviewAsImage(previewProps, 'jpeg');
         if (image) {
             const link = document.createElement('a');
             link.href = image;
@@ -198,11 +222,14 @@ export default function AspectWeaver() {
             link.click();
             document.body.removeChild(link);
             toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+        } else {
+            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         }
-    }, [captureCanvas, toast]);
+    }, [previewProps, toast]);
 
     const onExportPNG = useCallback(async () => {
-        const image = await captureCanvas('png');
+        toast({ title: 'Exportando...', description: `Gerando imagem PNG.` });
+        const image = await exportPreviewAsImage(previewProps, 'png');
         if (image) {
             const link = document.createElement('a');
             link.href = image;
@@ -211,8 +238,10 @@ export default function AspectWeaver() {
             link.click();
             document.body.removeChild(link);
             toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+        } else {
+            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         }
-    }, [captureCanvas, toast]);
+    }, [previewProps, toast]);
 
     const onExportMP4 = useCallback(() => {
         toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
@@ -276,49 +305,6 @@ export default function AspectWeaver() {
     }
   }, [currentState.aspectRatio, isDesktop]);
   
-  const textStyle = useMemo(() => {
-    const createTextStrokeShadow = (width: number, color: string): string => {
-        if (width === 0) return "none";
-        const shadows = [];
-        const numPoints = 12;
-        for (let i = 0; i < numPoints; i++) {
-            const angle = (i / numPoints) * 2 * Math.PI;
-            const x = Math.cos(angle) * (width * 0.1);
-            const y = Math.sin(angle) * (width * 0.1);
-            shadows.push(`${x.toFixed(2)}cqw ${y.toFixed(2)}cqw 0 ${color}`);
-        }
-        return shadows.join(', ');
-    };
-    const createMainShadow = (blur: number): string => {
-        if (blur === 0) return "none";
-        return `0 0 ${blur * 0.1}cqw rgba(0,0,0,0.5)`;
-    };
-    const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
-    const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0);
-
-    return {
-        fontFamily: currentState.fontFamily,
-        fontSize: `${currentState.fontSize}cqw`,
-        fontWeight: currentState.fontWeight,
-        fontStyle: currentState.fontStyle,
-        color: currentState.textColor,
-        textAlign: currentState.textAlign,
-        lineHeight: currentState.lineHeight,
-        letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
-        wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
-        textShadow: textStrokeShadow !== "none" && mainTextShadow !== "none" ? `${textStrokeShadow}, ${mainTextShadow}` : textStrokeShadow !== "none" ? textStrokeShadow : mainTextShadow,
-    }
-  }, [
-    currentState.fontFamily, currentState.fontSize, currentState.fontWeight, 
-    currentState.fontStyle, currentState.textColor, currentState.textAlign, 
-    currentState.textShadowBlur, currentState.textStrokeColor, currentState.textStrokeWidth, 
-    currentState.letterSpacing, currentState.lineHeight, currentState.wordSpacing
-  ]);
-
-  const setBgColor = useCallback((color: string) => {
-      updateState({ backgroundStyle: { type: 'solid', value: color } });
-  }, [updateState]);
-
   const commonProps = {
     // Canvas
     aspectRatio: currentState.aspectRatio, setAspectRatio: (val: string) => updateState({ aspectRatio: val as any }),
@@ -366,34 +352,6 @@ export default function AspectWeaver() {
     activeControl, setActiveControl,
   };
 
-  const previewProps = {
-    aspectRatio: currentState.aspectRatio,
-    backgroundStyle: currentState.backgroundStyle,
-    filmColor: currentState.filmColor,
-    filmOpacity: currentState.filmOpacity,
-    text: currentState.text,
-    textStyle: textStyle,
-    textVerticalPosition: currentState.textVerticalPosition,
-    profile,
-    showProfileSignature: currentState.showProfileSignature,
-    signaturePositionX: currentState.signaturePositionX,
-    signaturePositionY: currentState.signaturePositionY,
-    signatureScale: currentState.signatureScale,
-    showSignaturePhoto: currentState.showSignaturePhoto,
-    showSignatureUsername: currentState.showSignatureUsername,
-    showSignatureSocial: currentState.showSignatureSocial,
-    showSignatureBackground: currentState.showSignatureBackground,
-    signatureBgColor: currentState.signatureBgColor,
-    signatureBgOpacity: currentState.signatureBgOpacity,
-    showLogo: currentState.showLogo,
-    logoPositionX: currentState.logoPositionX,
-    logoPositionY: currentState.logoPositionY,
-    logoScale: currentState.logoScale,
-    logoOpacity: currentState.logoOpacity,
-    activeTemplateId: currentState.activeTemplateId,
-    profileVerticalPosition: currentState.profileVerticalPosition,
-    scale,
-  };
 
   if (!isReady || !isProfileLoaded) {
     return <ProporcaoSkeleton />;
