@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
@@ -105,7 +104,7 @@ function EditorCore() {
         setHistory([fullInitialState]);
         setHistoryIndex(0);
         setIsReady(true);
-    }, []);
+    }, [currentState]);
 
     const updateState = useCallback((newState: Partial<EditorState>) => {
         setCurrentState(prevState => {
@@ -147,7 +146,7 @@ function EditorCore() {
             return canvas.toDataURL('image/jpeg', 0.8); // Qualidade de 80%
         } catch (error) {
             console.error("Erro ao capturar screenshot:", error);
-            toast({ variant: 'destructive', title: "Erro ao Salvar", description: "Não foi possível gerar la imagem do modelo." });
+            toast({ variant: 'destructive', title: "Erro ao Salvar", description: "Não foi possível gerar la imagen do modelo." });
             return null;
         }
     };
@@ -231,7 +230,7 @@ function EditorCore() {
         }
 
         initialize();
-    }, [searchParams, isProfileLoaded, areTemplatesLoaded, isReady, setInitialState, allTemplates]);
+    }, [searchParams, isProfileLoaded, areTemplatesLoaded, isReady, setInitialState, allTemplates, currentState]);
 
 
     useEffect(() => {
@@ -244,7 +243,7 @@ function EditorCore() {
                 setScale(1);
             }
         }
-    }, [currentState.aspectRatio, isDesktop, setScale]);
+    }, [currentState.aspectRatio, isDesktop]);
   
     const textStyle = useMemo(() => {
         const createTextStrokeShadow = (width: number, color: string): string => {
@@ -401,5 +400,3 @@ export default function AspectWeaver() {
         </Suspense>
     )
 }
-
-    
