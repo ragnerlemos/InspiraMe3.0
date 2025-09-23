@@ -8,7 +8,7 @@ import { AppLayout } from './app-layout';
 
 // Metadados da página, como título e descrição, para SEO.
 export const metadata: Metadata = {
-  title: 'InspireMe',
+  title: 'QuoteVid',
   description: 'Crie e compartilhe vídeos de frases marcantes.',
 };
 

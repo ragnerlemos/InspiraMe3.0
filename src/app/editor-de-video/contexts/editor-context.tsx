@@ -1,60 +1,46 @@
 
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 
-// Define a interface para o estado que será compartilhado.
-interface UndoState {
+// Define a interface para o estado completo do editor que será compartilhado.
+export interface EditorControlState {
   canUndo: boolean;
   undo: () => void;
   canRedo: boolean;
   redo: () => void;
-}
-
-interface SaveActions {
   onSaveAsTemplate: () => void;
   onExportJPG: () => void;
   onExportPNG: () => void;
   onExportMP4: () => void;
 }
 
-// Define a interface para o valor do contexto.
-interface EditorContextType extends UndoState, SaveActions {
-  setUndoState: (state: UndoState) => void;
-  setSaveActions: (actions: SaveActions) => void;
-}
-
-// Cria o contexto com valores padrão.
-const EditorContext = createContext<EditorContextType | undefined>(undefined);
-
-// Cria o provedor do contexto.
-export function EditorProvider({ children }: { children: ReactNode }) {
-  const [undoState, setUndoState] = useState<UndoState>({
+const defaultControls: EditorControlState = {
     canUndo: false,
     undo: () => {},
     canRedo: false,
     redo: () => {},
-  });
-  const [saveActions, setSaveActions] = useState<SaveActions>({
     onSaveAsTemplate: () => {},
     onExportJPG: () => {},
     onExportPNG: () => {},
     onExportMP4: () => {},
-  })
-  
-  const handleSetUndoState = useCallback((state: UndoState) => {
-    setUndoState(state);
-  }, []);
+};
 
-  const handleSetSaveActions = useCallback((actions: SaveActions) => {
-    setSaveActions(actions);
-  }, []);
-  
+// Define a interface para o valor do contexto.
+interface EditorContextType {
+  controls: EditorControlState;
+}
+
+// Cria o contexto com valores padrão.
+const EditorContext = createContext<EditorContextType>({
+    controls: defaultControls,
+});
+
+
+// Cria o provedor do contexto.
+export function EditorProvider({ children, controls }: { children: ReactNode, controls: EditorControlState }) {
   const value: EditorContextType = {
-    ...undoState,
-    setUndoState: handleSetUndoState,
-    ...saveActions,
-    setSaveActions: handleSetSaveActions,
+    controls,
   };
 
   return (

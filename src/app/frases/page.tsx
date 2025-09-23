@@ -1,22 +1,29 @@
 
-
-import { getAllQuotes, getCategoriesFromQuotes } from '@/lib/dados';
+import { getCategories, getAllQuotes } from '@/lib/dados';
 import { FrasesClientPage } from './frases-client';
+import type { CategoriesHierarchy } from '@/lib/dados';
 
-
-// Componente de Servidor: Busca os dados antes de renderizar a página.
+// Componente de Servidor: Busca os dados iniciais antes de renderizar a página.
 export default async function FrasesPage() {
-  // Busca os dados da planilha no lado do servidor.
-  const quotes = await getAllQuotes();
-  
-  // Extrai as categorias e subcategorias dos dados obtidos.
-  const { mainCategories, subCategoriesByMain } = getCategoriesFromQuotes(quotes);
+  // Busca a hierarquia de categorias e as frases iniciais (todas)
+  const [categories, initialQuotes] = await Promise.all([
+    getCategories(),
+    getAllQuotes(),
+  ]);
+
+  // Transforma o objeto de categorias em um array para o cliente.
+  const mainCategories = ['Todos', ...Object.keys(categories)];
+  const subCategories: CategoriesHierarchy = {};
+  for(const cat in categories) {
+    // A lógica de remover "Todos" agora fica no cliente
+    subCategories[cat] = categories[cat];
+  }
 
   return (
     <FrasesClientPage
-      initialQuotes={quotes}
+      initialQuotes={initialQuotes}
       initialMainCategories={mainCategories}
-      initialSubCategories={subCategoriesByMain}
+      initialSubCategories={subCategories}
     />
   );
 }

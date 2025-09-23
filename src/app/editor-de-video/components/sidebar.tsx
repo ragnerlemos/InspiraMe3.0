@@ -286,12 +286,9 @@ function ControleAssinatura(props: ControleAssinaturaProps) {
                 {showProfileSignature ? 'Assinatura Ativada' : 'Ativar Assinatura'}
             </Button>
             
-            <Link href="/perfil" passHref>
-               <Button variant="link" className="w-full text-center">
-                   <User className="mr-2 h-4 w-4" />
-                   Configurar Assinatura no Perfil
-               </Button>
-           </Link>
+            <LinkConfigurarPerfil />
+
+
 
             {showProfileSignature && (
                 <div className="space-y-4 pt-2 border-t mt-4">
@@ -397,14 +394,8 @@ function ControleLogo(props: ControleLogoProps) {
                 {showLogo ? 'Logomarca Ativada' : 'Ativar Logomarca'}
             </Button>
             
-             {!isLogoConfigured && (
-                <Link href="/perfil" passHref>
-                    <Button variant="link" className="w-full text-center">
-                        <ImageUp className="mr-2 h-4 w-4" />
-                        Adicionar Logomarca no Perfil
-                    </Button>
-                </Link>
-            )}
+            {!isLogoConfigured && <LinkConfigurarPerfil />}
+
 
             {showLogo && isLogoConfigured && (
                 <div className="space-y-4 pt-2 border-t mt-4">
@@ -584,6 +575,18 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
     }
 }
 
+function LinkConfigurarPerfil() {
+    return (
+      <Link href="/perfil" passHref>
+        <Button variant="link" className="w-full text-center">
+          <ImageUp className="mr-2 h-4 w-4" />
+          Configurar Perfil
+        </Button>
+      </Link>
+    );
+  }
+  
+  
 
 interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, CommonStyleProps {
     aspectRatio: string;
@@ -592,8 +595,6 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, Commo
     setScale: (scale: number) => void;
     backgroundStyle: EstiloFundo;
     setBackgroundStyle: (style: EstiloFundo) => void;
-    bgColor: string;
-    setBgColor: (color: string) => void;
     filmColor: string;
     setFilmColor: (color: string) => void;
     filmOpacity: number;
@@ -618,8 +619,6 @@ export function Sidebar({
     setScale,
     backgroundStyle,
     setBackgroundStyle,
-    bgColor,
-    setBgColor,
     filmColor,
     setFilmColor,
     filmOpacity,
@@ -637,6 +636,8 @@ export function Sidebar({
             setActiveSubControl(null);
         }
     }
+    
+    const bgColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     const renderActiveControl = () => {
         if (!activeControl) {
@@ -697,7 +698,7 @@ export function Sidebar({
                                  <Input
                                     type="color"
                                     value={bgColor}
-                                    onChange={(e) => setBgColor(e.target.value)}
+                                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
                                     className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                                 />
                                 <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
@@ -800,5 +801,3 @@ export function Sidebar({
         </aside>
     );
 }
-
-    

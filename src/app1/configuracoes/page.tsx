@@ -35,7 +35,7 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle>Aparência</CardTitle>
             <CardDescription>
-              Escolha como o InspireMe deve aparecer para você.
+              Escolha como o QuoteVid deve aparecer para você.
             </CardDescription>
           </CardHeader>
           <CardContent>

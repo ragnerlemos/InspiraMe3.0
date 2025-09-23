@@ -634,14 +634,14 @@ interface MobileToolbarProps extends ControleAssinaturaProps, ControleLogoProps,
   setScale: (scale: number) => void;
   backgroundStyle: EstiloFundo;
   setBackgroundStyle: (style: EstiloFundo) => void;
+  bgColor: string;
+  setBgColor: (color: string) => void;
   filmColor: string;
   setFilmColor: (color: string) => void;
   filmOpacity: number;
   setFilmOpacity: (opacity: number) => void;
   fgColor: string;
   setFgColor: (color: string) => void;
-  activeControl: string | null;
-  setActiveControl: (control: string | null) => void;
   text: string;
   setText: (text: string) => void;
   profile: ProfileData;
@@ -654,14 +654,14 @@ export function MobileToolbar({
   setScale,
   backgroundStyle,
   setBackgroundStyle,
+  bgColor,
+  setBgColor,
   filmColor,
   setFilmColor,
   filmOpacity,
   setFilmOpacity,
   fgColor,
   setFgColor,
-  activeControl,
-  setActiveControl,
   text,
   setText,
   ...props
@@ -671,14 +671,11 @@ export function MobileToolbar({
 
   const handlePanelChange = (panel: ActivePanel) => {
     setActivePanel(panel);
-    setActiveControl(panel);
     setActiveSubControl(null); // Reset sub-controls when main panel changes
   };
 
   const renderPanelContent = () => {
     if (!activePanel) return null;
-    
-    const bgColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     const panels: Record<string, JSX.Element | null> = {
       texto: (
@@ -732,7 +729,7 @@ export function MobileToolbar({
                 <Input
                     type="color"
                     value={bgColor}
-                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
+                    onChange={(e) => setBgColor(e.target.value)}
                     className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
                 />
                  <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
@@ -839,11 +836,11 @@ export function MobileToolbar({
         {mainToolbar}
       </div>
 
-      <Sheet open={!!activePanel} onOpenChange={(open) => { if (!open) { setActivePanel(null); setActiveControl(null); }}}>
+      <Sheet open={!!activePanel} onOpenChange={(open) => { if (!open) { setActivePanel(null); }}}>
         <SheetContent side="bottom" className="h-auto max-h-[85vh] flex flex-col p-0">
           <SheetHeader className="p-4 pb-2">
             <SheetTitle className="flex items-center">
-              <Button variant="ghost" size="icon" className="mr-2" onClick={() => { setActivePanel(null); setActiveControl(null); }}>
+              <Button variant="ghost" size="icon" className="mr-2" onClick={() => { setActivePanel(null); }}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               {getPanelTitle()}
@@ -857,3 +854,5 @@ export function MobileToolbar({
     </>
   );
 }
+
+    
