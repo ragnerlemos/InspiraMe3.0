@@ -314,16 +314,17 @@ export default function AspectWeaver() {
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
       <PanelGroup direction="horizontal" className="flex-1 min-h-0">
-        <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
+         <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
             <Sidebar {...commonProps} />
         </Panel>
-        <PanelResizeHandle className="hidden md:flex" />
-        <Panel className="flex flex-col">
+        {isDesktop && <PanelResizeHandle />}
+        <Panel>
             <main className="flex-1 w-full h-full overflow-auto">
                 <PreviewCanva {...previewProps} />
             </main>
         </Panel>
       </PanelGroup>
+
       <MobileToolbar {...commonProps} />
     </div>
   );
