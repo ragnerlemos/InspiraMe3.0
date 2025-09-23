@@ -67,7 +67,7 @@ export function AssinaturaPerfil({
 
       {(showUsername || showSocial) && (
         <div 
-          className="flex flex-col justify-center ml-3 leading-tight"
+          className="flex flex-col ml-3 justify-center items-start leading-tight"
         >
           {showUsername && (
             <p className="font-bold text-white text-base m-0 whitespace-nowrap">
