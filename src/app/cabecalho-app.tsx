@@ -58,21 +58,13 @@ export function EditorHeader() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => onExportJPG(false)}>
+                        <DropdownMenuItem onClick={() => onExportJPG()}>
                             <FileImage className="mr-2 h-4 w-4" />
-                            Exportar JPG (Padrão)
+                            Exportar JPG
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onExportJPG(true)}>
+                         <DropdownMenuItem onClick={() => onExportPNG()}>
                             <FileImage className="mr-2 h-4 w-4" />
-                            Exportar JPG (Alta Res.)
-                        </DropdownMenuItem>
-                         <DropdownMenuItem onClick={() => onExportPNG(false)}>
-                            <FileImage className="mr-2 h-4 w-4" />
-                            Exportar PNG (Padrão)
-                        </DropdownMenuItem>
-                         <DropdownMenuItem onClick={() => onExportPNG(true)}>
-                            <FileImage className="mr-2 h-4 w-4" />
-                            Exportar PNG (Alta Res.)
+                            Exportar PNG
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={onExportMP4}>
                            <Video className="mr-2 h-4 w-4" />

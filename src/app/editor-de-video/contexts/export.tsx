@@ -15,13 +15,11 @@ const exportDimensions: Record<ProporcaoTela, { width: number; height: number }>
  * Captura o PreviewCanva exatamente como está na tela e retorna um Data URL.
  * @param proporcao Proporção selecionada
  * @param formato "png" | "jpeg"
- * @param scaleExport Multiplicador de resolução. Se 1, gera a resolução base (1080×1920), se >1 gera alta resolução.
  * @returns Data URL da imagem ou null
  */
 export async function exportPreviewAsImage(
   proporcao: ProporcaoTela,
-  formato: "png" | "jpeg" = "png",
-  scaleExport: number = 1
+  formato: "png" | "jpeg" = "png"
 ): Promise<string | null> {
   const element = document.querySelector<HTMLElement>("#editor-preview-content");
   if (!element) {
@@ -52,7 +50,6 @@ export async function exportPreviewAsImage(
       height: dims.height,
       backgroundColor: null,
       useCORS: true,
-      scale: scaleExport, // 1 = base, >1 = alta resolução
     });
 
     return canvas.toDataURL(`image/${formato}`, formato === 'jpeg' ? 0.9 : 1.0);
@@ -70,10 +67,9 @@ export async function exportPreviewAsImage(
 export async function savePreviewAsImage(
   proporcao: ProporcaoTela,
   formato: "png" | "jpeg" = "png",
-  scaleExport: number = 1,
   filename: string = "inspire-me-export"
 ) {
-  const dataUrl = await exportPreviewAsImage(proporcao, formato, scaleExport);
+  const dataUrl = await exportPreviewAsImage(proporcao, formato);
   if (!dataUrl) return;
 
   const link = document.createElement("a");
@@ -85,13 +81,13 @@ export async function savePreviewAsImage(
 }
 
 /** Exporta JPG */
-export async function onExportJPG(proporcao: ProporcaoTela, highRes: boolean = false) {
-  await savePreviewAsImage(proporcao, "jpeg", highRes ? 2 : 1, "inspire-me-export");
+export async function onExportJPG(proporcao: ProporcaoTela) {
+  await savePreviewAsImage(proporcao, "jpeg", "inspire-me-export");
 }
 
 /** Exporta PNG */
-export async function onExportPNG(proporcao: ProporcaoTela, highRes: boolean = false) {
-  await savePreviewAsImage(proporcao, "png", highRes ? 2 : 1, "inspire-me-export");
+export async function onExportPNG(proporcao: ProporcaoTela) {
+  await savePreviewAsImage(proporcao, "png", "inspire-me-export");
 }
 
 /** Salva template com miniatura */
@@ -105,7 +101,7 @@ export async function handleSaveAsTemplate(
   if (!templateName) return;
 
   toast({ title: 'Salvando modelo...', description: 'Gerando miniatura...' });
-  const thumbnail = await exportPreviewAsImage(proporcao, "jpeg", 1);
+  const thumbnail = await exportPreviewAsImage(proporcao, "jpeg");
   if (!thumbnail) {
     toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível gerar a miniatura do modelo.' });
     return;

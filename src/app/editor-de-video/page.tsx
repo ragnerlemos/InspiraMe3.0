@@ -182,8 +182,8 @@ export default function AspectWeaver() {
         addTemplate,
         toast
       ),
-      onExportJPG: (highRes) => onExportJPG(currentState.aspectRatio as ProporcaoTela, highRes),
-      onExportPNG: (highRes) => onExportPNG(currentState.aspectRatio as ProporcaoTela, highRes),
+      onExportJPG: () => onExportJPG(currentState.aspectRatio as ProporcaoTela),
+      onExportPNG: () => onExportPNG(currentState.aspectRatio as ProporcaoTela),
       onExportMP4,
     });
   }, [
