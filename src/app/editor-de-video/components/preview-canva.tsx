@@ -85,7 +85,7 @@ export function PreviewCanva(props: VisualizacaoEditorProps) {
           transformOrigin: "top center",
         }}
         className={cn(
-          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container",
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container flex flex-col justify-between p-8",
           {
             "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
             "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
@@ -93,12 +93,14 @@ export function PreviewCanva(props: VisualizacaoEditorProps) {
           }
         )}
       >
-        {renderBackground()}
+        <div className="absolute inset-0 z-0">
+            {renderBackground()}
+        </div>
 
         {filmOpacity > 0 && 
             <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
         }
-        <div className="relative z-20 h-full w-full flex items-center justify-center">
+        <div className="relative z-20 h-full w-full flex flex-col justify-between">
             {renderContent()}
         </div>
       </div>

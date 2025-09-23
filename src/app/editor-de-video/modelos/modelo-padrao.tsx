@@ -24,9 +24,9 @@ export function ModeloPadrao({
   logoOpacity,
 }: VisualizacaoEditorProps) {
   return (
-    <div className="w-full h-full flex flex-col p-8 justify-center">
+    <>
       {/* Container do Texto */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center text-center">
         <div
           style={{
             ...textStyle,
@@ -37,45 +37,47 @@ export function ModeloPadrao({
         </div>
       </div>
 
-      {/* Container da Assinatura e Logo (posicionados absolutamente) */}
-      {showProfileSignature && (
-          <div
-            className="absolute"
-            style={{
-              left: `${signaturePositionX}%`,
-              top: `${signaturePositionY}%`,
-              transform: `translate(-50%, -50%)`,
-            }}
-          >
-            <AssinaturaPerfil
-              profile={profile}
-              showPhoto={showSignaturePhoto}
-              showUsername={showSignatureUsername}
-              showSocial={showSignatureSocial}
-              showBackground={showSignatureBackground}
-              bgColor={signatureBgColor}
-              bgOpacity={signatureBgOpacity}
-              scale={signatureScale}
-            />
-          </div>
-        )}
-        {showLogo && profile.logo && (
-          <div
-            className="absolute"
-            style={{
-              left: `${logoPositionX}%`,
-              top: `${logoPositionY}%`, 
-              transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
-              opacity: logoOpacity / 100,
-            }}
-          >
-            <img
-              src={profile.logo}
-              alt="Logomarca"
-              className="max-w-[150px] max-h-[150px]"
-            />
-          </div>
-        )}
-    </div>
+      {/* Container da Assinatura e Logo */}
+      <div className="relative">
+        {showProfileSignature && (
+            <div
+              className="absolute"
+              style={{
+                left: `${signaturePositionX}%`,
+                bottom: '0px',
+                transform: `translateX(-50%)`,
+              }}
+            >
+              <AssinaturaPerfil
+                profile={profile}
+                showPhoto={showSignaturePhoto}
+                showUsername={showSignatureUsername}
+                showSocial={showSignatureSocial}
+                showBackground={showSignatureBackground}
+                bgColor={signatureBgColor}
+                bgOpacity={signatureBgOpacity}
+                scale={signatureScale}
+              />
+            </div>
+          )}
+          {showLogo && profile.logo && (
+            <div
+              className="absolute"
+              style={{
+                left: `${logoPositionX}%`,
+                top: `${logoPositionY}%`, 
+                transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
+                opacity: logoOpacity / 100,
+              }}
+            >
+              <img
+                src={profile.logo}
+                alt="Logomarca"
+                className="max-w-[150px] max-h-[150px]"
+              />
+            </div>
+          )}
+      </div>
+    </>
   );
 }
