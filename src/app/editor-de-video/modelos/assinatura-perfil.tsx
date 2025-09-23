@@ -1,3 +1,4 @@
+
 // Componente que exibe a assinatura do perfil do usuário na tela de visualização.
 // Inclui avatar, nome de usuário e rede social, com opções de customização.
 
@@ -14,7 +15,7 @@ interface AssinaturaPerfilProps {
   showBackground: boolean;
   bgColor: string;
   bgOpacity: number;
-  scale: number;
+  scale: number; // A escala geral é passada para ajustar o padding e gap se necessário
 }
 
 // Função para converter cor hexadecimal para RGB
@@ -37,62 +38,41 @@ export function AssinaturaPerfil({
   showBackground,
   bgColor,
   bgOpacity,
-  scale,
 }: AssinaturaPerfilProps) {
   const shouldShowIcon = profile.showIcon && (profile.iconUrl || profile.social.includes('twitter.com') || profile.social.includes('x.com'));
   
   const bgRgb = hexToRgb(bgColor);
   const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
-  
-  // A escala agora é aplicada diretamente nos tamanhos dos elementos
-  const finalScale = scale / 100;
-  
-  // Define os tamanhos base em 'rem' para escalabilidade
-  const baseAvatarSize = 2.5 * finalScale; // rem
-  const baseUsernameSize = 0.875 * finalScale; // rem
-  const baseSocialSize = 0.75 * finalScale; // rem
-  const baseIconSize = 1 * finalScale; // rem
-  const baseGap = 0.75 * finalScale; // rem
-  const basePaddingX = 0.75 * finalScale; // rem
-  const basePaddingY = 0.5 * finalScale; // rem
 
   return (
     <div 
-        className={cn("flex items-center rounded-lg max-w-max")}
+        className={cn("flex items-center rounded-lg max-w-max p-2")}
         style={{
             backgroundColor: showBackground ? backgroundColor : 'transparent',
-            gap: `${baseGap}rem`,
-            padding: `${basePaddingY}rem ${basePaddingX}rem`,
         }}
     >
       {showPhoto && (
         <Avatar 
-          className="flex-shrink-0"
-          style={{ 
-            height: `${baseAvatarSize}rem`, 
-            width: `${baseAvatarSize}rem` 
-          }}
+          className="h-10 w-10 flex-shrink-0"
         >
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
           <AvatarFallback>
-            <User className="text-white" style={{ height: `${baseAvatarSize * 0.6}rem`, width: `${baseAvatarSize * 0.6}rem` }}/>
+            <User className="text-white h-5 w-5"/>
           </AvatarFallback>
         </Avatar>
       )}
       {(showUsername || showSocial) && (
-          <div className="flex flex-col items-start justify-center leading-tight whitespace-nowrap">
+          <div className="flex flex-col ml-3 leading-[1.1]">
             {showUsername && (
               <p 
-                className="font-bold text-white"
-                style={{ fontSize: `${baseUsernameSize}rem` }}
+                className="font-bold text-white text-base m-0"
               >
                 {profile.username}
               </p>
             )}
             {showSocial && (
               <p 
-                className="text-gray-300"
-                style={{ fontSize: `${baseSocialSize}rem` }}
+                className="text-gray-300 text-xs m-0"
               >
                 {profile.social}
               </p>
@@ -100,23 +80,16 @@ export function AssinaturaPerfil({
           </div>
       )}
        {shouldShowIcon && (
-         <div className="pl-1">
+         <div className="pl-2">
             {profile.iconUrl ? (
                 <img 
                   src={profile.iconUrl} 
                   alt="Ícone social" 
-                  style={{ 
-                    height: `${baseIconSize}rem`, 
-                    width: `${baseIconSize}rem` 
-                  }}
+                  className="h-5 w-5"
                 />
             ) : (
                 <Twitter 
-                  className="text-blue-400"
-                  style={{ 
-                    height: `${baseIconSize}rem`, 
-                    width: `${baseIconSize}rem` 
-                  }}
+                  className="text-blue-400 h-5 w-5"
                 />
             )}
          </div>
