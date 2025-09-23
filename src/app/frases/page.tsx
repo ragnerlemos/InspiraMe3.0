@@ -1,7 +1,10 @@
 
 import { getCategories, getAllQuotes } from '@/lib/dados';
 import { FrasesClientPage } from './frases-client';
-import type { CategoriesHierarchy } from '@/lib/dados';
+
+interface CategoriesHierarchy {
+  [mainCategory: string]: string[];
+}
 
 // Componente de Servidor: Busca os dados iniciais antes de renderizar a página.
 export default async function FrasesPage() {
