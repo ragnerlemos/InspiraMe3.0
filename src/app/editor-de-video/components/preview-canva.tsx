@@ -77,11 +77,11 @@ export function PreviewCanva(props: VisualizacaoEditorProps) {
   };
 
   return (
-    <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
+    <main className="w-full h-full p-4 flex items-center justify-center overflow-hidden">
       <div
         style={{
           transform: `scale(${scale})`,
-          transformOrigin: "top center",
+          transformOrigin: "center center",
         }}
         className="transition-transform duration-300 ease-in-out"
       >
