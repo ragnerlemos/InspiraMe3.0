@@ -319,10 +319,6 @@ export default function AspectWeaver() {
       updateState({ backgroundStyle: { type: 'solid', value: color } });
   }, [updateState]);
 
-  if (!isReady || !isProfileLoaded) {
-    return <ProporcaoSkeleton />;
-  }
-  
   const commonProps = {
     // Canvas
     aspectRatio: currentState.aspectRatio, setAspectRatio: (val: string) => updateState({ aspectRatio: val as any }),
@@ -398,6 +394,10 @@ export default function AspectWeaver() {
     profileVerticalPosition: currentState.profileVerticalPosition,
     scale,
   };
+
+  if (!isReady || !isProfileLoaded) {
+    return <ProporcaoSkeleton />;
+  }
 
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
