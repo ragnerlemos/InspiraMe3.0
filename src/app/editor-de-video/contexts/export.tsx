@@ -20,7 +20,7 @@ const exportDimensions: Record<ProporcaoTela, { width: number; height: number }>
 export async function exportPreviewAsImage(
   proporcao: ProporcaoTela,
   formato: "png" | "jpeg" = "png",
-  scaleExport: number = 2
+  scaleExport: number = 1
 ): Promise<string | null> {
   const element = document.querySelector<HTMLElement>("#editor-preview-content");
   if (!element) {

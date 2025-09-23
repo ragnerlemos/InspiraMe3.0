@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import { useSearchParams } from "next/navigation";
 import { useEditor } from "./contexts/editor-context";
-import { exportPreviewAsImage } from "./lib/export";
+import { exportPreviewAsImage } from "./contexts/export";
 
 
 function ProporcaoSkeleton() {
