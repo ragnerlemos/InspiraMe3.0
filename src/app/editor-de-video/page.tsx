@@ -402,5 +402,3 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
     </div>
   );
 }
-
-    
