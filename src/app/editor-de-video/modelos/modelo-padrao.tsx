@@ -1,6 +1,7 @@
 
 import type { VisualizacaoEditorProps } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
+import TextareaAutosize from 'react-textarea-autosize';
 
 export function ModeloPadrao({
   text,
@@ -27,15 +28,12 @@ export function ModeloPadrao({
     <>
       <div className="flex-1 flex items-center justify-center">
         <div className="relative w-full">
-            <div
-                style={{
-                ...textStyle,
-                // A posição vertical é controlada pelo layout flex do pai
-                }}
-                className="break-words w-full"
-            >
-                {text}
-            </div>
+            <TextareaAutosize
+              readOnly
+              value={text}
+              style={textStyle}
+              className="w-full bg-transparent border-none resize-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 m-0 overflow-hidden"
+            />
         </div>
       </div>
       
