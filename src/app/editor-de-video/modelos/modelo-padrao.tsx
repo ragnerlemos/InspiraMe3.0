@@ -68,7 +68,7 @@ export function ModeloPadrao({
           className="absolute"
           style={{
             top: `${logoPositionY}%`,
-            left: `${logoXPosition}%`,
+            left: `${logoPositionX}%`,
             transform: `translate(-50%, -50%) scale(${logoScale / 100})`,
             opacity: logoOpacity / 100,
           }}
