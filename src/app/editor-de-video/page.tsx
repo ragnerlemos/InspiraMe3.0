@@ -301,15 +301,14 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
     currentState.letterSpacing, currentState.lineHeight, currentState.wordSpacing
   ]);
 
+  const setBgColor = useCallback((color: string) => {
+      updateState({ backgroundStyle: { type: 'solid', value: color } });
+  }, [updateState]);
 
   if (!isReady || !isProfileLoaded) {
     return <ProporcaoSkeleton />;
   }
   
-    const setBgColor = useCallback((color: string) => {
-        updateState({ backgroundStyle: { type: 'solid', value: color } });
-    }, [updateState]);
-
   const commonProps = {
     // Canvas
     aspectRatio: currentState.aspectRatio, setAspectRatio: (val: string) => updateState({ aspectRatio: val as any }),
