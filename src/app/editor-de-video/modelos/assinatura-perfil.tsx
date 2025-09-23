@@ -1,4 +1,3 @@
-
 // Componente que exibe a assinatura do perfil do usuário na tela de visualização.
 // Inclui avatar, nome de usuário e rede social, com opções de customização.
 
@@ -51,34 +50,36 @@ export function AssinaturaPerfil({
             backgroundColor: showBackground ? backgroundColor : 'transparent',
         }}
     >
-      {showPhoto && (
-        <Avatar 
-          className="h-10 w-10 flex-shrink-0"
-        >
-          <AvatarImage src={profile.photo || ""} alt={profile.username} />
-          <AvatarFallback>
-            <User className="text-white h-5 w-5"/>
-          </AvatarFallback>
-        </Avatar>
-      )}
-      {(showUsername || showSocial) && (
-          <div className="flex flex-col ml-3 leading-[1.1]">
-            {showUsername && (
-              <p 
-                className="font-bold text-white text-base m-0 whitespace-nowrap"
-              >
-                {profile.username}
-              </p>
-            )}
-            {showSocial && (
-              <p 
-                className="text-gray-300 text-xs m-0"
-              >
-                {profile.social}
-              </p>
-            )}
-          </div>
-      )}
+      <div className="flex items-center">
+        {showPhoto && (
+            <Avatar 
+            className="h-10 w-10 flex-shrink-0"
+            >
+            <AvatarImage src={profile.photo || ""} alt={profile.username} />
+            <AvatarFallback>
+                <User className="text-white h-5 w-5"/>
+            </AvatarFallback>
+            </Avatar>
+        )}
+        {(showUsername || showSocial) && (
+            <div className="flex flex-col justify-center ml-3 leading-[1.1]">
+                {showUsername && (
+                <p 
+                    className="font-bold text-white text-base m-0 whitespace-nowrap"
+                >
+                    {profile.username}
+                </p>
+                )}
+                {showSocial && (
+                <p 
+                    className="text-gray-300 text-xs m-0"
+                >
+                    {profile.social}
+                </p>
+                )}
+            </div>
+        )}
+      </div>
        {shouldShowIcon && (
          <div className="pl-2">
             {profile.iconUrl ? (
