@@ -14,19 +14,19 @@ interface AssinaturaPerfilProps {
   showBackground: boolean;
   bgColor: string;
   bgOpacity: number;
-  scale: number; // A escala geral é passada para ajustar o padding e gap se necessário
+  scale?: number; // opcional para ajustes de padding/gap
 }
 
-// Função para converter cor hexadecimal para RGB
-function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16),
-        }
-        : null;
+// Converte hexadecimal para RGB
+function hexToRgb(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
 
 export function AssinaturaPerfil({
@@ -38,60 +38,54 @@ export function AssinaturaPerfil({
   bgColor,
   bgOpacity,
 }: AssinaturaPerfilProps) {
-  const shouldShowIcon = profile.showIcon && (profile.iconUrl || profile.social.includes('twitter.com') || profile.social.includes('x.com'));
-  
+  const shouldShowIcon =
+    profile.showIcon &&
+    (profile.iconUrl ||
+      profile.social.includes("twitter.com") ||
+      profile.social.includes("x.com"));
+
   const bgRgb = hexToRgb(bgColor);
-  const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
+  const backgroundColor = bgRgb
+    ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})`
+    : `rgba(0, 0, 0, ${bgOpacity / 100})`;
 
   return (
-    <div 
-        className={cn("flex items-center rounded-lg max-w-max p-2")}
-        style={{
-            backgroundColor: showBackground ? backgroundColor : 'transparent',
-        }}
+    <div
+      className={cn("flex items-center rounded-lg max-w-max p-2")}
+      style={{
+        backgroundColor: showBackground ? backgroundColor : "transparent",
+      }}
     >
       {showPhoto && (
-            <Avatar 
-            className="h-10 w-10 flex-shrink-0"
-            >
-            <AvatarImage src={profile.photo || ""} alt={profile.username} />
-            <AvatarFallback>
-                <User className="text-white h-5 w-5"/>
-            </AvatarFallback>
-            </Avatar>
+        <Avatar className="h-10 w-10 flex-shrink-0">
+          <AvatarImage src={profile.photo || ""} alt={profile.username} />
+          <AvatarFallback>
+            <User className="text-white h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
       )}
+
       {(showUsername || showSocial) && (
-            <div className="flex flex-col justify-center ml-3 leading-[1.05]">
-                {showUsername && (
-                <p 
-                    className="font-bold text-white text-base m-0 whitespace-nowrap"
-                >
-                    {profile.username}
-                </p>
-                )}
-                {showSocial && (
-                <p 
-                    className="text-gray-300 text-xs m-0"
-                >
-                    {profile.social}
-                </p>
-                )}
-            </div>
+        <div className="flex flex-col justify-center ml-3 leading-[1.05]">
+          {showUsername && (
+            <p className="font-bold text-white text-base m-0 whitespace-nowrap">
+              {profile.username}
+            </p>
+          )}
+          {showSocial && (
+            <p className="text-gray-300 text-xs m-0">{profile.social}</p>
+          )}
+        </div>
       )}
-       {shouldShowIcon && (
-         <div className="pl-2">
-            {profile.iconUrl ? (
-                <img 
-                  src={profile.iconUrl} 
-                  alt="Ícone social" 
-                  className="h-5 w-5"
-                />
-            ) : (
-                <Twitter 
-                  className="text-blue-400 h-5 w-5"
-                />
-            )}
-         </div>
+
+      {shouldShowIcon && (
+        <div className="pl-2 flex-shrink-0">
+          {profile.iconUrl ? (
+            <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
+          ) : (
+            <Twitter className="text-blue-400 h-5 w-5" />
+          )}
+        </div>
       )}
     </div>
   );
