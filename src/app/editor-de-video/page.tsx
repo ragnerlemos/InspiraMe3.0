@@ -99,33 +99,42 @@ function EditorCore() {
     const [activeControl, setActiveControl] = useState<string | null>(null);
     const [scale, setScale] = useState(1);
 
-    const updateState = useCallback((newState: Partial<EditorState>) => {
-        setCurrentState(prevState => ({ ...prevState, ...newState }));
-        setHistory(prevHistory => {
-            const newHistory = [...prevHistory.slice(0, historyIndex + 1), { ...currentState, ...newState }];
-            setHistoryIndex(newHistory.length - 1);
-            return newHistory;
+     const updateState = useCallback((newState: Partial<EditorState>) => {
+        setCurrentState(prevState => {
+            const updatedState = { ...prevState, ...newState };
+            setHistory(prevHistory => {
+                // Adiciona o novo estado ao histórico
+                const newHistory = [...prevHistory.slice(0, historyIndex + 1), updatedState];
+                setHistoryIndex(newHistory.length - 1);
+                return newHistory;
+            });
+            return updatedState;
         });
-    }, [historyIndex, currentState]);
+    }, [historyIndex]);
 
     const canUndo = historyIndex > 0;
     const canRedo = historyIndex < history.length - 1;
 
-    const undo = useCallback(() => {
+     const undo = useCallback(() => {
         if (canUndo) {
-            const newIndex = historyIndex - 1;
-            setCurrentState(history[newIndex]);
-            setHistoryIndex(newIndex);
+            setHistoryIndex(prevIndex => {
+                const newIndex = prevIndex - 1;
+                setCurrentState(history[newIndex]);
+                return newIndex;
+            });
         }
-    }, [canUndo, history, historyIndex]);
+    }, [canUndo, history]);
 
     const redo = useCallback(() => {
         if (canRedo) {
-            const newIndex = historyIndex + 1;
-            setCurrentState(history[newIndex]);
-            setHistoryIndex(newIndex);
+            setHistoryIndex(prevIndex => {
+                const newIndex = prevIndex + 1;
+                setCurrentState(history[newIndex]);
+                return newIndex;
+            });
         }
-    }, [canRedo, history, historyIndex]);
+    }, [canRedo, history]);
+
 
     const captureScreenshot = async (): Promise<string | null> => {
         const element = document.getElementById('editor-preview-content');
@@ -179,22 +188,22 @@ function EditorCore() {
         }
     };
 
-    const onExportJPG = () => downloadImage('jpeg');
-    const onExportPNG = () => downloadImage('png');
+    const onExportJPG = useCallback(() => downloadImage('jpeg'), []);
+    const onExportPNG = useCallback(() => downloadImage('png'), []);
     
-    const onExportMP4 = () => {
+    const onExportMP4 = useCallback(() => {
         toast({
             variant: "default",
             title: "Em Breve!",
             description: "A exportação de vídeo (MP4) ainda não está disponível, mas estamos trabalhando nisso!"
         });
-    };
+    }, [toast]);
 
     const { setUndoState, setSaveActions } = useEditor();
     useEffect(() => {
         setUndoState({ canUndo, undo, canRedo, redo });
         setSaveActions({ onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 });
-    }, [canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setUndoState, setSaveActions]);
+    }, [canUndo, canRedo, undo, redo, onExportJPG, onExportPNG, onExportMP4, onSaveAsTemplate, setUndoState, setSaveActions]);
 
 
     // Efeito de inicialização
