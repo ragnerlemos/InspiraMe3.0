@@ -93,7 +93,7 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
 
   // Histórico de estados
   const [history, setHistory] = useState<EditorState[]>([]);
-  const [currentStateIndex, setCurrentStateIndex] = useState(0);
+  const [currentStateIndex, setCurrentStateIndex] = useState(-1);
   const [isReady, setIsReady] = useState(false);
 
   const [activeControl, setActiveControl] = useState<string | null>('texto');
@@ -102,11 +102,14 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
   const currentState = history[currentStateIndex] || {};
 
   const updateState = useCallback((newState: Partial<EditorState>) => {
-    const nextState = { ...currentState, ...newState };
-    const newHistory = history.slice(0, currentStateIndex + 1);
-    setHistory([...newHistory, nextState]);
-    setCurrentStateIndex(newHistory.length);
-  }, [currentState, history, currentStateIndex]);
+    setHistory(prevHistory => {
+        const nextState = { ...(prevHistory[currentStateIndex] || {}), ...newState };
+        const newHistory = prevHistory.slice(0, currentStateIndex + 1);
+        newHistory.push(nextState);
+        setCurrentStateIndex(newHistory.length - 1);
+        return newHistory;
+    });
+  }, [currentStateIndex]);
   
   // Funções de Desfazer e Refazer
   const undo = useCallback(() => {
@@ -214,7 +217,7 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
 
   // Efeito de inicialização
   useEffect(() => {
-    if (!isProfileLoaded || !areTemplatesLoaded) return;
+    if (!isProfileLoaded || !areTemplatesLoaded || isReady) return;
 
     const initialize = () => {
         const quoteParam = searchParams.get("quote");
@@ -244,7 +247,7 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
     }
 
     initialize();
-  }, [searchParams, isProfileLoaded, areTemplatesLoaded, allTemplates]);
+  }, [searchParams, isProfileLoaded, areTemplatesLoaded, allTemplates, isReady]);
 
 
   useEffect(() => {
@@ -402,3 +405,5 @@ export default function AspectWeaver({ setControls }: { setControls: (controls: 
     </div>
   );
 }
+
+    

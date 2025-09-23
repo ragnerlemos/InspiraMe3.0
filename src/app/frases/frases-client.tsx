@@ -54,7 +54,7 @@ export function FrasesClientPage({
       const lowercasedTerm = searchTerm.toLowerCase();
       quotes = quotes.filter(q => 
           q.quote.toLowerCase().includes(lowercasedTerm) ||
-          q.author?.toLowerCase().includes(lowercasedTerm)
+          (q.author && q.author.toLowerCase().includes(lowercasedTerm))
       );
     }
     
