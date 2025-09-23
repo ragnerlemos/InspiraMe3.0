@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
@@ -101,28 +102,32 @@ function EditorCore() {
     const updateState = useCallback((newState: Partial<EditorState>) => {
         setCurrentState(prevState => {
             const updatedState = { ...prevState, ...newState };
-            const newHistory = history.slice(0, historyIndex + 1);
-            newHistory.push(updatedState);
-            setHistory(newHistory);
-            setHistoryIndex(newHistory.length - 1);
+            setHistory(prevHistory => {
+                const newHistory = prevHistory.slice(0, historyIndex + 1);
+                newHistory.push(updatedState);
+                setHistoryIndex(newHistory.length - 1);
+                return newHistory;
+            });
             return updatedState;
         });
-    }, [history, historyIndex]);
+    }, [historyIndex]);
 
     const canUndo = historyIndex > 0;
     const canRedo = historyIndex < history.length - 1;
 
     const undo = useCallback(() => {
         if (canUndo) {
-            setHistoryIndex(historyIndex - 1);
-            setCurrentState(history[historyIndex - 1]);
+            const newIndex = historyIndex - 1;
+            setHistoryIndex(newIndex);
+            setCurrentState(history[newIndex]);
         }
     }, [canUndo, history, historyIndex]);
 
     const redo = useCallback(() => {
         if (canRedo) {
-            setHistoryIndex(historyIndex + 1);
-            setCurrentState(history[historyIndex + 1]);
+            const newIndex = historyIndex + 1;
+            setHistoryIndex(newIndex);
+            setCurrentState(history[newIndex]);
         }
     }, [canRedo, history, historyIndex]);
 
@@ -200,7 +205,7 @@ function EditorCore() {
     useEffect(() => {
         if (!isProfileLoaded || !areTemplatesLoaded || isReady) return;
 
-        const defaultState = {
+        const defaultState: EditorState = {
             text: "A inspiração está a caminho...",
             fontFamily: "Poppins",
             fontSize: 7,
@@ -218,7 +223,7 @@ function EditorCore() {
             backgroundStyle: { type: 'solid', value: '#1a1a1a' },
             filmColor: "#000000",
             filmOpacity: 20,
-            aspectRatio: "9 / 16" as "9 / 16",
+            aspectRatio: "9 / 16",
             activeTemplateId: null,
             showProfileSignature: false,
             signaturePositionX: 50,
@@ -430,3 +435,5 @@ export default function AspectWeaver() {
         </Suspense>
     )
 }
+
+    
