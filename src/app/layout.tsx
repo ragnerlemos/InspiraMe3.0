@@ -21,11 +21,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning className="h-full">
       <head>
-        {/* Pré-conexão com o Google Fonts para otimizar o carregamento das fontes. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Importação das fontes utilizadas no projeto. */}
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=PT+Sans:wght@400;700&family=Lobster&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+        {/* As fontes do Google serão injetadas dinamicamente através do hook useGoogleFonts */}
       </head>
       <body className="font-body antialiased h-full">
         <ThemeProvider

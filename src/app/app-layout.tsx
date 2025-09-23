@@ -5,11 +5,15 @@ import React from "react";
 import { usePathname } from 'next/navigation';
 import { EditorProvider } from './editor-de-video/contexts/editor-context';
 import { AppHeader, EditorHeader } from './cabecalho-app';
+import { useGoogleFonts } from "@/hooks/use-google-fonts";
 
 // Componente de layout que gerencia qual cabeçalho exibir.
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isEditorPage = pathname.startsWith('/editor-de-video');
+  
+  // Carrega e injeta as fontes do Google para evitar problemas de CORS
+  useGoogleFonts();
 
   if (isEditorPage) {
      return (
