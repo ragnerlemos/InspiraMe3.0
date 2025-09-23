@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import { useSearchParams } from "next/navigation";
 import { useEditor } from "./contexts/editor-context";
-import { exportPreviewAsImage } from "./lib/export";
+import { exportPreviewAsImage } from "./lib/export.tsx";
 
 
 function ProporcaoSkeleton() {
@@ -198,8 +198,8 @@ export default function AspectWeaver() {
         }
     }, [toast, currentState.aspectRatio]);
 
-    const onExportJPG = () => onExport('jpeg');
-    const onExportPNG = () => onExport('png');
+    const onExportJPG = useCallback(() => onExport('jpeg'), [onExport]);
+    const onExportPNG = useCallback(() => onExport('png'), [onExport]);
 
     const onExportMP4 = useCallback(() => {
         toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
