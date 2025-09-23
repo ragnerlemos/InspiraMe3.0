@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
@@ -96,43 +95,46 @@ function EditorCore() {
     });
     const [history, setHistory] = useState<EditorState[]>([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
-    const [activeControl, setActiveControl] = useState<string | null>(null);
+    const [activeControl, setActiveControl] = useState<string | null>('texto');
     const [scale, setScale] = useState(1);
 
-     const updateState = useCallback((newState: Partial<EditorState>) => {
+    const updateState = useCallback((newState: Partial<EditorState>) => {
         setCurrentState(prevState => {
             const updatedState = { ...prevState, ...newState };
+            
             setHistory(prevHistory => {
-                // Adiciona o novo estado ao histórico
-                const newHistory = [...prevHistory.slice(0, historyIndex + 1), updatedState];
-                setHistoryIndex(newHistory.length - 1);
-                return newHistory;
+                 // Using functional update for historyIndex to get the latest value
+                 let newHistory: EditorState[] = [];
+                 setHistoryIndex(prevIndex => {
+                    newHistory = [...prevHistory.slice(0, prevIndex + 1), updatedState];
+                    return newHistory.length - 1;
+                 });
+                 return newHistory;
             });
+
             return updatedState;
         });
-    }, [historyIndex]);
+    }, []);
 
     const canUndo = historyIndex > 0;
     const canRedo = historyIndex < history.length - 1;
 
-     const undo = useCallback(() => {
-        if (canUndo) {
-            setHistoryIndex(prevIndex => {
-                const newIndex = prevIndex - 1;
-                setCurrentState(history[newIndex]);
-                return newIndex;
-            });
-        }
+    const undo = useCallback(() => {
+        if (!canUndo) return;
+        setHistoryIndex(prevIndex => {
+            const newIndex = prevIndex - 1;
+            setCurrentState(history[newIndex]);
+            return newIndex;
+        });
     }, [canUndo, history]);
 
     const redo = useCallback(() => {
-        if (canRedo) {
-            setHistoryIndex(prevIndex => {
-                const newIndex = prevIndex + 1;
-                setCurrentState(history[newIndex]);
-                return newIndex;
-            });
-        }
+        if (!canRedo) return;
+        setHistoryIndex(prevIndex => {
+            const newIndex = prevIndex + 1;
+            setCurrentState(history[newIndex]);
+            return newIndex;
+        });
     }, [canRedo, history]);
 
 
@@ -153,7 +155,7 @@ function EditorCore() {
         }
     };
 
-    const onSaveAsTemplate = async () => {
+    const onSaveAsTemplate = useCallback(async () => {
         const thumbnail = await captureScreenshot();
         if (thumbnail) {
             const templateName = prompt("Digite um nome para o seu modelo:", "Meu Modelo");
@@ -162,9 +164,9 @@ function EditorCore() {
                 toast({ title: "Modelo Salvo!", description: "Seu novo modelo foi adicionado à galeria de modelos." });
             }
         }
-    };
+    }, [addTemplate, currentState, toast]);
     
-    const downloadImage = async (format: 'png' | 'jpeg') => {
+    const downloadImage = useCallback(async (format: 'png' | 'jpeg') => {
         const element = document.getElementById('editor-preview-content');
         if (!element) return;
         
@@ -186,10 +188,10 @@ function EditorCore() {
              console.error("Erro ao exportar imagem:", error);
             toast({ variant: 'destructive', title: "Erro na Exportação", description: "Ocorreu um problema ao gerar sua imagem." });
         }
-    };
+    }, [toast]);
 
-    const onExportJPG = useCallback(() => downloadImage('jpeg'), []);
-    const onExportPNG = useCallback(() => downloadImage('png'), []);
+    const onExportJPG = useCallback(() => downloadImage('jpeg'), [downloadImage]);
+    const onExportPNG = useCallback(() => downloadImage('png'), [downloadImage]);
     
     const onExportMP4 = useCallback(() => {
         toast({
@@ -200,10 +202,11 @@ function EditorCore() {
     }, [toast]);
 
     const { setUndoState, setSaveActions } = useEditor();
+
     useEffect(() => {
         setUndoState({ canUndo, undo, canRedo, redo });
         setSaveActions({ onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 });
-    }, [canUndo, canRedo, undo, redo, onExportJPG, onExportPNG, onExportMP4, onSaveAsTemplate, setUndoState, setSaveActions]);
+    }, [canUndo, canRedo, undo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setUndoState, setSaveActions]);
 
 
     // Efeito de inicialização
