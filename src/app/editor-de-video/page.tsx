@@ -345,7 +345,7 @@ export default function AspectWeaver() {
     showLogo: currentState.showLogo,
     logoPositionX: currentState.logoPositionX,
     logoPositionY: currentState.logoPositionY,
-logoScale: currentState.logoScale,
+    logoScale: currentState.logoScale,
     logoOpacity: currentState.logoOpacity,
     activeTemplateId: currentState.activeTemplateId,
     profileVerticalPosition: currentState.profileVerticalPosition,
