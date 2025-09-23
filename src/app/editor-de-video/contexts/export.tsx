@@ -2,9 +2,9 @@
 "use client";
 
 import html2canvas from "html2canvas";
-import type { ProporcaoTela } from "../tipos";
+import type { ProporcaoTela, EditorState } from "../tipos";
 
-// Mapear proporções do app para dimensões fixas e rótulos
+// Mapear proporções do app para dimensões fixas
 const exportDimensions: Record<ProporcaoTela, { width: number; height: number }> = {
   "9 / 16": { width: 1080, height: 1920 },
   "1 / 1": { width: 1080, height: 1080 },
@@ -82,4 +82,38 @@ export async function savePreviewAsImage(
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+/** Exporta JPG */
+export async function onExportJPG(proporcao: ProporcaoTela, highRes: boolean = false) {
+  await savePreviewAsImage(proporcao, "jpeg", highRes ? 2 : 1, "inspire-me-export");
+}
+
+/** Exporta PNG */
+export async function onExportPNG(proporcao: ProporcaoTela, highRes: boolean = false) {
+  await savePreviewAsImage(proporcao, "png", highRes ? 2 : 1, "inspire-me-export");
+}
+
+/** Salva template com miniatura */
+export async function handleSaveAsTemplate(
+  proporcao: ProporcaoTela,
+  currentState: EditorState,
+  addTemplate: (name: string, state: EditorState, thumbnail: string) => void,
+  toast: (options: { title: string; description: string; variant?: string }) => void
+) {
+  const templateName = prompt("Digite um nome para o novo modelo:");
+  if (!templateName) return;
+
+  toast({ title: 'Salvando modelo...', description: 'Gerando miniatura...' });
+  const thumbnail = await exportPreviewAsImage(proporcao, "jpeg", 1);
+  if (!thumbnail) {
+    toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível gerar a miniatura do modelo.' });
+    return;
+  }
+
+  addTemplate(templateName, currentState, thumbnail);
+  toast({
+      title: "Modelo Salvo!",
+      description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
+  });
 }

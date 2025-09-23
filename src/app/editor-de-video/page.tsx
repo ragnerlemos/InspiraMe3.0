@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import { useSearchParams } from "next/navigation";
 import { useEditor } from "./contexts/editor-context";
-import { exportPreviewAsImage, savePreviewAsImage } from "./contexts/export";
+import { onExportJPG, onExportPNG, handleSaveAsTemplate } from "./contexts/export";
 
 
 function ProporcaoSkeleton() {
@@ -165,54 +165,26 @@ export default function AspectWeaver() {
     currentState.letterSpacing, currentState.lineHeight, currentState.wordSpacing
   ]);
 
-  const handleSaveAsTemplate = useCallback(async () => {
-    const templateName = prompt("Digite um nome para o novo modelo:");
-    if (!templateName) return;
-    
-    toast({ title: 'Salvando modelo...', description: 'Gerando miniatura...' });
-    const thumbnail = await exportPreviewAsImage(currentState.aspectRatio as ProporcaoTela, 'jpeg', 1);
-    if (thumbnail) {
-        addTemplate(templateName, currentState, thumbnail);
-        toast({
-            title: "Modelo Salvo!",
-            description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
-        });
-    } else {
-        toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível gerar a miniatura do modelo.' });
-    }
-  }, [addTemplate, currentState, toast]);
-    
-  const onExport = useCallback(async (format: 'jpeg' | 'png', highRes: boolean = false) => {
-    const scale = highRes ? 2 : 1;
-    toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}${highRes ? ' em alta resolução' : ''}.` });
-
-    try {
-        await savePreviewAsImage(currentState.aspectRatio as ProporcaoTela, format, scale);
-        toast({ title: 'Sucesso!', description: `A imagem foi baixada com sucesso.` });
-    } catch {
-        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
-    }
-  }, [currentState.aspectRatio, toast]);
-
-  const onExportJPG = useCallback((highRes: boolean = false) => onExport('jpeg', highRes), [onExport]);
-  const onExportPNG = useCallback((highRes: boolean = false) => onExport('png', highRes), [onExport]);
-
   const onExportMP4 = useCallback(() => {
     toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
   }, [toast]);
     
   useEffect(() => {
-      setControls({
-          canUndo,
-          undo,
-          canRedo,
-          redo,
-          onSaveAsTemplate: handleSaveAsTemplate,
-          onExportJPG,
-          onExportPNG,
-          onExportMP4,
-      });
-  }, [canUndo, undo, canRedo, redo, handleSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setControls]);
+    if (!currentState) return;
+    setControls({
+      canUndo,
+      undo,
+      canRedo,
+      redo,
+      onSaveAsTemplate: () => handleSaveAsTemplate(currentState.aspectRatio as ProporcaoTela, currentState, addTemplate, toast),
+      onExportJPG: (highRes) => onExportJPG(currentState.aspectRatio as ProporcaoTela, highRes),
+      onExportPNG: (highRes) => onExportPNG(currentState.aspectRatio as ProporcaoTela, highRes),
+      onExportMP4,
+    });
+  }, [
+    canUndo, undo, canRedo, redo, 
+    currentState, addTemplate, toast, onExportMP4, setControls
+  ]);
 
   useEffect(() => {
     if (!isProfileLoaded || !areTemplatesLoaded || isReady) return;
