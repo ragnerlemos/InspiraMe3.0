@@ -13,7 +13,7 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "@/components/ui/resizable";
-import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
+import type { EditorState, EstiloFundo, ProporcaoTela } from "@/app/editor-de-video/tipos";
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates, type Template } from "@/hooks/use-templates";
 import html2canvas from 'html2canvas';
@@ -82,6 +82,12 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     logoOpacity: 100,
 });
 
+const exportDimensions: Record<ProporcaoTela, { width: number, height: number, scale: number }> = {
+    "9 / 16": { width: 1080, height: 1920, scale: 2 }, // Stories/Reels
+    "1 / 1": { width: 1080, height: 1080, scale: 2 },   // Post Quadrado
+    "16 / 9": { width: 1920, height: 1080, scale: 2 }, // Vídeo Horizontal
+};
+
 
 export default function AspectWeaver() {
   const { width } = useWindowSize();
@@ -92,7 +98,6 @@ export default function AspectWeaver() {
   const { templates: allTemplates, isLoaded: areTemplatesLoaded, addTemplate } = useTemplates();
   const { setControls } = useEditor();
 
-  // Histórico de estados
   const [history, setHistory] = useState<EditorState[]>([]);
   const [currentStateIndex, setCurrentStateIndex] = useState(-1);
   const [isReady, setIsReady] = useState(false);
@@ -112,7 +117,6 @@ export default function AspectWeaver() {
     });
   }, [currentStateIndex]);
   
-  // Funções de Desfazer e Refazer
   const undo = useCallback(() => {
     if (currentStateIndex > 0) {
       setCurrentStateIndex(currentStateIndex - 1);
@@ -128,79 +132,92 @@ export default function AspectWeaver() {
   const canUndo = currentStateIndex > 0;
   const canRedo = currentStateIndex < history.length - 1;
   
+  const captureCanvas = useCallback(async (format: 'jpeg' | 'png', isThumbnail: boolean = false) => {
+    const element = document.getElementById('editor-preview-content');
+    if (!element) {
+        toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar a área de visualização.' });
+        return null;
+    }
 
-  // Lógica de Salvamento e Exportação
-  const handleSaveAsTemplate = useCallback(async () => {
+    if (!isThumbnail) {
+        toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
+    }
+
+    const originalStyle = { width: element.style.width, height: element.style.height };
+    const { width, height, scale } = exportDimensions[currentState.aspectRatio as ProporcaoTela];
+    
+    // Força as dimensões para a exportação
+    element.style.width = `${width}px`;
+    element.style.height = `${height}px`;
+
+    await document.fonts.ready;
+
+    try {
+        const canvas = await html2canvas(element, {
+            backgroundColor: null,
+            useCORS: true,
+            width: width,
+            height: height,
+            scale: isThumbnail ? 0.5 : scale,
+        });
+        
+        return canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
+
+    } catch (error) {
+        console.error('Erro ao exportar imagem:', error);
+        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+        return null;
+    } finally {
+        // Restaura o estilo original
+        element.style.width = originalStyle.width;
+        element.style.height = originalStyle.height;
+    }
+  }, [toast, currentState.aspectRatio]);
+
+    const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
         if (!templateName) return;
-        const previewElement = document.getElementById('editor-preview-content');
-        if (previewElement) {
-            try {
-                const canvas = await html2canvas(previewElement, {
-                    scale: 0.5,
-                    useCORS: true,
-                    backgroundColor: null, 
-                });
-                const thumbnail = canvas.toDataURL('image/jpeg', 0.8);
-                
-                addTemplate(templateName, currentState, thumbnail);
-
-                toast({
-                    title: "Modelo Salvo!",
-                    description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
-                });
-            } catch (error) {
-                console.error("Erro ao criar thumbnail:", error);
-                toast({
-                    variant: "destructive",
-                    title: "Erro ao Salvar",
-                    description: "Não foi possível gerar a pré-visualização do modelo.",
-                });
-            }
-        }
-    }, [addTemplate, currentState, toast]);
-
-    const captureCanvas = useCallback(async (format: 'jpeg' | 'png') => {
-        const previewElement = document.getElementById('editor-preview-content');
-        if (!previewElement) {
-            toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível encontrar la área de visualização.' });
-            return;
-        }
-
-        toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}.` });
         
-        try {
-            const canvas = await html2canvas(previewElement, {
-                useCORS: true,
-                backgroundColor: null, 
-                scale: 4, // Aumenta a resolução para melhor qualidade
+        const thumbnail = await captureCanvas('jpeg', true);
+        if (thumbnail) {
+            addTemplate(templateName, currentState, thumbnail);
+            toast({
+                title: "Modelo Salvo!",
+                description: `O modelo "${templateName}" foi adicionado à sua coleção.`,
             });
-
-            const image = canvas.toDataURL(`image/${format}`, format === 'png' ? 1.0 : 0.9);
-            
+        }
+    }, [addTemplate, currentState, toast, captureCanvas]);
+    
+    const onExportJPG = useCallback(async () => {
+        const image = await captureCanvas('jpeg');
+        if (image) {
             const link = document.createElement('a');
             link.href = image;
-            link.download = `inspire-me-export.${format}`;
+            link.download = `inspire-me-export.jpeg`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
             toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
-
-        } catch (error) {
-            console.error('Erro ao exportar imagem:', error);
-            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         }
-    }, [toast]);
-    
-    const onExportJPG = useCallback(() => captureCanvas('jpeg'), [captureCanvas]);
-    const onExportPNG = useCallback(() => captureCanvas('png'), [captureCanvas]);
+    }, [captureCanvas, toast]);
+
+    const onExportPNG = useCallback(async () => {
+        const image = await captureCanvas('png');
+        if (image) {
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = `inspire-me-export.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast({ title: 'Sucesso!', description: `A imagem foi baixada como ${link.download}.` });
+        }
+    }, [captureCanvas, toast]);
 
     const onExportMP4 = useCallback(() => {
         toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
     }, [toast]);
     
-    // Efeito para atualizar o contexto do editor
     useEffect(() => {
         setControls({
             canUndo,
@@ -214,7 +231,6 @@ export default function AspectWeaver() {
         });
     }, [canUndo, undo, canRedo, redo, handleSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, setControls]);
 
-  // Efeito de inicialização
   useEffect(() => {
     if (!isProfileLoaded || !areTemplatesLoaded || isReady) return;
 
@@ -247,7 +263,6 @@ export default function AspectWeaver() {
 
     initialize();
   }, [searchParams, isProfileLoaded, areTemplatesLoaded, allTemplates, isReady]);
-
 
   useEffect(() => {
     if (isDesktop) {
@@ -304,6 +319,10 @@ export default function AspectWeaver() {
       updateState({ backgroundStyle: { type: 'solid', value: color } });
   }, [updateState]);
 
+  if (!isReady || !isProfileLoaded) {
+    return <ProporcaoSkeleton />;
+  }
+  
   const commonProps = {
     // Canvas
     aspectRatio: currentState.aspectRatio, setAspectRatio: (val: string) => updateState({ aspectRatio: val as any }),
@@ -379,10 +398,6 @@ export default function AspectWeaver() {
     profileVerticalPosition: currentState.profileVerticalPosition,
     scale,
   };
-  
-  if (!isReady || !isProfileLoaded) {
-    return <ProporcaoSkeleton />;
-  }
 
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
@@ -402,8 +417,3 @@ export default function AspectWeaver() {
     </div>
   );
 }
-
-    
-
-    
-
