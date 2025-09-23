@@ -45,13 +45,14 @@ export function AssinaturaPerfil({
   const bgRgb = hexToRgb(bgColor);
   const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
   
-  const baseAvatarSize = 2.5; // rem
+  const finalScale = scale / 100;
+  
+  // Define os tamanhos base em 'rem' para escalabilidade
+  const baseAvatarSize = 2.5; // rem (equivale a h-10 w-10)
   const baseFontSize = 0.875; // rem (text-sm)
   const baseSocialSize = 0.75; // rem (text-xs)
   const baseIconSize = 1.25; // rem (h-5 w-5)
   const baseGap = 0.75; // rem (gap-3)
-
-  const finalScale = scale / 100;
 
   return (
     <div 
