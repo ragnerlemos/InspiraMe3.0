@@ -96,43 +96,36 @@ function EditorCore() {
     });
     const [history, setHistory] = useState<EditorState[]>([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
-    const [activeControl, setActiveControl] = useState<string | null>('texto');
+    const [activeControl, setActiveControl] = useState<string | null>(null);
     const [scale, setScale] = useState(1);
 
     const updateState = useCallback((newState: Partial<EditorState>) => {
-        setCurrentState(prevState => {
-            const updatedState = { ...prevState, ...newState };
-            setHistory(prevHistory => {
-                const newHistory = [...prevHistory.slice(0, historyIndex + 1), updatedState];
-                setHistoryIndex(newHistory.length - 1);
-                return newHistory;
-            });
-            return updatedState;
+        setCurrentState(prevState => ({ ...prevState, ...newState }));
+        setHistory(prevHistory => {
+            const newHistory = [...prevHistory.slice(0, historyIndex + 1), { ...currentState, ...newState }];
+            setHistoryIndex(newHistory.length - 1);
+            return newHistory;
         });
-    }, [historyIndex]);
+    }, [historyIndex, currentState]);
 
     const canUndo = historyIndex > 0;
     const canRedo = historyIndex < history.length - 1;
 
     const undo = useCallback(() => {
         if (canUndo) {
-            setHistoryIndex(prevIndex => {
-                const newIndex = prevIndex - 1;
-                setCurrentState(history[newIndex]);
-                return newIndex;
-            });
+            const newIndex = historyIndex - 1;
+            setCurrentState(history[newIndex]);
+            setHistoryIndex(newIndex);
         }
-    }, [canUndo, history]);
+    }, [canUndo, history, historyIndex]);
 
     const redo = useCallback(() => {
         if (canRedo) {
-            setHistoryIndex(prevIndex => {
-                const newIndex = prevIndex + 1;
-                setCurrentState(history[newIndex]);
-                return newIndex;
-            });
+            const newIndex = historyIndex + 1;
+            setCurrentState(history[newIndex]);
+            setHistoryIndex(newIndex);
         }
-    }, [canRedo, history]);
+    }, [canRedo, history, historyIndex]);
 
     const captureScreenshot = async (): Promise<string | null> => {
         const element = document.getElementById('editor-preview-content');
