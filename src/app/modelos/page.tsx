@@ -113,7 +113,7 @@ export default function ModelosPage() {
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        Esta ação não pode ser desfeita. Isso excluirá permanentemente o seu modelo.
+                                                        Esta ação não pode ser desfeita. Isso excluirá permanentemente o seu modelo "{template.name}".
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
