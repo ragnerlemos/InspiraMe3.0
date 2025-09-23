@@ -25,20 +25,20 @@ export function ModeloPadrao({
 }: VisualizacaoEditorProps) {
   return (
     <>
-      <div className="absolute inset-0 flex items-center justify-center p-8">
-        <div className="relative w-full h-full">
-          <div
-            style={{
-              ...textStyle,
-              top: `${textVerticalPosition}%`,
-              transform: 'translateY(-50%)',
-            }}
-            className="break-words w-full absolute transition-all duration-200"
-          >
-            {text}
-          </div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="relative w-full">
+            <div
+                style={{
+                ...textStyle,
+                // A posição vertical é controlada pelo layout flex do pai
+                }}
+                className="break-words w-full"
+            >
+                {text}
+            </div>
         </div>
       </div>
+      
       {showProfileSignature && (
         <div
           className="absolute"
@@ -46,6 +46,7 @@ export function ModeloPadrao({
             top: `${signaturePositionY}%`,
             left: `${signaturePositionX}%`,
             transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
+            transformOrigin: 'center center',
           }}
         >
           <AssinaturaPerfil

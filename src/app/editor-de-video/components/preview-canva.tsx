@@ -79,29 +79,33 @@ export function PreviewCanva(props: VisualizacaoEditorProps) {
   return (
     <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
       <div
-        id="editor-preview-content"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top center",
         }}
-        className={cn(
-          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container bg-black",
-          {
-            "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
-            "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
-            "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
-          }
-        )}
+        className="transition-transform duration-300 ease-in-out"
       >
-        <div className="absolute inset-0 z-0">
-          {renderBackground()}
-        </div>
+        <div
+            id="editor-preview-content"
+            className={cn(
+                "shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container bg-black flex flex-col",
+                {
+                    "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
+                    "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
+                    "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
+                }
+            )}
+        >
+            <div className="absolute inset-0 z-0">
+                {renderBackground()}
+            </div>
 
-        {filmOpacity > 0 && 
-            <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
-        }
-        <div className="relative z-20 h-full w-full">
-            {renderContent()}
+            {filmOpacity > 0 && 
+                <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
+            }
+            <div className="relative z-20 h-full w-full flex flex-col p-8">
+                {renderContent()}
+            </div>
         </div>
       </div>
     </main>
