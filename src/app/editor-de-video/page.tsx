@@ -330,13 +330,13 @@ export default function AspectWeaver() {
   }
 
   return (
-    <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
-        <main className="flex-1 w-full h-full overflow-auto">
+    <div className="w-full bg-background font-body text-foreground h-full relative">
+        <main className="w-full h-[calc(100%-4rem)] overflow-auto">
             <PreviewCanva {...previewProps} />
         </main>
-        <MobileToolbar {...commonProps} />
+        <div className="absolute bottom-0 left-0 w-full h-16">
+            <MobileToolbar {...commonProps} />
+        </div>
     </div>
   );
 }
-
-    
