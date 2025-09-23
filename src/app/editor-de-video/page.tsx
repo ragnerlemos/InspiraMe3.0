@@ -96,15 +96,14 @@ function EditorCore() {
     });
     const [history, setHistory] = useState<EditorState[]>([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
-    const [activeControl, setActiveControl] = useState<string | null>(null);
+    const [activeControl, setActiveControl] = useState<string | null>('texto');
     const [scale, setScale] = useState(1);
 
     const updateState = useCallback((newState: Partial<EditorState>) => {
         setCurrentState(prevState => {
             const updatedState = { ...prevState, ...newState };
             setHistory(prevHistory => {
-                const newHistory = prevHistory.slice(0, historyIndex + 1);
-                newHistory.push(updatedState);
+                const newHistory = [...prevHistory.slice(0, historyIndex + 1), updatedState];
                 setHistoryIndex(newHistory.length - 1);
                 return newHistory;
             });
@@ -117,19 +116,23 @@ function EditorCore() {
 
     const undo = useCallback(() => {
         if (canUndo) {
-            const newIndex = historyIndex - 1;
-            setHistoryIndex(newIndex);
-            setCurrentState(history[newIndex]);
+            setHistoryIndex(prevIndex => {
+                const newIndex = prevIndex - 1;
+                setCurrentState(history[newIndex]);
+                return newIndex;
+            });
         }
-    }, [canUndo, history, historyIndex]);
+    }, [canUndo, history]);
 
     const redo = useCallback(() => {
         if (canRedo) {
-            const newIndex = historyIndex + 1;
-            setHistoryIndex(newIndex);
-            setCurrentState(history[newIndex]);
+            setHistoryIndex(prevIndex => {
+                const newIndex = prevIndex + 1;
+                setCurrentState(history[newIndex]);
+                return newIndex;
+            });
         }
-    }, [canRedo, history, historyIndex]);
+    }, [canRedo, history]);
 
     const captureScreenshot = async (): Promise<string | null> => {
         const element = document.getElementById('editor-preview-content');
@@ -320,9 +323,12 @@ function EditorCore() {
     ]);
 
     const bgColor = useMemo(() => {
-        return currentState.backgroundStyle.type === 'solid' ? currentState.backgroundStyle.value : '#000000';
+        if (currentState.backgroundStyle.type === 'solid') {
+            return currentState.backgroundStyle.value;
+        }
+        return '#000000'; // Cor padrão se não for sólida
     }, [currentState.backgroundStyle]);
-
+    
     const setBgColor = useCallback((color: string) => {
         updateState({ backgroundStyle: { type: 'solid', value: color } });
     }, [updateState]);
