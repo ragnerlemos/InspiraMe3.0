@@ -2,9 +2,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { createRoot } from "react-dom/client";
 import { useWindowSize } from "react-use";
-import html2canvas from "html2canvas";
 import { useProfile } from "@/hooks/use-profile";
 import { Sidebar } from "@/app/editor-de-video/components/sidebar";
 import { PreviewCanva } from "@/app/editor-de-video/components/preview-canva";
@@ -20,88 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import { useSearchParams } from "next/navigation";
 import { useEditor } from "./contexts/editor-context";
-
-
-// Mapeia as proporções para dimensões de exportação em alta resolução.
-const exportDimensions: Record<ProporcaoTela, { width: number; height: number }> = {
-    "9 / 16": { width: 1080, height: 1920 }, // Stories/Reels
-    "1 / 1": { width: 1080, height: 1080 },   // Post Quadrado
-    "16 / 9": { width: 1920, height: 1080 }, // Vídeo Horizontal
-};
-
-
-/**
- * Renderiza o PreviewCanva em um contêiner off-screen e o exporta como uma imagem.
- * @param configProps - As propriedades exatas do PreviewCanva a serem renderizadas.
- * @param formato - O formato da imagem de saída ('png' ou 'jpeg').
- * @param isThumbnail - Se verdadeiro, exporta em uma resolução menor para miniaturas.
- * @returns A imagem como um Data URL (string) ou null em caso de falha.
- */
-async function exportPreviewAsImage(
-  configProps: VisualizacaoEditorProps,
-  formato: "png" | "jpeg" = "png",
-  isThumbnail = false
-): Promise<string | null> {
-  // 1. Espera que as fontes da página estejam prontas.
-  await document.fonts.ready;
-
-  // 2. Cria um contêiner temporário fora da tela.
-  const exportContainer = document.createElement("div");
-  exportContainer.style.position = "fixed";
-  exportContainer.style.top = "-9999px";
-  exportContainer.style.left = "-9999px";
-  exportContainer.style.pointerEvents = "none";
-  document.body.appendChild(exportContainer);
-  
-  const root = createRoot(exportContainer);
-
-  try {
-    const dimensions = exportDimensions[configProps.aspectRatio];
-    
-    // 3. Renderiza o componente PreviewCanva no contêiner off-screen.
-    // Usamos uma Promise para garantir que a renderização termine antes de continuar.
-    await new Promise<void>((resolve) => {
-       // Força a escala do preview para 1 para a captura ter o tamanho base correto
-      root.render(<PreviewCanva {...configProps} scale={1} />);
-      // Um pequeno timeout para garantir que o DOM e os estilos sejam aplicados
-      setTimeout(resolve, 50); 
-    });
-
-    // 4. Encontra o elemento de conteúdo do preview renderizado.
-    const elementToCapture = exportContainer.querySelector("#editor-preview-content") as HTMLElement;
-
-    if (!elementToCapture) {
-      console.error("Elemento do preview não encontrado para exportação.");
-      return null;
-    }
-
-    // 5. Força as dimensões de exportação no elemento antes de capturar.
-    elementToCapture.style.width = `${dimensions.width}px`;
-    elementToCapture.style.height = `${dimensions.height}px`;
-
-    // 6. Usa html2canvas para capturar o elemento.
-    const canvas = await html2canvas(elementToCapture, {
-      backgroundColor: null,
-      useCORS: true,
-      logging: false,
-      width: dimensions.width,
-      height: dimensions.height,
-      // Para miniaturas, usamos uma escala menor. Para exportação final, usamos 2x para alta qualidade.
-      scale: isThumbnail ? 0.5 : 2,
-    });
-
-    // 7. Retorna a imagem como um Data URL.
-    return canvas.toDataURL(`image/${formato}`, formato === 'jpeg' ? 0.9 : 1.0);
-
-  } catch (error) {
-    console.error("Erro ao exportar imagem:", error);
-    return null;
-  } finally {
-    // 8. Limpa o contêiner e remove-o do DOM.
-    root.unmount();
-    document.body.removeChild(exportContainer);
-  }
-}
+import { exportPreviewAsImage } from "./lib/export";
 
 
 function ProporcaoSkeleton() {
@@ -248,41 +165,12 @@ export default function AspectWeaver() {
     currentState.letterSpacing, currentState.lineHeight, currentState.wordSpacing
   ]);
 
-  const previewProps: VisualizacaoEditorProps = useMemo(() => ({
-    aspectRatio: currentState.aspectRatio,
-    backgroundStyle: currentState.backgroundStyle,
-    filmColor: currentState.filmColor,
-    filmOpacity: currentState.filmOpacity,
-    text: currentState.text,
-    textStyle: textStyle,
-    textVerticalPosition: currentState.textVerticalPosition,
-    profile,
-    showProfileSignature: currentState.showProfileSignature,
-    signaturePositionX: currentState.signaturePositionX,
-    signaturePositionY: currentState.signaturePositionY,
-    signatureScale: currentState.signatureScale,
-    showSignaturePhoto: currentState.showSignaturePhoto,
-    showSignatureUsername: currentState.showSignatureUsername,
-    showSignatureSocial: currentState.showSignatureSocial,
-    showSignatureBackground: currentState.showSignatureBackground,
-    signatureBgColor: currentState.signatureBgColor,
-    signatureBgOpacity: currentState.signatureBgOpacity,
-    showLogo: currentState.showLogo,
-    logoPositionX: currentState.logoPositionX,
-    logoPositionY: currentState.logoPositionY,
-    logoScale: currentState.logoScale,
-    logoOpacity: currentState.logoOpacity,
-    activeTemplateId: currentState.activeTemplateId,
-    profileVerticalPosition: currentState.profileVerticalPosition,
-    scale,
-  }), [currentState, profile, textStyle, scale]);
-
     const handleSaveAsTemplate = useCallback(async () => {
         const templateName = prompt("Digite um nome para o novo modelo:");
         if (!templateName) return;
         
         toast({ title: 'Salvando modelo...', description: 'Gerando miniatura...' });
-        const thumbnail = await exportPreviewAsImage(previewProps, 'jpeg', true);
+        const thumbnail = await exportPreviewAsImage('jpeg', 1);
         if (thumbnail) {
             addTemplate(templateName, currentState, thumbnail);
             toast({
@@ -292,11 +180,11 @@ export default function AspectWeaver() {
         } else {
             toast({ variant: 'destructive', title: 'Erro', description: 'Não foi possível gerar a miniatura do modelo.' });
         }
-    }, [addTemplate, currentState, toast, previewProps]);
+    }, [addTemplate, currentState, toast]);
     
     const onExportJPG = useCallback(async () => {
         toast({ title: 'Exportando...', description: `Gerando imagem JPG.` });
-        const image = await exportPreviewAsImage(previewProps, 'jpeg');
+        const image = await exportPreviewAsImage('jpeg');
         if (image) {
             const link = document.createElement('a');
             link.href = image;
@@ -308,11 +196,11 @@ export default function AspectWeaver() {
         } else {
             toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         }
-    }, [previewProps, toast]);
+    }, [toast]);
 
     const onExportPNG = useCallback(async () => {
         toast({ title: 'Exportando...', description: `Gerando imagem PNG.` });
-        const image = await exportPreviewAsImage(previewProps, 'png');
+        const image = await exportPreviewAsImage('png');
         if (image) {
             const link = document.createElement('a');
             link.href = image;
@@ -324,7 +212,7 @@ export default function AspectWeaver() {
         } else {
             toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
         }
-    }, [previewProps, toast]);
+    }, [toast]);
 
     const onExportMP4 = useCallback(() => {
         toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
@@ -435,6 +323,34 @@ export default function AspectWeaver() {
     activeControl, setActiveControl,
   };
 
+  const previewProps: VisualizacaoEditorProps = useMemo(() => ({
+    aspectRatio: currentState.aspectRatio,
+    backgroundStyle: currentState.backgroundStyle,
+    filmColor: currentState.filmColor,
+    filmOpacity: currentState.filmOpacity,
+    text: currentState.text,
+    textStyle: textStyle,
+    textVerticalPosition: currentState.textVerticalPosition,
+    profile,
+    showProfileSignature: currentState.showProfileSignature,
+    signaturePositionX: currentState.signaturePositionX,
+    signaturePositionY: currentState.signaturePositionY,
+    signatureScale: currentState.signatureScale,
+    showSignaturePhoto: currentState.showSignaturePhoto,
+    showSignatureUsername: currentState.showSignatureUsername,
+    showSignatureSocial: currentState.showSignatureSocial,
+    showSignatureBackground: currentState.showSignatureBackground,
+    signatureBgColor: currentState.signatureBgColor,
+    signatureBgOpacity: currentState.signatureBgOpacity,
+    showLogo: currentState.showLogo,
+    logoPositionX: currentState.logoPositionX,
+    logoPositionY: currentState.logoPositionY,
+logoScale: currentState.logoScale,
+    logoOpacity: currentState.logoOpacity,
+    activeTemplateId: currentState.activeTemplateId,
+    profileVerticalPosition: currentState.profileVerticalPosition,
+    scale,
+  }), [currentState, profile, textStyle, scale]);
 
   if (!isReady || !isProfileLoaded) {
     return <ProporcaoSkeleton />;
