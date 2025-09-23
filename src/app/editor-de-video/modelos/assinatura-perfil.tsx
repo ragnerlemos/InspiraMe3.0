@@ -14,6 +14,7 @@ interface AssinaturaPerfilProps {
   showBackground: boolean;
   bgColor: string;
   bgOpacity: number;
+  scale: number; // Recebe a escala do editor
 }
 
 // Função para converter cor hexadecimal para RGB
@@ -36,23 +37,38 @@ export function AssinaturaPerfil({
   showBackground,
   bgColor,
   bgOpacity,
+  scale,
 }: AssinaturaPerfilProps) {
   // Define se o ícone da rede social deve ser exibido.
   const shouldShowIcon = profile.showIcon && (profile.iconUrl || profile.social.includes('twitter.com') || profile.social.includes('x.com'));
   
   const bgRgb = hexToRgb(bgColor);
   const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
+  
+  const baseAvatarSize = 2.5; // rem
+  const baseFontSize = 0.875; // rem (text-sm)
+  const baseSocialSize = 0.75; // rem (text-xs)
+  const baseIconSize = 1.25; // rem (h-5 w-5)
+  const baseGap = 0.75; // rem (gap-3)
 
+  const finalScale = scale / 100;
 
   return (
     <div 
-        className={cn("flex items-center gap-3 p-2 rounded-lg max-w-max")}
+        className={cn("flex items-center rounded-lg max-w-max p-2")}
         style={{
             backgroundColor: showBackground ? backgroundColor : 'transparent',
+            gap: `${baseGap * finalScale}rem`,
         }}
     >
       {showPhoto && (
-        <Avatar className="h-10 w-10">
+        <Avatar 
+          className="flex-shrink-0"
+          style={{ 
+            height: `${baseAvatarSize * finalScale}rem`, 
+            width: `${baseAvatarSize * finalScale}rem` 
+          }}
+        >
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
           <AvatarFallback>
             <User className="text-white" />
@@ -61,22 +77,41 @@ export function AssinaturaPerfil({
       )}
       <div className="flex flex-col items-start leading-tight whitespace-nowrap">
         {showUsername && (
-          <p className="font-bold text-white text-sm leading-none">
+          <p 
+            className="font-bold text-white leading-none"
+            style={{ fontSize: `${baseFontSize * finalScale}rem` }}
+          >
             {profile.username}
           </p>
         )}
         {showSocial && (
-          <p className="text-gray-300 text-xs leading-none">
+          <p 
+            className="text-gray-300 leading-none"
+            style={{ fontSize: `${baseSocialSize * finalScale}rem` }}
+          >
             {profile.social}
           </p>
         )}
       </div>
        {shouldShowIcon && (
-         <div className="pl-2">
+         <div className="pl-1">
             {profile.iconUrl ? (
-                <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
+                <img 
+                  src={profile.iconUrl} 
+                  alt="Ícone social" 
+                  style={{ 
+                    height: `${baseIconSize * finalScale}rem`, 
+                    width: `${baseIconSize * finalScale}rem` 
+                  }}
+                />
             ) : (
-                <Twitter className="h-5 w-5 text-blue-400" />
+                <Twitter 
+                  className="text-blue-400"
+                  style={{ 
+                    height: `${baseIconSize * finalScale}rem`, 
+                    width: `${baseIconSize * finalScale}rem` 
+                  }}
+                />
             )}
          </div>
       )}

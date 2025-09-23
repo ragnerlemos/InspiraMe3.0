@@ -45,7 +45,7 @@ export function ModeloPadrao({
           style={{
             top: `${signaturePositionY}%`,
             left: `${signaturePositionX}%`,
-            transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
+            transform: `translate(-50%, -50%)`, // A escala agora é tratada dentro do componente
           }}
         >
           <AssinaturaPerfil
@@ -56,6 +56,7 @@ export function ModeloPadrao({
             showBackground={showSignatureBackground}
             bgColor={signatureBgColor}
             bgOpacity={signatureBgOpacity}
+            scale={signatureScale}
           />
         </div>
       )}
