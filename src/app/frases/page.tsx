@@ -2,6 +2,8 @@
 import { getCategories, getAllQuotes } from '@/lib/actions';
 import { FrasesClientPage } from './frases-client';
 
+export const runtime = 'nodejs'; // Força o uso do runtime Node.js
+
 interface CategoriesHierarchy {
   [mainCategory: string]: string[];
 }

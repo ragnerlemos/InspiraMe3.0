@@ -1,4 +1,7 @@
 "use client";
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs'; // Força o uso do runtime Node.js
+
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useWindowSize } from "react-use";
