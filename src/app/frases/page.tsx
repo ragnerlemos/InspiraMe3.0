@@ -1,5 +1,5 @@
 
-import { getCategories, getAllQuotes } from '@/lib/dados';
+import { getCategories, getAllQuotes } from '@/lib/actions';
 import { FrasesClientPage } from './frases-client';
 
 interface CategoriesHierarchy {

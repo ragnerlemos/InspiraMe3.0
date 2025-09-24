@@ -1,5 +1,5 @@
 
-import { getAllQuotes } from "@/lib/dados";
+import { getAllQuotes } from "@/lib/actions";
 import { FavoritesClientPage } from './favoritos-client';
 
 // Definindo o tipo aqui para evitar importação do server-side em componentes cliente.
