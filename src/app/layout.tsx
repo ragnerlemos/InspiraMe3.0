@@ -1,34 +1,44 @@
-import {Inter as FontSans} from 'next/font/google';
-import type {Metadata} from 'next';
+
+"use client";
+
+import type { Metadata } from 'next';
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
-import {cn} from '@/lib/utils';
-import { Toaster } from '@/components/ui/toaster';
+import { AppLayout } from './app-layout';
+import { useState, useEffect } from 'react';
 
-const fontSans = FontSans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
 
-export const metadata: Metadata = {
-  title: 'QuoteVid',
-  description: 'AI-powered video highlights for your favorite quotes',
-};
-
+// Layout raiz da aplicação que envolve todas as páginas.
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+      setIsClient(true);
+  }, []);
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          fontSans.variable
-        )}
-      >
-        {children}
-        <Toaster />
+    <html lang="pt-BR" suppressHydrationWarning className="h-full">
+      <head>
+        {/* As fontes do Google serão injetadas dinamicamente através do hook useGoogleFonts */}
+      </head>
+      <body className="font-body antialiased h-full">
+        <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        >
+            {/* O Toaster é usado para exibir notificações no aplicativo. */}
+            {isClient && <Toaster />}
+            <AppLayout>
+                {children}
+            </AppLayout>
+        </ThemeProvider>
       </body>
     </html>
   );

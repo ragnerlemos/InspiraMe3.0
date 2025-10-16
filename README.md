@@ -1,5 +1,5 @@
-# Next.js App Router + Genkit
+# Firebase Studio
 
-This is a Next.js starter that uses the App Router and includes Genkit for AI functionality.
+This is a NextJS starter in Firebase Studio.
 
-To get started, take a look at `src/app/page.tsx`. You can edit this file to see live updates in your app.
+To get started, take a look at src/app/page.tsx.

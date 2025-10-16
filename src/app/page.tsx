@@ -1,70 +1,36 @@
+
 'use client';
-import {useState} from 'react';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Textarea} from '@/components/ui/textarea';
-import {getQuote, type GetQuoteOutput} from '@/ai/flows/quote-flow';
-import {Loader} from 'lucide-react';
-import {useToast} from '@/hooks/use-toast';
 
-export default function Home() {
-  const [topic, setTopic] = useState('');
-  const [quote, setQuote] = useState<GetQuoteOutput | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const {toast} = useToast();
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Feather } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-  async function handleGetQuote() {
-    setIsLoading(true);
-    const result = await getQuote(topic);
-    if (!result) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description:
-          'Could not retrieve quote. Please check your Gemini API key.',
-      });
-      setQuote(null);
-      setIsLoading(false);
-      return;
-    }
-    setQuote(result);
-    setIsLoading(false);
-  }
+// Página raiz que exibe uma tela de boas-vindas e redireciona.
+export default function RootPage() {
+  const router = useRouter();
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        router.replace('/frases');
+    }, 3000); // 3 segundos
+
+    // Limpa o timer se o componente for desmontado antes do tempo
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  // Exibe uma animação de carregamento/boas-vindas enquanto espera o redirecionamento.
   return (
-    <div className="container flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">QuoteVid</div>
-      <div className="flex flex-col gap-2">
-        <Label>Topic</Label>
-        <Input value={topic} onChange={(e) => setTopic(e.target.value)} />
-        <Button onClick={handleGetQuote} disabled={isLoading}>
-          {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-          Get Quote
-        </Button>
-      </div>
-
-      {quote && (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label>Quote</Label>
-            <Textarea
-              className="min-h-32"
-              value={`${quote.quote} - ${quote.author}`}
-              readOnly
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label>Video</Label>
-            {quote.videoUrl ? (
-              <video src={quote.videoUrl} controls />
-            ) : (
-              'No video available for this quote'
-            )}
-          </div>
+    <div className="flex h-full w-full flex-col items-center justify-center bg-background text-center p-4">
+        <div className="animate-pulse">
+            <Feather className="h-20 w-20 text-primary" />
         </div>
-      )}
+        <h1 className="mt-8 font-headline text-4xl font-bold text-foreground md:text-5xl">
+            InspireMe
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+            Carregando sua dose diária de inspiração...
+        </p>
     </div>
   );
 }

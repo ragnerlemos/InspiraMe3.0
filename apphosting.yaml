@@ -5,10 +5,3 @@ runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
   maxInstances: 1
-
-# Add the following environment variables to your App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure-backend#set-environment-variables
-
-# env:
-#   - variable: GEMINI_API_KEY
-#     secret: your-gemini-api-key-secret-name

@@ -1,0 +1,107 @@
+
+"use client";
+
+import Image from 'next/image';
+import { cn } from "@/lib/utils";
+import type { ProfileData } from "@/hooks/use-profile";
+import { AssinaturaPerfil } from "../modelos/assinatura-perfil";
+import type { EstiloFundo, VisualizacaoEditorProps } from '../tipos';
+import { ModeloTwitter } from '../modelos/modelo-twitter';
+import { ModeloPadrao } from '../modelos/modelo-padrao';
+
+
+// Função para converter cor hexadecimal para RGB
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+      }
+      : null;
+}
+
+const getMediaType = (src: string): "image" | "video" | "unknown" => {
+  if (!src) return "unknown";
+  if (src.startsWith("data:")) {
+    if (src.startsWith("data:image")) return "image";
+    if (src.startsWith("data:video")) return "video";
+  }
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
+  const videoExtensions = [".mp4", ".webm", ".ogg"];
+  if (imageExtensions.some((ext) => src.toLowerCase().includes(ext))) return "image";
+  if (videoExtensions.some((ext) => src.toLowerCase().includes(ext))) return "video";
+  if (src.includes("picsum.photos")) return "image";
+  return "unknown";
+};
+
+
+export function PreviewCanva(props: VisualizacaoEditorProps) {
+    const { 
+        aspectRatio, 
+        backgroundStyle, 
+        filmColor, 
+        filmOpacity, 
+        scale 
+    } = props;
+  
+  const filmRgb = hexToRgb(filmColor);
+  const filmBackgroundColor = filmRgb ? `rgba(${filmRgb.r}, ${filmRgb.g}, ${filmRgb.b}, ${filmOpacity / 100})` : `rgba(0, 0, 0, ${filmOpacity / 100})`;
+
+  const renderBackground = () => {
+    if (!backgroundStyle) return <div className="absolute inset-0 bg-black" />;
+
+    const { type, value } = backgroundStyle;
+    if (type === "media" && value) {
+      const mediaType = getMediaType(value);
+      if (mediaType === "image") {
+        return <Image src={value} alt="Background" fill className="object-cover" key={value} priority />;
+      }
+      if (mediaType === "video") {
+        return <video src={value} autoPlay loop muted className="absolute inset-0 w-full h-full object-cover" key={value} />;
+      }
+    } else if (type === "solid") {
+      return <div className="absolute inset-0" style={{ backgroundColor: value }} />;
+    } else if (type === "gradient") {
+      return <div className="absolute inset-0" style={{ background: value }} />;
+    }
+    return <div className="absolute inset-0 bg-black" />;
+  };
+
+  const renderContent = () => {
+    if (props.activeTemplateId === 'template-twitter') {
+      return <ModeloTwitter {...props} />;
+    }
+    return <ModeloPadrao {...props} />;
+  };
+
+  return (
+    <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
+      <div
+        id="editor-preview-content"
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+        }}
+        className={cn(
+          "transition-all duration-300 ease-in-out shadow-2xl rounded-xl w-full md:h-[83.5vh] md:w-auto relative overflow-hidden @container",
+          {
+            "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
+            "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",
+            "aspect-[16/9]": aspectRatio?.replace(/\s/g, "") === "16/9",
+          }
+        )}
+      >
+        {renderBackground()}
+
+        {filmOpacity > 0 && 
+            <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
+        }
+        <div className="relative z-20 h-full w-full">
+            {renderContent()}
+        </div>
+      </div>
+    </main>
+  );
+}
