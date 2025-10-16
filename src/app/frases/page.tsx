@@ -2,7 +2,8 @@
 import { getCategories, getAllQuotes } from '@/lib/dados';
 import { FrasesClientPage } from './frases-client';
 
-export const runtime = 'nodejs'; // Força o uso do runtime Node.js
+export const revalidate = 0; // Impede o cache desta página
+export const dynamic = 'force-dynamic';
 
 interface CategoriesHierarchy {
   [mainCategory: string]: string[];

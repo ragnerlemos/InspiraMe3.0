@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, TestTube2, LayoutGrid, Feather } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, Feather } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,31 +30,12 @@ const navItems = [
 ];
 
 export function EditorHeader() {
-    const { controls } = useEditor();
+    const { canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = useEditor();
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
-
-    // Adiciona uma verificação para garantir que os controles existam antes de renderizar os botões.
-    if (!controls) {
-        return (
-            <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background shrink-0">
-                <Link href="/" className="flex items-center gap-2">
-                    <Feather className="h-6 w-6 text-primary" />
-                    {isClient && <span className="font-headline text-xl font-bold">InspireMe</span>}
-                </Link>
-                {/* Mostra um placeholder enquanto os controles não estão prontos */}
-                <div className="flex items-center gap-2">
-                    <div className="h-9 w-24 bg-muted/50 rounded-md animate-pulse" />
-                    <div className="h-9 w-24 bg-muted/50 rounded-md animate-pulse" />
-                </div>
-            </div>
-        );
-    }
-
-    const { canUndo, undo, canRedo, redo, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4 } = controls;
 
     return (
         <div className="flex items-center justify-between w-full h-16 px-4 border-b bg-background shrink-0">
@@ -110,6 +91,8 @@ export function AppHeader() {
   useEffect(() => {
       setIsClient(true);
   }, []);
+  
+  const isEditorPage = pathname.startsWith('/editor-de-video');
 
   const renderNavLinks = (isMobile = false) => {
     return navItems.map((item) => {
@@ -152,7 +135,7 @@ export function AppHeader() {
   }
 
   // Renderiza o cabeçalho do editor apenas na página /editor-de-video
-  if (pathname.startsWith('/editor-de-video')) {
+  if (isEditorPage) {
     return null;
   }
   

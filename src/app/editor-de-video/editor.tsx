@@ -74,7 +74,7 @@ export default function Editor() {
   useEffect(() => {
     if (isReady || !isProfileLoaded || !areTemplatesLoaded) return;
 
-    const initialize = async (templates: Template[]) => {
+    const initialize = async () => {
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
         
@@ -89,7 +89,7 @@ export default function Editor() {
                 : "A inspiração está a caminho...";
         
         if (templateIdParam) {
-          const template = templates.find(t => t.id === templateIdParam);
+          const template = allTemplates.find(t => t.id === templateIdParam);
           if (template) {
             initialState = { ...baseState, ...template.editorState, text, activeTemplateId: template.id };
           } else {
@@ -102,7 +102,7 @@ export default function Editor() {
         setInitialState(initialState);
     }
 
-    initialize(allTemplates);
+    initialize();
   }, [searchParams, isProfileLoaded, areTemplatesLoaded, isReady, setInitialState, allTemplates]);
 
 

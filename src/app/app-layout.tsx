@@ -5,6 +5,7 @@ import React from "react";
 import { usePathname } from 'next/navigation';
 import { AppHeader } from './cabecalho-app';
 import { useGoogleFonts } from "@/hooks/use-google-fonts";
+import { EditorProvider } from './editor-de-video/contexts/editor-context';
 
 // Componente de layout que gerencia qual cabeçalho exibir.
 export function AppLayout({ children }: { children: React.ReactNode }) {
