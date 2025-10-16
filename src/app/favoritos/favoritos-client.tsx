@@ -9,6 +9,7 @@ import { Film, Copy, Trash2, Share2, HeartCrack } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { getAllQuotes } from '@/lib/dados';
 
 // Definindo o tipo localmente para quebrar a cadeia de importação.
 interface QuoteWithAuthor {
@@ -20,14 +21,15 @@ interface QuoteWithAuthor {
 }
 
 // Componente Cliente para a página de favoritos
-export function FavoritesClientPage({ allQuotes }: { allQuotes: QuoteWithAuthor[] }) {
+export function FavoritesClientPage() {
   const { favorites, removeFavorite } = useFavorites();
   const { toast } = useToast();
   
   const favoriteQuotes = useMemo(() => {
+    const allQuotes = getAllQuotes();
     if (!allQuotes) return [];
     return allQuotes.filter(quote => favorites.includes(quote.id));
-  }, [allQuotes, favorites]);
+  }, [favorites]);
 
 
   const handleCopy = (text: string, author?: string) => {

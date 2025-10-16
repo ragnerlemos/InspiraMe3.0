@@ -31,13 +31,3 @@ export function getCategories(): CategoriesHierarchy {
 
     return categories;
 }
-
-export function getQuotesForCategory(category: string): QuoteWithAuthor[] {
-    const allQuotes = getAllQuotes();
-    return allQuotes.filter(q => q.subCategory === category || q.category === category);
-}
-
-export function getQuotesForMainCategory(mainCategory: string): QuoteWithAuthor[] {
-    const allQuotes = getAllQuotes();
-    return allQuotes.filter(q => q.category === mainCategory);
-}
