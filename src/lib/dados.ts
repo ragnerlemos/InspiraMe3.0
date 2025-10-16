@@ -6,13 +6,10 @@ interface CategoriesHierarchy {
   [mainCategory: string]: string[];
 }
 
-// Esta função agora busca as frases de uma API route
 export async function getAllQuotes(): Promise<QuoteWithAuthor[]> {
-    // Simula uma chamada assíncrona
     return Promise.resolve(quotes);
 }
 
-// Função para buscar as categorias a partir das frases locais
 export async function getCategories(): Promise<CategoriesHierarchy> {
     const allQuotes = await getAllQuotes();
     const categories: CategoriesHierarchy = {};
@@ -35,13 +32,11 @@ export async function getCategories(): Promise<CategoriesHierarchy> {
     return categories;
 }
 
-// Função para buscar frases por subcategoria ou categoria principal
 export async function getQuotesForCategory(category: string): Promise<QuoteWithAuthor[]> {
     const allQuotes = await getAllQuotes();
     return allQuotes.filter(q => q.subCategory === category || q.category === category);
 }
 
-// Função para buscar frases por categoria principal
 export async function getQuotesForMainCategory(mainCategory: string): Promise<QuoteWithAuthor[]> {
     const allQuotes = await getAllQuotes();
     return allQuotes.filter(q => q.category === mainCategory);

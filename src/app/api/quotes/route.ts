@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { quotes } from '@/lib/quotes';
+import { getAllQuotes } from '@/lib/dados';
 
 export async function GET(request: Request) {
     try {
@@ -8,20 +8,23 @@ export async function GET(request: Request) {
         const category = url.searchParams.get("category");
         const mainCategory = url.searchParams.get("mainCategory");
 
-        let filteredQuotes = quotes;
+        let quotes = await getAllQuotes();
 
         if (category) {
-            filteredQuotes = quotes.filter(q => q.subCategory === category || q.category === category);
+            quotes = quotes.filter(q => q.subCategory === category || q.category === category);
         }
 
         if (mainCategory) {
-            filteredQuotes = quotes.filter(q => q.category === mainCategory);
+            quotes = quotes.filter(q => q.category === mainCategory);
         }
 
-        return NextResponse.json(filteredQuotes);
+        return NextResponse.json(quotes);
 
-    } catch (error) {
+    } catch (error)
+        {
         console.error('Error fetching quotes:', error);
-        return NextResponse.json({ error: 'Error fetching quotes' }, { status: 500 });
+        // Se houver um erro, retorne um array vazio ou uma mensagem de erro.
+        // Evite retornar um erro 500 genérico se possível.
+        return NextResponse.json({ error: 'Failed to fetch quotes' }, { status: 500 });
     }
 }
