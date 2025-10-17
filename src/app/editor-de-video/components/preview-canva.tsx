@@ -98,7 +98,8 @@ export function PreviewCanva(props: PreviewCanvaProps) {
           ref={containerRef}
           id="editor-preview-content"
           className={cn(
-            "relative shadow-2xl rounded-xl overflow-hidden w-[400px]",
+            "relative shadow-2xl rounded-xl overflow-hidden",
+            aspectRatio?.replace(/\s/g, "") === '9/16' ? 'w-[340px]' : 'w-[400px]',
             {
               "aspect-square": aspectRatio?.replace(/\s/g, "") === "1/1",
               "aspect-[9/16]": aspectRatio?.replace(/\s/g, "") === "9/16",

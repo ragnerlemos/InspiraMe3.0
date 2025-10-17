@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Itens de navegação exibidos no cabeçalho.
 const navItems = [
@@ -74,6 +75,10 @@ export function EditorHeader() {
                            Exportar Vídeo (MP4)
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => alert("Salvar projeto")}>
+                           <Clapperboard className="mr-2 h-4 w-4" />
+                           Salvar Projeto
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={onSaveAsTemplate}>Salvar como Modelo</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -164,13 +169,15 @@ export function AppHeader() {
                 <span className="sr-only">Abrir menu de navegação</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="flex flex-col">
                 <SheetHeader>
                     <SheetTitle>Navegação</SheetTitle>
                 </SheetHeader>
-                <nav className="grid gap-2 text-lg font-medium pt-8">
-                     {renderNavLinks(true)}
-                </nav>
+                <ScrollArea className="flex-1 -mr-4 pr-4">
+                  <nav className="grid gap-2 text-lg font-medium pt-8">
+                       {renderNavLinks(true)}
+                  </nav>
+                </ScrollArea>
             </SheetContent>
           </Sheet>
         </div>

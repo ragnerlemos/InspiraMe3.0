@@ -228,7 +228,11 @@ export function FrasesClientPage({
         <div className="container mx-auto py-8 px-4">
           <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
             <aside className="hidden md:block">
-              <div className="sticky top-24">{renderFilters()}</div>
+              <div className="sticky top-24">
+                <ScrollArea className="h-[calc(100vh-10rem)] -mr-4 pr-4">
+                  {renderFilters()}
+                </ScrollArea>
+              </div>
             </aside>
             <div>
               <div className="w-full mb-8 flex justify-between items-center">
