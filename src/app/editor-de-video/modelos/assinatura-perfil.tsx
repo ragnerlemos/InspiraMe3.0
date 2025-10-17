@@ -10,6 +10,10 @@ interface AssinaturaPerfilProps {
   showPhoto?: boolean;
   showUsername?: boolean;
   showSocial?: boolean;
+  showBackground?: boolean;
+  bgColor?: string;
+  bgOpacity?: number;
+  layout?: 'horizontal' | 'vertical';
 }
 
 export function AssinaturaPerfil({
@@ -34,7 +38,7 @@ export function AssinaturaPerfil({
 
       {/* 🔸 BLOCO DE TEXTO (NOME + REDE SOCIAL) */}
       {(showUsername || showSocial) && (
-        <div className="flex flex-col justify-center leading-none">
+        <div className="flex flex-col justify-center">
           {/* Nome */}
           {showUsername && (
             <p className="font-bold text-base m-0 leading-none">
