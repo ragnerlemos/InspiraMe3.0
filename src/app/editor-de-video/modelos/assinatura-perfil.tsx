@@ -59,18 +59,20 @@ export function AssinaturaPerfil({
         </Avatar>
       )}
       
-      <div className="flex flex-col justify-center">
-        {showUsername && (
-          <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
-            {profile.username}
-          </p>
-        )}
-        {showSocial && (
-          <p className="text-gray-300 text-xs leading-tight m-0 p-0 mt-[2px]">
-            {profile.social}
-          </p>
-        )}
-      </div>
+      {(showUsername || showSocial) && (
+        <div className="flex flex-col justify-center">
+          {showUsername && (
+            <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
+              {profile.username}
+            </p>
+          )}
+          {showSocial && (
+            <p className="text-gray-300 text-xs leading-tight m-0 p-0 mt-[2px]">
+              {profile.social}
+            </p>
+          )}
+        </div>
+      )}
 
        {shouldShowIcon && (
          <div className="pl-2 flex items-center justify-center">
