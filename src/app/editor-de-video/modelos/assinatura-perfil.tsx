@@ -20,7 +20,7 @@ export function AssinaturaPerfil({
 }: AssinaturaPerfilProps) {
   return (
     <div className="flex items-center gap-3 p-2 text-white">
-      {/* Avatar */}
+      {/* Bloco do Avatar */}
       {showPhoto && (
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
@@ -30,9 +30,9 @@ export function AssinaturaPerfil({
         </Avatar>
       )}
 
-      {/* Nome e rede social agrupados */}
+      {/* Bloco de Texto (Nome e Rede Social) */}
       {(showUsername || showSocial) && (
-        <div className="flex flex-col">
+        <div className="flex flex-col justify-center">
           {showUsername && (
             <p className="font-bold text-base leading-tight">
               {profile.username}
