@@ -19,29 +19,27 @@ export function AssinaturaPerfil({
   showSocial = true,
 }: AssinaturaPerfilProps) {
   return (
-    <div className="flex items-center p-2 text-white">
+    <div className="flex items-center gap-3 p-2 text-white">
       {/* Avatar */}
       {showPhoto && (
-        <div className="flex-shrink-0">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={profile.photo || ""} alt={profile.username} />
-            <AvatarFallback>
-              <User />
-            </AvatarFallback>
-          </Avatar>
-        </div>
+        <Avatar className="h-10 w-10 flex-shrink-0">
+          <AvatarImage src={profile.photo || ""} alt={profile.username} />
+          <AvatarFallback>
+            <User />
+          </AvatarFallback>
+        </Avatar>
       )}
 
-      {/* Nome e rede social centralizados */}
+      {/* Nome e rede social agrupados */}
       {(showUsername || showSocial) && (
-        <div className="flex flex-col justify-center ml-3">
+        <div className="flex flex-col">
           {showUsername && (
-            <p className="font-bold text-base leading-none m-0">
+            <p className="font-bold text-base leading-tight">
               {profile.username}
             </p>
           )}
           {showSocial && (
-            <p className="text-sm opacity-80 leading-none mt-[2px] m-0">
+            <p className="text-sm opacity-80 leading-tight">
               {profile.social}
             </p>
           )}
