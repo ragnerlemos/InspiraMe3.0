@@ -59,7 +59,7 @@ export function AssinaturaPerfil({
         </Avatar>
       )}
       
-      <div className="flex flex-col justify-center transform-gpu translate-y-[-1px]">
+      <div className="flex flex-col justify-center">
         {showUsername && (
           <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
             {profile.username}
