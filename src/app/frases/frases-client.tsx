@@ -94,19 +94,23 @@ export function FrasesClientPage({
         await navigator.share(shareData);
       } else {
         // Fallback para desktops ou navegadores sem suporte
-        navigator.clipboard.writeText(shareText);
+        handleCopy(text, author);
         toast({
           title: 'Copiado!',
-          description: 'O compartilhamento não é suportado neste navegador. A frase foi copiada para a área de transferência.',
+          description: 'O compartilhamento não é suportado, então a frase foi copiada.',
         });
       }
     } catch (error) {
-      console.error('Erro ao compartilhar', error);
-      toast({
-        variant: 'destructive',
-        title: 'Erro',
-        description: 'Não foi possível compartilhar a frase.',
-      });
+        // Se o usuário cancelar o compartilhamento ou ocorrer um erro, copia para a área de transferência como fallback.
+        if (error instanceof DOMException && error.name === 'AbortError') {
+            console.log('Compartilhamento cancelado pelo usuário.');
+            return;
+        }
+        handleCopy(text, author);
+        toast({
+            title: 'Copiado!',
+            description: 'Não foi possível compartilhar. A frase foi copiada para a área de transferência.',
+        });
     }
   };
 
