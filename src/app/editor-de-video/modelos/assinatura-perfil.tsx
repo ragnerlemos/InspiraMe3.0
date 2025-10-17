@@ -45,7 +45,7 @@ export function AssinaturaPerfil({
 
   return (
     <div 
-        className="flex items-start gap-3 p-3 rounded-lg max-w-max"
+        className="flex items-center gap-3 p-3 rounded-lg max-w-max"
         style={{
             backgroundColor: showBackground ? backgroundColor : 'transparent',
         }}
@@ -59,14 +59,14 @@ export function AssinaturaPerfil({
         </Avatar>
       )}
       
-      <div className="flex flex-col justify-start pt-1">
+      <div className="flex flex-col justify-center leading-none">
         {showUsername && (
           <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
             {profile.username}
           </p>
         )}
         {showSocial && (
-          <p className="text-gray-300 text-xs leading-tight m-0 p-0 mt-[2px]">
+          <p className="text-gray-300 text-xs leading-none m-0 p-0 mt-[2px]">
             {profile.social}
           </p>
         )}

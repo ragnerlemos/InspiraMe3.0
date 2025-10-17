@@ -80,14 +80,10 @@ export function ModeloPadrao({
           style={{
             top: `${signaturePositionY}%`,
             left: `${signaturePositionX}%`,
-            transform: 'translate(-50%, -50%)',
+            transform: `translate(-50%, -50%) scale(${signatureScale / 100})`,
+            transformOrigin: 'center center',
           }}
         >
-          <div
-            style={{
-              transform: `scale(${signatureScale / 100})`,
-            }}
-          >
             <AssinaturaPerfil
               profile={profile}
               showPhoto={showSignaturePhoto}
@@ -97,7 +93,6 @@ export function ModeloPadrao({
               bgColor={signatureBgColor}
               bgOpacity={signatureBgOpacity}
             />
-          </div>
         </div>
       )}
     </div>
