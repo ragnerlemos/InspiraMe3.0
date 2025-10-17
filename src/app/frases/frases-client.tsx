@@ -87,7 +87,6 @@ export function FrasesClientPage({
     const shareData = {
       title: 'InspireMe',
       text: shareText,
-      url: window.location.origin,
     };
     
     if (navigator.share) {
@@ -98,21 +97,13 @@ export function FrasesClientPage({
                 // O usuário cancelou o compartilhamento, não faz nada.
                 return;
             }
-            // Para outros erros, talvez um fallback seja necessário, mas não copiar automaticamente.
-            console.error("Erro ao compartilhar:", error);
-             toast({
-                variant: "destructive",
-                title: 'Erro ao compartilhar',
-                description: 'Não foi possível abrir a janela de compartilhamento.',
-            });
+            // Fallback para outros erros, como permissão negada ou API indisponível
+            console.error("Erro ao compartilhar, usando fallback de cópia:", error);
+            handleCopy(text, author);
         }
     } else {
       // Fallback para desktops ou navegadores sem suporte
       handleCopy(text, author);
-      toast({
-        title: 'Copiado!',
-        description: 'O compartilhamento não é suportado neste navegador, a frase foi copiada.',
-      });
     }
   };
 
