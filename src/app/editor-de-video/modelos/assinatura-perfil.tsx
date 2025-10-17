@@ -53,53 +53,53 @@ export function AssinaturaPerfil({
   return (
     <div
       className={cn(
-        "flex p-3 rounded-lg max-w-max",
-        layout === "vertical"
-          ? "flex-col items-center gap-2"
-          : "flex-row items-center gap-3"
+        "p-3 rounded-lg max-w-max",
+        layout === "vertical" ? "flex flex-col items-center" : ""
       )}
       style={{
         backgroundColor: showBackground ? backgroundColor : "transparent",
       }}
     >
-      {showPhoto && (
-        <Avatar className="h-12 w-12 flex-shrink-0">
-          <AvatarImage src={profile.photo || ""} alt={profile.username} />
-          <AvatarFallback>
-            <User className="text-white" />
-          </AvatarFallback>
-        </Avatar>
-      )}
+      <div className={cn("flex items-center", layout === 'vertical' ? 'flex-col gap-2' : 'flex-row gap-3')}>
+        {showPhoto && (
+          <Avatar className="h-12 w-12 flex-shrink-0">
+            <AvatarImage src={profile.photo || ""} alt={profile.username} />
+            <AvatarFallback>
+              <User className="text-white" />
+            </AvatarFallback>
+          </Avatar>
+        )}
 
-      {(showUsername || showSocial) && (
-        <div
-          className={cn(
-            "flex flex-col text-white",
-            layout === "vertical" ? "items-center text-center" : "items-start"
-          )}
-        >
-          {showUsername && (
-            <span className="font-bold text-base leading-none whitespace-nowrap">
-              {profile.username}
-            </span>
-          )}
-          {showSocial && (
-            <span className="text-gray-300 text-sm leading-none whitespace-nowrap">
-              {profile.social}
-            </span>
-          )}
-        </div>
-      )}
+        {(showUsername || showSocial) && (
+          <div
+            className={cn(
+              "flex flex-col text-white",
+              layout === "vertical" ? "items-center text-center" : "items-start"
+            )}
+          >
+            {showUsername && (
+              <span className="font-bold text-base leading-none whitespace-nowrap">
+                {profile.username}
+              </span>
+            )}
+            {showSocial && (
+              <span className="text-gray-300 text-sm leading-none whitespace-nowrap">
+                {profile.social}
+              </span>
+            )}
+          </div>
+        )}
 
-      {shouldShowIcon && (
-        <div className="pl-2 flex items-center justify-center">
-          {profile.iconUrl ? (
-            <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
-          ) : (
-            <Twitter className="h-5 w-5 text-blue-400" />
-          )}
-        </div>
-      )}
+        {shouldShowIcon && (
+          <div className="pl-2 flex items-center justify-center">
+            {profile.iconUrl ? (
+              <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
+            ) : (
+              <Twitter className="h-5 w-5 text-blue-400" />
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
