@@ -66,14 +66,14 @@ export function AssinaturaPerfil({
           </p>
         )}
         {showSocial && (
-          <p className="text-gray-300 text-xs leading-none m-0 p-0 mt-[2px]">
+          <p className="text-gray-300 text-xs leading-tight m-0 p-0 mt-1">
             {profile.social}
           </p>
         )}
       </div>
 
        {shouldShowIcon && (
-         <div className="pl-2 flex items-center justify-center h-10">
+         <div className="pl-2 flex items-center justify-center">
             {profile.iconUrl ? (
                 <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
             ) : (
