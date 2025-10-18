@@ -6,6 +6,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState } from '../tipos';
 import { captureAndDownload, captureThumbnail } from '../exportar';
+import { useProfile } from '@/hooks/use-profile';
+import { useWindowSize } from 'react-use';
+
 
 // Interface for the shared editor state and controls
 export interface EditorContextType {
@@ -71,10 +74,61 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const { toast } = useToast();
   const { addTemplate } = useTemplates();
+  const { profile } = useProfile();
+  const { width: windowWidth } = useWindowSize();
 
   const currentState = history[currentStateIndex] || null;
   const canUndo = currentStateIndex > 0;
   const canRedo = currentStateIndex < history.length - 1;
+
+    // A lógica para calcular o textStyle foi movida para dentro do contexto
+    // para que possa ser passada para as funções de exportação.
+    const textStyle = useMemo(() => {
+        if (!currentState) return {};
+        const [aspectW, aspectH] = currentState.aspectRatio.replace(/\s/g, "").split('/').map(Number);
+        const isVertical = aspectH > aspectW;
+        
+        // Simula uma largura de contêiner. Para exportação, usamos uma base fixa (ex: 1080px).
+        // Para a tela, podemos usar uma aproximação baseada na largura da janela.
+        const containerWidth = 1080; // Largura base para cálculo de exportação
+        const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
+
+        const createTextStrokeShadow = (strokeWidth: number, color: string): string => {
+            if (strokeWidth === 0) return "none";
+            const strokeWidthPx = (strokeWidth / 100) * calculatedFontSize * 0.2;
+            if (strokeWidthPx === 0) return "none";
+
+            const shadows = [];
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * 2 * Math.PI;
+                shadows.push(`${(Math.cos(angle) * strokeWidthPx).toFixed(2)}px ${(Math.sin(angle) * strokeWidthPx).toFixed(2)}px 0 ${color}`);
+            }
+            return shadows.join(', ');
+        };
+
+        const createMainShadow = (blur: number): string => {
+            if (blur === 0) return "none";
+            const shadowBlurPx = (blur / 100) * calculatedFontSize;
+            return `0 0 ${shadowBlurPx}px rgba(0,0,0,0.5)`;
+        };
+
+        const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
+        const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0);
+
+        return {
+            fontFamily: currentState.fontFamily,
+            fontSize: `${calculatedFontSize}px`,
+            fontWeight: currentState.fontWeight,
+            fontStyle: currentState.fontStyle,
+            color: currentState.textColor,
+            textAlign: currentState.textAlign,
+            lineHeight: currentState.lineHeight,
+            letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
+            wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
+            textShadow: textStrokeShadow !== "none" && mainTextShadow !== "none" ? `${textStrokeShadow}, ${mainTextShadow}` : textStrokeShadow !== "none" ? textStrokeShadow : mainTextShadow,
+        };
+    }, [currentState, windowWidth]);
+
 
   const setInitialState = useCallback((initialState: EditorState) => {
     setHistory([initialState]);
@@ -103,20 +157,28 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   }, [canRedo, currentStateIndex]);
 
   const onSaveAsTemplate = useCallback(async () => {
-    if (!currentState) return;
+    if (!currentState || !profile) return;
     const templateName = prompt("Digite um nome para o novo modelo:");
     if (!templateName) return;
 
-    const thumbnail = await captureThumbnail(toast);
+    const thumbnail = await captureThumbnail(toast, currentState, profile, textStyle);
     if (!thumbnail) return;
     
     addTemplate(templateName, currentState, thumbnail);
     toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
 
-  }, [addTemplate, currentState, toast]);
+  }, [addTemplate, currentState, toast, profile, textStyle]);
 
-  const onExportJPG = useCallback(() => captureAndDownload('jpeg', toast), [toast]);
-  const onExportPNG = useCallback(() => captureAndDownload('png', toast), [toast]);
+  const onExportJPG = useCallback(() => {
+      if(!currentState || !profile) return;
+      captureAndDownload('jpeg', toast, currentState, profile, textStyle)
+  }, [toast, currentState, profile, textStyle]);
+  
+  const onExportPNG = useCallback(() => {
+      if(!currentState || !profile) return;
+      captureAndDownload('png', toast, currentState, profile, textStyle)
+  }, [toast, currentState, profile, textStyle]);
+
 
   const onExportMP4 = useCallback(() => {
     toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
@@ -152,3 +214,5 @@ export function useEditor() {
   }
   return context;
 }
+
+    
