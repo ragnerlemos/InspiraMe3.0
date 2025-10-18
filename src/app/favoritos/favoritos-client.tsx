@@ -52,11 +52,20 @@ export function FavoritesClientPage() {
 
   const handleCopy = (text: string, author?: string) => {
     const textToCopy = author ? `${text} - ${author}` : text;
-    navigator.clipboard.writeText(textToCopy);
-    toast({
-      title: "Copiado!",
-      description: "A frase foi copiada para a área de transferência.",
-    });
+    try {
+      navigator.clipboard.writeText(textToCopy);
+      toast({
+        title: "Copiado!",
+        description: "A frase foi copiada para a área de transferência.",
+      });
+    } catch (err) {
+      console.error('Falha ao copiar:', err);
+      toast({
+        title: 'Erro ao Copiar',
+        description: 'Não foi possível copiar para a área de transferência.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleRemove = (id: string) => {
@@ -155,7 +164,7 @@ export function FavoritesClientPage() {
             <p className="text-muted-foreground mb-6">
               Clique no ícone de coração (❤️) em uma frase para adicioná-la aqui.
             </p>
-            <Link href="/" passHref>
+            <Link href="/frases" passHref>
               <Button>Encontrar Inspiração</Button>
             </Link>
           </div>

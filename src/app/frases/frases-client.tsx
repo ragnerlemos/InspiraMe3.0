@@ -73,11 +73,20 @@ export function FrasesClientPage({
 
   const handleCopy = (text: string, author?: string) => {
     const textToCopy = author ? `${text} - ${author}` : text;
-    navigator.clipboard.writeText(textToCopy);
-    toast({
-      title: 'Copiado!',
-      description: 'A frase foi copiada para a sua área de transferência.',
-    });
+    try {
+      navigator.clipboard.writeText(textToCopy);
+      toast({
+        title: 'Copiado!',
+        description: 'A frase foi copiada para a sua área de transferência.',
+      });
+    } catch (err) {
+      console.error('Falha ao copiar:', err);
+      toast({
+        title: 'Erro ao Copiar',
+        description: 'Não foi possível copiar para a área de transferência.',
+        variant: 'destructive',
+      });
+    }
   };
 
  const handleShare = async (text: string, author?: string) => {
