@@ -45,10 +45,10 @@ export function AssinaturaPerfil({
 
   return (
     <div 
-        className="flex items-center gap-3 p-3 rounded-lg max-w-max"
-        style={{
-            backgroundColor: showBackground ? backgroundColor : 'transparent',
-        }}
+      className="flex items-center gap-3 p-3 rounded-lg max-w-max"
+      style={{
+        backgroundColor: showBackground ? backgroundColor : 'transparent',
+      }}
     >
       {showPhoto && (
         <Avatar className="h-10 w-10 flex-shrink-0">
@@ -58,28 +58,26 @@ export function AssinaturaPerfil({
           </AvatarFallback>
         </Avatar>
       )}
-      
-      <div className="flex flex-col justify-center transform-gpu translate-y-[1px]">
-        {showUsername && (
-          <p className="font-bold text-white text-sm leading-none m-0 p-0 whitespace-nowrap">
-            {profile.username}
-          </p>
-        )}
-        {showSocial && (
-          <p className="text-gray-300 text-xs leading-tight m-0 p-0 mt-1">
-            {profile.social}
-          </p>
-        )}
-      </div>
 
-       {shouldShowIcon && (
-         <div className="pl-2 flex items-center justify-center">
-            {profile.iconUrl ? (
-                <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
-            ) : (
-                <Twitter className="h-5 w-5 text-blue-400" />
-            )}
-         </div>
+      {(showUsername || showSocial) && (
+        <div className="flex flex-col justify-center text-white leading-tight">
+          {showUsername && (
+            <p className="font-bold text-sm m-0 p-0">{profile.username}</p>
+          )}
+          {showSocial && (
+            <p className="text-gray-300 text-xs m-0 p-0">{profile.social}</p>
+          )}
+        </div>
+      )}
+
+      {shouldShowIcon && (
+        <div className="pl-2 flex items-center justify-center">
+          {profile.iconUrl ? (
+            <img src={profile.iconUrl} alt="Ícone social" className="h-5 w-5" />
+          ) : (
+            <Twitter className="h-5 w-5 text-blue-400" />
+          )}
+        </div>
       )}
     </div>
   );
