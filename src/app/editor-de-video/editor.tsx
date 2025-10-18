@@ -149,11 +149,10 @@ export default function Editor() {
         const shadowOpacity = opacity / 100;
         
         // Sombra forte, projetada para baixo.
-        const blurAmount = (blur / 100) * (calculatedFontSize * 0.4); // Desfoque mais expansivo
-        const offsetY = blurAmount * 0.4; // Deslocamento vertical mais pronunciado
-        const offsetX = 0; // Sem deslocamento horizontal para um efeito 'drop'
+        const blurAmount = (blur / 100) * (calculatedFontSize * 0.4); 
+        const offsetY = blurAmount * 0.4;
+        const offsetX = 0;
         
-        // Cor preta sólida com a opacidade controlada
         return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity * 1.5})`;
     };
 
