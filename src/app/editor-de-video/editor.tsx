@@ -147,10 +147,13 @@ export default function Editor() {
     const createMainShadow = (blur: number, opacity: number): string => {
         if (opacity === 0) return "none";
         const shadowOpacity = opacity / 100;
-        const shadowBlurPx = (blur / 100) * calculatedFontSize;
-        const baseOffset = Math.max(1, (calculatedFontSize / 50));
         
-        return `${baseOffset.toFixed(2)}px ${baseOffset.toFixed(2)}px ${shadowBlurPx.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
+        // Ajuste a força do desfoque e do deslocamento com base no tamanho da fonte
+        const blurAmount = (blur / 100) * (calculatedFontSize * 0.2);
+        const offsetY = blurAmount * 0.5; // Deslocamento vertical mais pronunciado
+        const offsetX = blurAmount * 0.2; // Deslocamento horizontal sutil
+        
+        return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
     };
 
     const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
@@ -253,5 +256,7 @@ export default function Editor() {
     </div>
   );
 }
+
+    
 
     
