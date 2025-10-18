@@ -12,6 +12,7 @@ import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar, 
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
+import html2canvas from 'html2canvas';
 
 function ProfileSkeleton() {
     return (
@@ -71,147 +72,37 @@ export default function ProfilePage() {
   const handleExport = async () => {
     const element = document.getElementById('profile-preview-export');
     if (!element) {
-        toast({ variant: 'destructive', title: 'Erro', description: 'Elemento de preview não encontrado.' });
-        return;
+      toast({ variant: 'destructive', title: 'Erro', description: 'Elemento de preview não encontrado.' });
+      return;
     }
-
+  
     setIsExporting(true);
+  
     try {
-        if (document.fonts && document.fonts.ready) await document.fonts.ready;
-
-        const avatarEl = document.getElementById('profile-preview-avatar-img') as HTMLImageElement | null;
-        const usernameEl = document.getElementById('profile-preview-username');
-        const socialEl = document.getElementById('profile-preview-social');
-        const quoteEl = document.getElementById('profile-preview-quote');
-
-        const username = usernameEl?.textContent || profile.username;
-        const social = socialEl?.textContent || profile.social;
-        const quote = quoteEl?.textContent || '"A única maneira de fazer um ótimo trabalho é amar o que você faz."';
-        
-        const usernameStyle = usernameEl ? getComputedStyle(usernameEl) : { fontFamily: 'Poppins, sans-serif', fontSize: '16px', fontWeight: '600', color: 'hsl(var(--foreground))' } as any;
-        const socialStyle = socialEl ? getComputedStyle(socialEl) : { fontFamily: 'PT Sans, sans-serif', fontSize: '14px', color: 'hsl(var(--muted-foreground))' } as any;
-        const quoteStyle = quoteEl ? getComputedStyle(quoteEl) : { fontFamily: 'PT Sans, sans-serif', fontSize: '16px', color: 'hsl(var(--foreground))' } as any;
-        const cardStyle = getComputedStyle(element);
-
-        const rect = element.getBoundingClientRect();
-        const svgWidth = rect.width;
-        const svgHeight = rect.height;
-        const padding = 24; 
-        const avatarSize = 40;
-
-        const loadImageAsDataURL = (src?: string | null) =>
-            new Promise<string | null>((resolve) => {
-                if (!src) return resolve(null);
-                const img = new Image();
-                img.crossOrigin = 'Anonymous';
-                img.onload = () => {
-                    try {
-                        const c = document.createElement('canvas');
-                        c.width = img.naturalWidth;
-                        c.height = img.naturalHeight;
-                        const ctx = c.getContext('2d');
-                        if (!ctx) return resolve(null);
-                        ctx.drawImage(img, 0, 0);
-                        resolve(c.toDataURL('image/png'));
-                    } catch (e) { resolve(null); }
-                };
-                img.onerror = () => resolve(null);
-                img.src = src;
-            });
-        
-        const avatarDataUrl = await loadImageAsDataURL(avatarEl?.src || profile.photo);
-
-        const esc = (s: string) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-        const wrapText = (text: string, maxWidth: number, fontSize: string, fontFamily: string) => {
-            const words = text.split(' ');
-            const lines: string[] = [];
-            let currentLine = words[0];
-            const tempSpan = document.createElement("span");
-            tempSpan.style.fontFamily = fontFamily;
-            tempSpan.style.fontSize = fontSize;
-            tempSpan.style.visibility = 'hidden';
-            tempSpan.style.position = 'absolute';
-            document.body.appendChild(tempSpan);
-
-            for (let i = 1; i < words.length; i++) {
-                const word = words[i];
-                tempSpan.textContent = currentLine + " " + word;
-                if (tempSpan.getBoundingClientRect().width > maxWidth) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine += " " + word;
-                }
-            }
-            lines.push(currentLine);
-            document.body.removeChild(tempSpan);
-            return lines;
-        }
-
-        const quoteLines = wrapText(quote, svgWidth - padding * 2, quoteStyle.fontSize, quoteStyle.fontFamily);
-        const quoteLineHeight = parseFloat(quoteStyle.fontSize || '16') * 1.5;
-
-        const svg = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
-                <defs>
-                    <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght=600&family=PT+Sans:wght@400&display=swap');
-                    </style>
-                </defs>
-                <rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" rx="${parseFloat(cardStyle.borderRadius || '8')}" fill="${cardStyle.backgroundColor || 'white'}" />
-                
-                <g transform="translate(${padding}, ${padding})">
-                    ${avatarDataUrl ? `<image href="${avatarDataUrl}" x="0" y="0" width="${avatarSize}" height="${avatarSize}" clip-path="circle(${avatarSize / 2}px at ${avatarSize / 2}px ${avatarSize / 2}px)" />` : `<circle cx="${avatarSize / 2}" cy="${avatarSize / 2}" r="${avatarSize / 2}" fill="#ccc"/>`}
-                    
-                    <text x="${avatarSize + 12}" y="${avatarSize / 2}" dominant-baseline="middle" font-family="${usernameStyle.fontFamily}" font-size="${usernameStyle.fontSize}" font-weight="${usernameStyle.fontWeight}" fill="${usernameStyle.color}">${esc(username)}</text>
-                    <text x="${avatarSize + 12}" y="${avatarSize / 2 + 18}" dominant-baseline="middle" font-family="${socialStyle.fontFamily}" font-size="${socialStyle.fontSize}" fill="${socialStyle.color}">${esc(social)}</text>
-
-                    <g transform="translate(0, ${avatarSize + 24})">
-                        ${quoteLines.map((line, i) => `<text x="0" y="${i * quoteLineHeight}" font-family="${quoteStyle.fontFamily}" font-size="${quoteStyle.fontSize}" fill="${quoteStyle.color}">${esc(line)}</text>`).join('')}
-                    </g>
-                </g>
-            </svg>
-        `;
-
-        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
-        const img = new Image();
-        img.onload = () => {
-            try {
-                const canvas = document.createElement('canvas');
-                canvas.width = svgWidth * 2;
-                canvas.height = svgHeight * 2;
-                const ctx = canvas.getContext('2d');
-                if (!ctx) throw new Error('Contexto do canvas indisponível.');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `meu-perfil-inspireme.png`;
-                link.href = dataUrl;
-                link.click();
-                URL.revokeObjectURL(url);
-                toast({ title: 'Sucesso!', description: 'A imagem do perfil foi salva.' });
-            } catch (e) {
-                toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Falha ao converter SVG para PNG.' });
-            } finally {
-                setIsExporting(false);
-            }
-        };
-        img.onerror = (e) => {
-            console.error(e)
-            URL.revokeObjectURL(url);
-            setIsExporting(false);
-            toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Falha ao carregar a imagem SVG gerada.' });
-        }
-        img.src = url;
-
+      // Espera fontes carregarem (garante tipografia correta)
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  
+      // Captura o card como imagem
+      const canvas = await html2canvas(element, {
+        scale: 2, // melhora resolução
+        backgroundColor: null, // mantém fundo transparente
+        useCORS: true, // permite imagens externas
+      });
+  
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `meu-perfil-inspireme.png`;
+      link.href = dataUrl;
+      link.click();
+  
+      toast({ title: 'Sucesso!', description: 'A imagem do perfil foi salva com sucesso.' });
     } catch (error) {
-        console.error("Erro ao exportar perfil:", error);
-        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Ocorreu um problema ao gerar a imagem.' });
-        setIsExporting(false);
+      console.error('Erro ao exportar perfil:', error);
+      toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
+    } finally {
+      setIsExporting(false);
     }
-};
+  };
 
 
   if (!isLoaded) {
