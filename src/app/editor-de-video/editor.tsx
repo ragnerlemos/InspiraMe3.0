@@ -128,24 +128,31 @@ export default function Editor() {
     const containerWidth = previewContainerRef.current.offsetWidth;
     const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
 
-    const createTextStrokeShadow = (width: number, color: string): string => {
-        if (width <= 0) return 'none';
-        const w = (width / 1000) * calculatedFontSize;
-        // Técnica de text-stroke usando text-shadow
-        return `
-            -${w}px -${w}px 0 ${color},
-             ${w}px -${w}px 0 ${color},
-            -${w}px  ${w}px 0 ${color},
-             ${w}px  ${w}px 0 ${color}
-        `;
+    const createTextStrokeShadow = (strokeWidth: number, color: string): string => {
+        if (strokeWidth <= 0) return 'none';
+        // Ajustamos o `w` para ser mais sensível
+        const w = (strokeWidth / 1000) * calculatedFontSize;
+        const shadows = [];
+        // Aumentamos o número de pontos para um contorno mais denso
+        const numPoints = 12;
+        for (let i = 0; i < numPoints; i++) {
+            const angle = (i / numPoints) * 2 * Math.PI;
+            const x = Math.cos(angle) * w;
+            const y = Math.sin(angle) * w;
+            shadows.push(`${x.toFixed(2)}px ${y.toFixed(2)}px 0 ${color}`);
+        }
+        return shadows.join(', ');
     };
 
     const createMainShadow = (blur: number, opacity: number): string => {
         if (opacity <= 0) return 'none';
-        const b = blur * 2; // Ajusta o blur para ser mais visível
-        const offset = b * 0.5;
-        const alpha = opacity / 100;
-        return `${offset}px ${offset}px ${b}px rgba(0,0,0,${alpha})`;
+        const shadowOpacity = opacity / 100;
+        // O desfoque agora é mais pronunciado
+        const blurAmount = (blur / 100) * (calculatedFontSize * 0.5);
+        // O deslocamento também é mais forte
+        const offsetY = blurAmount * 0.5;
+        const offsetX = blurAmount * 0.2;
+        return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
     };
 
     const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth, currentState.textStrokeColor);
