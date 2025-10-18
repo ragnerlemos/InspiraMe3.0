@@ -2,14 +2,14 @@
 "use client";
 
 import React, { useRef, useState } from 'react';
-import Image from 'next/image';
+import * as htmlToImage from 'html-to-image';
 import { useProfile } from '@/hooks/use-profile';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar, ImageUp } from 'lucide-react';
+import { User, Link as LinkIcon, Edit2, Upload, Twitter, Eye, EyeOff, Calendar, ImageUp, Download, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -39,6 +39,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const photoFileInputRef = useRef<HTMLInputElement>(null);
   const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleProfileChange = (field: keyof typeof profile, value: string | boolean) => {
     updateProfile({ [field]: value });
@@ -67,6 +68,42 @@ export default function ProfilePage() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleExport = async () => {
+    const element = document.getElementById('profile-preview-export');
+    if (!element) {
+        toast({ variant: 'destructive', title: 'Erro', description: 'Elemento de preview não encontrado.' });
+        return;
+    }
+
+    setIsExporting(true);
+    toast({ title: 'Exportando...', description: 'Gerando imagem do seu perfil, aguarde.' });
+
+    try {
+        await document.fonts.ready;
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        const dataUrl = await htmlToImage.toPng(element, {
+            quality: 1,
+            pixelRatio: 2,
+            cacheBust: true,
+        });
+
+        const link = document.createElement('a');
+        link.download = `meu-perfil-inspireme.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        toast({ title: 'Sucesso!', description: 'A imagem do perfil foi salva.' });
+
+    } catch (error) {
+        console.error("Erro ao exportar perfil:", error);
+        toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Ocorreu um problema ao gerar a imagem.' });
+    } finally {
+        setIsExporting(false);
+    }
+  };
+
 
   if (!isLoaded) {
       return <ProfileSkeleton />;
@@ -170,7 +207,7 @@ export default function ProfilePage() {
                       <p className="text-muted-foreground">{profile.social}</p>
 
                       <div className="mt-6 border-t pt-4">
-                          <Card className="text-left">
+                          <Card id="profile-preview-export" className="text-left">
                               <CardHeader className="p-4">
                                   <div className="flex items-start gap-3">
                                       <Avatar>
@@ -202,6 +239,12 @@ export default function ProfilePage() {
                           </Card>
                       </div>
                   </CardContent>
+                  <CardFooter>
+                    <Button onClick={handleExport} disabled={isExporting} className="w-full">
+                        {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                        {isExporting ? 'Exportando...' : 'Exportar como PNG'}
+                    </Button>
+                  </CardFooter>
               </Card>
           </div>
         </div>
@@ -209,4 +252,3 @@ export default function ProfilePage() {
     </main>
   );
 }
-
