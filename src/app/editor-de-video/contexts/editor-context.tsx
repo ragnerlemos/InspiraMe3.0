@@ -97,25 +97,27 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
 
         const createTextStrokeShadow = (strokeWidth: number, color: string): string => {
-            if (strokeWidth === 0) return "none";
-            const strokeWidthPx = (strokeWidth / 100) * calculatedFontSize * 0.2;
-            if (strokeWidthPx === 0) return "none";
+            if (strokeWidth <= 0) return "none";
+            const strokeWidthPx = (strokeWidth / 1000) * calculatedFontSize;
+            if (strokeWidthPx <= 0) return "none";
 
             const shadows = [];
-            for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * 2 * Math.PI;
-                shadows.push(`${(Math.cos(angle) * strokeWidthPx).toFixed(2)}px ${(Math.sin(angle) * strokeWidthPx).toFixed(2)}px 0 ${color}`);
+            const numPoints = 12;
+            for (let i = 0; i < numPoints; i++) {
+                const angle = (i / numPoints) * 2 * Math.PI;
+                const x = Math.cos(angle) * strokeWidthPx;
+                const y = Math.sin(angle) * strokeWidthPx;
+                shadows.push(`${x.toFixed(2)}px ${y.toFixed(2)}px 0 ${color}`);
             }
             return shadows.join(', ');
         };
 
         const createMainShadow = (blur: number, opacity: number): string => {
-            if (blur === 0 && opacity === 0) return "none";
+            if (opacity === 0) return "none";
             const shadowOpacity = opacity / 100;
             const blurAmount = (blur / 100) * (calculatedFontSize * 0.4);
             const offsetY = blurAmount * 0.4;
-            const offsetX = 0; // Sombra diretamente abaixo
-            
+            const offsetX = 0;
             return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity * 1.5})`;
         };
 

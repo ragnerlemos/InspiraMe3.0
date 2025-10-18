@@ -147,12 +147,9 @@ export default function Editor() {
     const createMainShadow = (blur: number, opacity: number): string => {
         if (opacity === 0) return "none";
         const shadowOpacity = opacity / 100;
-        
-        // Sombra forte, projetada para baixo.
-        const blurAmount = (blur / 100) * (calculatedFontSize * 0.4); 
+        const blurAmount = (blur / 100) * (calculatedFontSize * 0.4);
         const offsetY = blurAmount * 0.4;
         const offsetX = 0;
-        
         return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity * 1.5})`;
     };
 
@@ -256,7 +253,3 @@ export default function Editor() {
     </div>
   );
 }
-
-    
-
-    
