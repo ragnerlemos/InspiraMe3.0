@@ -126,8 +126,8 @@ export default function AssinaturaPage() {
       // alinhamento vertical: calculamos o baseline do centro do bloco
       // colocar o username um pouco acima do centro e a rede social abaixo
       const centerY = svgHeight / 2;
-      const usernameY = centerY - (socialFontSize / 2); // aproximação
-      const socialY = centerY + (usernameFontSize / 2);
+      const usernameY = centerY - (socialFontSize / 2) + 1; // ajuste fino +1px
+      const socialY = centerY + (usernameFontSize / 2) + 1; // ajuste fino +1px
   
       // escapando texto para XML
       const esc = (s: string) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

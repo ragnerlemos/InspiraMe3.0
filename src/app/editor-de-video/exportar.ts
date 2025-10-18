@@ -1,8 +1,6 @@
 
 'use client';
 
-import html2canvas from 'html2canvas';
-
 // Tipos importados diretamente, pois este arquivo não é um componente React
 interface ToastProps {
     variant?: "default" | "destructive" | null | undefined,
@@ -13,39 +11,36 @@ type ToastFn = (props: ToastProps) => void;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const getClonedElement = async (toast: ToastFn) => {
-    const previewElement = document.getElementById('editor-preview-content') as HTMLElement | null;
-    if (!previewElement) {
+const getClonedElementWithStyles = async (elementId: string, toast: ToastFn): Promise<HTMLElement | null> => {
+    const originalElement = document.getElementById(elementId) as HTMLElement | null;
+    if (!originalElement) {
         toast({
             variant: 'destructive',
             title: 'Erro',
-            description: 'Não foi possível encontrar a área de visualização para exportar.'
+            description: `Elemento de visualização "${elementId}" não encontrado para exportar.`
         });
         return null;
     }
-    
-    // Garante que todas as imagens dentro do elemento estão carregadas
-    const images = Array.from(previewElement.getElementsByTagName('img'));
-    await Promise.all(images.map(img => {
-      if (img.complete) return Promise.resolve();
-      return new Promise(resolve => { img.onload = img.onerror = resolve; });
-    }));
-    
-    // Garante que as fontes estão carregadas
-    await document.fonts.ready;
-    
-    const clone = previewElement.cloneNode(true) as HTMLElement;
-    clone.style.position = 'absolute';
-    clone.style.top = '-9999px'; 
-    clone.style.left = '-9999px';
-    clone.style.transform = 'none'; // Importante: remove qualquer transformação de escala
-    document.body.appendChild(clone);
-    
-    // Pequeno delay para garantir que o navegador renderizou o clone
-    await delay(100); 
 
-    return { clone, original: previewElement };
-}
+    const images = Array.from(originalElement.getElementsByTagName('img'));
+    await Promise.all(images.map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => { img.onload = img.onerror = resolve; });
+    }));
+
+    await document.fonts.ready;
+    await delay(150);
+
+    const clone = originalElement.cloneNode(true) as HTMLElement;
+    clone.style.position = 'absolute';
+    clone.style.top = '-9999px';
+    clone.style.left = '0px';
+    clone.style.transform = 'none';
+    document.body.appendChild(clone);
+    await delay(100);
+
+    return clone;
+};
 
 const downloadDataUrl = (dataUrl: string, format: 'jpeg' | 'png', toast: ToastFn) => {
     const link = document.createElement('a');
@@ -67,25 +62,24 @@ const downloadDataUrl = (dataUrl: string, format: 'jpeg' | 'png', toast: ToastFn
 export const captureAndDownload = async (format: 'jpeg' | 'png', toast: ToastFn) => {
     toast({ title: 'Exportando...', description: `Gerando imagem ${format.toUpperCase()}, por favor aguarde.` });
 
-    const elements = await getClonedElement(toast);
-    if (!elements) return;
+    const clone = await getClonedElementWithStyles('editor-preview-content', toast);
+    if (!clone) return;
 
-    const { clone } = elements;
-    
     try {
-        const canvas = await html2canvas(clone, {
-            useCORS: true,
-            scale: 2, 
-            backgroundColor: null,
-            logging: false,
-        });
-        document.body.removeChild(clone);
-        const dataUrl = format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.95);
+        const { toPng, toJpeg } = await import('html-to-image');
+        const dataUrl = format === 'png'
+            ? await toPng(clone, { pixelRatio: 2, cacheBust: true })
+            : await toJpeg(clone, { pixelRatio: 2, quality: 0.95, cacheBust: true });
+        
         downloadDataUrl(dataUrl, format, toast);
+
     } catch (error) {
-        console.error('Erro ao exportar imagem:', error);
+        console.error('Erro ao exportar imagem com html-to-image:', error);
         toast({ variant: 'destructive', title: 'Erro de Exportação', description: 'Não foi possível gerar a imagem.' });
-        if (document.body.contains(clone)) document.body.removeChild(clone);
+    } finally {
+        if (document.body.contains(clone)) {
+            document.body.removeChild(clone);
+        }
     }
 };
 
@@ -93,26 +87,25 @@ export const captureAndDownload = async (format: 'jpeg' | 'png', toast: ToastFn)
  * Captura o estado atual do canvas como uma thumbnail.
  */
 export const captureThumbnail = async (toast: ToastFn): Promise<string | null> => {
-  const elements = await getClonedElement(toast);
-  if (!elements) return null;
-
-  const { clone } = elements;
+  const clone = await getClonedElementWithStyles('editor-preview-content', toast);
+  if (!clone) return null;
   
   try {
-    // Para thumbnail, podemos usar dimensões menores
-    clone.style.width = '400px'; 
-    clone.style.height = '400px';
+    const { toJpeg } = await import('html-to-image');
     
-    const canvas = await html2canvas(clone, {
-      useCORS: true,
-      scale: 1, 
-      backgroundColor: null,
-      logging: false,
+    // Para thumbnail, podemos usar dimensões e qualidade menores
+    const dataUrl = await toJpeg(clone, {
+      quality: 0.8,
+      width: 400,
+      height: 400,
+      style: {
+        objectFit: 'cover',
+        aspectRatio: '1',
+      },
+      cacheBust: true,
     });
     
-    document.body.removeChild(clone);
-
-    return canvas.toDataURL('image/jpeg', 0.8);
+    return dataUrl;
 
   } catch (error) {
     console.error('Erro ao gerar thumbnail:', error);
@@ -121,7 +114,10 @@ export const captureThumbnail = async (toast: ToastFn): Promise<string | null> =
       title: 'Erro ao Salvar Modelo',
       description: 'Não foi possível gerar a miniatura do modelo.'
     });
-    if (document.body.contains(clone)) document.body.removeChild(clone);
     return null;
+  } finally {
+    if (document.body.contains(clone)) {
+        document.body.removeChild(clone);
+    }
   }
 };
