@@ -23,6 +23,7 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     textColor: "#FFFFFF",
     textAlign: "center",
     textShadowBlur: 1,
+    textShadowOpacity: 75,
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0.2,
@@ -144,14 +145,15 @@ export default function Editor() {
         return shadows.join(', ');
     };
     
-    const createMainShadow = (blur: number): string => {
-        if (blur === 0) return "none";
-        const baseOffset = (blur / 100) * calculatedFontSize * 0.2;
+    const createMainShadow = (blur: number, opacity: number): string => {
+        if (blur === 0 && opacity === 0) return "none";
         const shadowBlurPx = (blur / 100) * calculatedFontSize;
-        return `${baseOffset.toFixed(2)}px ${baseOffset.toFixed(2)}px ${shadowBlurPx.toFixed(2)}px rgba(0,0,0,0.75)`;
+        const shadowOpacity = opacity / 100;
+        const baseOffset = (blur / 100) * calculatedFontSize * 0.2;
+        return `${baseOffset.toFixed(2)}px ${baseOffset.toFixed(2)}px ${shadowBlurPx.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
     };
     const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
-    const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0);
+    const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0, currentState.textShadowOpacity || 0);
 
     return {
         fontFamily: currentState.fontFamily,
@@ -196,6 +198,7 @@ export default function Editor() {
     textAlign: currentState.textAlign, onTextAlignChange: (val: "left" | "center" | "right") => updateState({ textAlign: val }),
     textVerticalPosition: currentState.textVerticalPosition, onTextVerticalPositionChange: (val: number) => updateState({ textVerticalPosition: val }),
     textShadowBlur: currentState.textShadowBlur, onTextShadowBlurChange: (val: number) => updateState({ textShadowBlur: val }),
+    textShadowOpacity: currentState.textShadowOpacity, onTextShadowOpacityChange: (val: number) => updateState({ textShadowOpacity: val }),
     textStrokeColor: currentState.textStrokeColor, onTextStrokeColorChange: (val: string) => updateState({ textStrokeColor: val }),
     textStrokeWidth: currentState.textStrokeWidth, onTextStrokeWidthChange: (val: number) => updateState({ textStrokeWidth: val }),
     letterSpacing: currentState.letterSpacing, onLetterSpacingChange: (val: number) => updateState({ letterSpacing: val }),

@@ -222,6 +222,8 @@ interface CommonStyleProps {
   onTextVerticalPositionChange: (position: number) => void;
   textShadowBlur: number;
   onTextShadowBlurChange: (blur: number) => void;
+  textShadowOpacity: number;
+  onTextShadowOpacityChange: (opacity: number) => void;
   textStrokeColor: string;
   onTextStrokeColorChange: (color: string) => void;
   textStrokeWidth: number;
@@ -562,12 +564,21 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
             );
         case 'sombra':
              return (
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="shadow-blur" className="text-xs text-muted-foreground">Desfoque</Label>
-                        <span className="text-xs text-muted-foreground">{props.textShadowBlur.toFixed(1)} pt</span>
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <Label htmlFor="shadow-blur" className="text-xs text-muted-foreground">Desfoque</Label>
+                            <span className="text-xs text-muted-foreground">{props.textShadowBlur.toFixed(1)} pt</span>
+                        </div>
+                        <Slider id="shadow-blur" min={0} max={10} step={0.1} value={[props.textShadowBlur]} onValueChange={(v) => props.onTextShadowBlurChange(v[0])} />
                     </div>
-                    <Slider id="shadow-blur" min={0} max={10} step={0.1} value={[props.textShadowBlur]} onValueChange={(v) => props.onTextShadowBlurChange(v[0])} />
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <Label htmlFor="shadow-opacity" className="text-xs text-muted-foreground">Intensidade</Label>
+                            <span className="text-xs text-muted-foreground">{props.textShadowOpacity}%</span>
+                        </div>
+                        <Slider id="shadow-opacity" min={0} max={100} step={1} value={[props.textShadowOpacity]} onValueChange={(v) => props.onTextShadowOpacityChange(v[0])} />
+                    </div>
                 </div>
             );
         default:

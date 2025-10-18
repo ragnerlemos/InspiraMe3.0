@@ -25,6 +25,7 @@ export interface EditorState {
     textColor: string;
     textAlign: "left" | "center" | "right";
     textShadowBlur: number;
+    textShadowOpacity: number;
     textVerticalPosition: number;
     textStrokeColor: string;
     textStrokeWidth: number;
@@ -127,6 +128,8 @@ export interface PainelEstiloProps {
     onTextAlignChange: (align: "left" | "center" | "right") => void;
     textShadowBlur: number;
     onTextShadowBlurChange: (blur: number) => void;
+    textShadowOpacity: number;
+    onTextShadowOpacityChange: (opacity: number) => void;
     textVerticalPosition: number;
     onTextVerticalPositionChange: (position: number) => void;
     textStrokeColor: string;

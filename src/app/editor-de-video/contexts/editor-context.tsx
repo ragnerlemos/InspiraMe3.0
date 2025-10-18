@@ -39,6 +39,7 @@ const defaultState: EditorState = {
     textColor: "#FFFFFF",
     textAlign: "center",
     textShadowBlur: 1,
+    textShadowOpacity: 75,
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0.2,
@@ -108,14 +109,16 @@ export function EditorProvider({ children }: { children: ReactNode }) {
             return shadows.join(', ');
         };
 
-        const createMainShadow = (blur: number): string => {
-            if (blur === 0) return "none";
+        const createMainShadow = (blur: number, opacity: number): string => {
+            if (blur === 0 && opacity === 0) return "none";
             const shadowBlurPx = (blur / 100) * calculatedFontSize;
-            return `0 0 ${shadowBlurPx}px rgba(0,0,0,0.5)`;
+            const shadowOpacity = opacity / 100;
+            const baseOffset = (blur / 100) * calculatedFontSize * 0.2;
+            return `${baseOffset.toFixed(2)}px ${baseOffset.toFixed(2)}px ${shadowBlurPx.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
         };
 
         const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
-        const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0);
+        const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0, currentState.textShadowOpacity || 0);
 
         return {
             fontFamily: currentState.fontFamily,
