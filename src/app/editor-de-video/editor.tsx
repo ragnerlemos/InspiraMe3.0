@@ -130,9 +130,8 @@ export default function Editor() {
     
     const createTextStrokeShadow = (width: number, color: string): string => {
         if (width === 0) return "none";
-        // Convertendo a largura do traço, que está em 'pt', para pixels relativos ao tamanho da fonte
-        const strokeWidthPx = (width / 100) * calculatedFontSize * 0.2; 
-        if (strokeWidthPx === 0) return "none";
+        const strokeWidthPx = (width / 1000) * calculatedFontSize;
+        if (strokeWidthPx <= 0) return "none";
 
         const shadows = [];
         const numPoints = 12;
@@ -146,12 +145,14 @@ export default function Editor() {
     };
     
     const createMainShadow = (blur: number, opacity: number): string => {
-        if (blur === 0 && opacity === 0) return "none";
-        const shadowBlurPx = (blur / 100) * calculatedFontSize;
+        if (opacity === 0) return "none";
         const shadowOpacity = opacity / 100;
-        const baseOffset = (blur / 100) * calculatedFontSize * 0.2;
+        const shadowBlurPx = (blur / 100) * calculatedFontSize;
+        const baseOffset = Math.max(1, (calculatedFontSize / 50));
+        
         return `${baseOffset.toFixed(2)}px ${baseOffset.toFixed(2)}px ${shadowBlurPx.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
     };
+
     const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
     const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0, currentState.textShadowOpacity || 0);
 
@@ -252,3 +253,5 @@ export default function Editor() {
     </div>
   );
 }
+
+    
