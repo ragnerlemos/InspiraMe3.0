@@ -56,7 +56,6 @@ export function FerramentasEditor() {
   const createDropShadow = () => {
     if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
       const shadowColor = `rgba(0, 0, 0, ${state.shadowOpacity / 100})`;
-      // O deslocamento da sombra deve ser sutil e não depender do contorno
       const shadowOffsetX = 2;
       const shadowOffsetY = 2;
       return `${shadowOffsetX}px ${shadowOffsetY}px ${state.shadowBlur}px ${shadowColor}`;
@@ -65,31 +64,35 @@ export function FerramentasEditor() {
   };
   
   // Lógica de Estilo Condicional
-  if (state.strokeWidth > 0 && state.strokeCornerStyle === 'rounded') {
-      textStyle.WebkitTextStroke = `${state.strokeWidth}px ${state.strokeColor}`;
-      textStyle.paintOrder = 'stroke fill';
-      textStyle.textShadow = createDropShadow();
-  } else if (state.strokeWidth > 0 && state.strokeCornerStyle === 'square') {
-      const w = state.strokeWidth;
-      const c = state.strokeColor;
-      const squareShadows: string[] = [];
-      for (let i = -Math.ceil(w); i <= Math.ceil(w); i++) {
+  const shadows: string[] = [];
+  const dropShadow = createDropShadow();
+  if (dropShadow !== 'none') {
+    shadows.push(dropShadow);
+  }
+
+  if (state.strokeWidth > 0 && state.strokeCornerStyle === 'square') {
+    const w = state.strokeWidth;
+    const c = state.strokeColor;
+    for (let i = -Math.ceil(w); i <= Math.ceil(w); i++) {
         for (let j = -Math.ceil(w); j <= Math.ceil(w); j++) {
-            // Desenha um quadrado de sombras ao redor
             if (Math.abs(i) <= w && Math.abs(j) <= w) {
-                squareShadows.push(`${i}px ${j}px 0 ${c}`);
+                // Previne adicionar o 0 0 para não cobrir o texto
+                if(i !== 0 || j !== 0) {
+                  shadows.push(`${i}px ${j}px 0 ${c}`);
+                }
             }
         }
-      }
-      const dropShadow = createDropShadow();
-      textStyle.textShadow = [...squareShadows, dropShadow].filter(s => s !== 'none').join(', ');
-      // Garante que o webkit-text-stroke seja resetado
-      textStyle.WebkitTextStroke = '0';
-  } else {
-      // Se não houver contorno, apenas a sombra projetada é aplicada
-      textStyle.textShadow = createDropShadow();
-      textStyle.WebkitTextStroke = '0';
+    }
+    textStyle.WebkitTextStroke = '0'; // Reseta o stroke do webkit
+  } else if (state.strokeWidth > 0 && state.strokeCornerStyle === 'rounded') {
+      textStyle.WebkitTextStroke = `${state.strokeWidth}px ${state.strokeColor}`;
+      textStyle.paintOrder = 'stroke fill';
   }
+
+  if (shadows.length > 0) {
+    textStyle.textShadow = shadows.join(', ');
+  }
+
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full">
