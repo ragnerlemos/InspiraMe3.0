@@ -76,7 +76,7 @@ export function FerramentasEditor() {
       }
       
       // 2. Lógica da Sombra Projetada
-      if (state.shadowOpacity > 0) {
+      if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
         const opacityValue = Math.min(state.shadowOpacity / 100, 1);
         const shadowColor = `rgba(0, 0, 0, ${opacityValue})`;
         const spreadValue = state.shadowOpacity > 100 ? ((state.shadowOpacity - 100) / 100) * state.shadowBlur * 0.5 : 0;
