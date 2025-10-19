@@ -33,8 +33,8 @@ export function FerramentasEditor() {
     fontWeight: 'bold',
     fontStyle: 'normal',
     shadowBlur: 4,
-    shadowOpacity: 50,
-    strokeWidth: 2,
+    shadowOpacity: 75,
+    strokeWidth: 0,
     strokeColor: '#000000',
     strokeCornerStyle: 'rounded',
     applyEffectsToEmojis: true,
@@ -47,14 +47,14 @@ export function FerramentasEditor() {
   const createDropShadow = () => {
     if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
       const shadowColor = `rgba(0, 0, 0, ${state.shadowOpacity / 100})`;
-      // Offset fixo para um efeito de profundidade consistente
+      // Offset maior para um efeito de profundidade mais forte
       const shadowOffsetX = 2;
-      const shadowOffsetY = 2;
+      const shadowOffsetY = 4;
       return `${shadowOffsetX}px ${shadowOffsetY}px ${state.shadowBlur}px ${shadowColor}`;
     }
     return 'none';
   };
-
+  
   const createStrokeShadows = () => {
     if (state.strokeWidth <= 0) return [];
     
@@ -63,19 +63,21 @@ export function FerramentasEditor() {
     const shadows = [];
 
     if (state.strokeCornerStyle === 'rounded') {
-      const blur = w * 0.5; 
-      for (let x = -w; x <= w; x += w/2) {
-        for (let y = -w; y <= w; y += w/2) {
-           if (x !== 0 || y !== 0) {
-             shadows.push(`${x}px ${y}px ${blur}px ${c}`);
-           }
-        }
+       // Aumenta o número de sombras e adiciona um leve desfoque para suavizar
+      const numSteps = 8; // Mais passos para um contorno mais suave
+      const blur = w * 0.4; // Desfoque para arredondar os cantos
+      for (let i = 0; i < numSteps; i++) {
+        const angle = (i / numSteps) * 2 * Math.PI;
+        const x = Math.cos(angle) * w;
+        const y = Math.sin(angle) * w;
+        shadows.push(`${x}px ${y}px ${blur}px ${c}`);
       }
     } else { // 'square'
+      // Múltiplas sombras sem desfoque para um canto vivo
       for (let x = -w; x <= w; x++) {
         for (let y = -w; y <= w; y++) {
-          if (Math.abs(x) <= w && Math.abs(y) <= w && (Math.abs(x) + Math.abs(y) > 0)) {
-             shadows.push(`${x}px ${y}px 0 ${c}`);
+          if (x !== 0 || y !== 0) {
+            shadows.push(`${x}px ${y}px 0 ${c}`);
           }
         }
       }
@@ -103,7 +105,7 @@ export function FerramentasEditor() {
   const renderTextWithEmojis = () => {
     const parts = state.text.split(emojiRegex);
     return parts.map((part, index) => {
-      if (emojiRegex.test(part)) {
+      if (part.match(emojiRegex)) {
         // É um emoji
         return (
           <span key={index} style={state.applyEffectsToEmojis ? textStyle : { ...textStyle, textShadow: 'none' }}>
