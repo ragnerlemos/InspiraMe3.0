@@ -25,6 +25,7 @@ interface ToolEditorState {
   shadowOpacity: number;
   strokeWidth: number;
   strokeColor: string;
+  strokeCornerStyle: 'rounded' | 'square';
 }
 
 export function FerramentasEditor() {
@@ -36,24 +37,23 @@ export function FerramentasEditor() {
     shadowOpacity: 50,
     strokeWidth: 2,
     strokeColor: '#000000',
+    strokeCornerStyle: 'rounded',
   });
 
   const updateState = (newState: Partial<ToolEditorState>) => {
     setState((prev) => ({ ...prev, ...newState }));
   };
 
-  // Estilos base do texto
+  // Estilos do texto dinamicamente
   const textStyle: React.CSSProperties = {
     fontWeight: state.fontWeight,
     fontStyle: state.fontStyle,
     fontSize: '60px',
     color: 'white',
     fontFamily: 'Poppins, sans-serif',
-    WebkitTextStroke: `${state.strokeWidth}px ${state.strokeColor}`,
-    paintOrder: 'stroke fill',
   };
   
-  // Lógica para criar o efeito de sombra
+  // Lógica para a Sombra Projetada (Drop Shadow)
   const createDropShadow = () => {
     if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
       const shadowColor = `rgba(0, 0, 0, ${state.shadowOpacity / 100})`;
@@ -64,7 +64,27 @@ export function FerramentasEditor() {
     return 'none';
   };
   
-  textStyle.textShadow = createDropShadow();
+  // Lógica para o Contorno
+  let textShadows = [createDropShadow()];
+  if (state.strokeWidth > 0) {
+    if (state.strokeCornerStyle === 'rounded') {
+      // Contorno arredondado ignora text-shadow e usa -webkit-text-stroke
+      textStyle.WebkitTextStroke = `${state.strokeWidth}px ${state.strokeColor}`;
+      textStyle.paintOrder = 'stroke fill';
+    } else {
+      // Contorno quadrado usa text-shadow
+      const w = state.strokeWidth;
+      const c = state.strokeColor;
+      const squareShadows = [
+        `${-w}px ${-w}px 0 ${c}`, `${w}px ${-w}px 0 ${c}`,
+        `${-w}px ${w}px 0 ${c}`, `${w}px ${w}px 0 ${c}`
+      ];
+      textShadows = [...squareShadows, ...textShadows];
+    }
+  }
+
+  textStyle.textShadow = textShadows.filter(s => s !== 'none').join(', ');
+
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full">
@@ -106,7 +126,7 @@ export function FerramentasEditor() {
 
         {/* Controles da Sombra */}
         <div className="space-y-4 border-t pt-4">
-          <h3 className="font-semibold">Sombra</h3>
+          <h3 className="font-semibold">Sombra Projetada</h3>
           <div className="space-y-2">
             <Label htmlFor="shadow-blur">Desfoque da Sombra: {state.shadowBlur}px</Label>
             <Slider
@@ -134,6 +154,25 @@ export function FerramentasEditor() {
         {/* Controles do Contorno */}
         <div className="space-y-4 border-t pt-4">
           <h3 className="font-semibold">Contorno</h3>
+           <div className="space-y-2">
+             <Label>Tipo de Canto do Contorno</Label>
+             <div className="flex gap-2">
+                <Button
+                    variant={state.strokeCornerStyle === 'rounded' ? 'secondary' : 'outline'}
+                    onClick={() => updateState({ strokeCornerStyle: 'rounded' })}
+                    className="flex-1"
+                >
+                    Arredondado
+                </Button>
+                 <Button
+                    variant={state.strokeCornerStyle === 'square' ? 'secondary' : 'outline'}
+                    onClick={() => updateState({ strokeCornerStyle: 'square' })}
+                    className="flex-1"
+                >
+                    Quadrado
+                </Button>
+             </div>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="stroke-width">Espessura do Contorno: {state.strokeWidth}px</Label>
             <Slider
