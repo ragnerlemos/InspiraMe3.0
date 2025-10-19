@@ -45,7 +45,7 @@ export function FerramentasEditor() {
   };
 
   const createDropShadow = () => {
-    if (state.shadowOpacity <= 0 || state.shadowBlur <= 0) return 'none';
+    if (state.shadowOpacity <= 0) return 'none';
 
     // A opacidade vai de 0 a 1 (correspondendo a 0-100% no slider).
     const opacityValue = Math.min(state.shadowOpacity / 100, 1);
@@ -53,7 +53,7 @@ export function FerramentasEditor() {
     
     // O "spread" começa a agir quando a opacidade passa de 100%.
     // Isso torna a sombra mais densa e forte.
-    const spreadValue = state.shadowOpacity > 100 ? (state.shadowOpacity - 100) / 100 * state.shadowBlur * 0.5 : 0;
+    const spreadValue = state.shadowOpacity > 100 ? ((state.shadowOpacity - 100) / 100) * state.shadowBlur * 0.5 : 0;
 
     const shadowOffsetX = 2;
     const shadowOffsetY = 4;
@@ -79,7 +79,7 @@ export function FerramentasEditor() {
     } else { // 'square'
       for (let x = -w; x <= w; x++) {
         for (let y = -w; y <= w; y++) {
-          if (x !== 0 || y !== 0) {
+          if (Math.abs(x) === w || Math.abs(y) === w) {
             shadows.push(`${x}px ${y}px 0 ${c}`);
           }
         }
@@ -93,6 +93,7 @@ export function FerramentasEditor() {
     const parts = state.text.split(emojiRegex);
     
     return parts.map((part, index) => {
+      if (!part) return null; // Ignora partes vazias
       const isEmoji = part.match(emojiRegex);
       
       const dropShadow = createDropShadow();
