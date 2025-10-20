@@ -52,30 +52,34 @@ export function FerramentasEditor() {
   };
 
   const combinedShadow = useMemo(() => {
-    const shadows: string[] = [];
+    const allShadows: string[] = [];
 
-    // Lógica do Contorno
+    // 1. Lógica do Contorno (Stroke)
     if (state.strokeWidth > 0) {
+      const width = state.strokeWidth;
+      const color = state.strokeColor;
+      
       if (state.strokeCornerStyle === 'rounded') {
-        // Canto arredondado usa várias sombras com blur
+        const blur = width * 0.5;
         const numSteps = 8;
-        const blur = state.strokeWidth * 0.5;
         for (let i = 0; i < numSteps; i++) {
           const angle = (i / numSteps) * 2 * Math.PI;
-          const x = Math.cos(angle) * state.strokeWidth;
-          const y = Math.sin(angle) * state.strokeWidth;
-          shadows.push(`${x}px ${y}px ${blur}px ${state.strokeColor}`);
+          const x = Math.cos(angle) * width;
+          const y = Math.sin(angle) * width;
+          allShadows.push(`${x}px ${y}px ${blur}px ${color}`);
         }
-      } else {
-        // Canto quadrado usa 4 sombras diagonais sem blur para uma borda nítida
-        shadows.push(`${state.strokeWidth}px ${state.strokeWidth}px 0 ${state.strokeColor}`);
-        shadows.push(`-${state.strokeWidth}px -${state.strokeWidth}px 0 ${state.strokeColor}`);
-        shadows.push(`${state.strokeWidth}px -${state.strokeWidth}px 0 ${state.strokeColor}`);
-        shadows.push(`-${state.strokeWidth}px ${state.strokeWidth}px 0 ${state.strokeColor}`);
+      } else { // 'square'
+        // Gera sombras em 8 direções para um contorno simétrico e nítido
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i === 0 && j === 0) continue;
+                allShadows.push(`${i * width}px ${j * width}px 0 ${color}`);
+            }
+        }
       }
     }
 
-    // Lógica da Sombra Projetada
+    // 2. Lógica da Sombra Projetada (Drop Shadow)
     if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
       const effectiveOpacity = state.shadowOpacity / 100;
       const offsetX = state.shadowBlur * 0.15;
@@ -83,27 +87,30 @@ export function FerramentasEditor() {
       const blurRadius = state.shadowBlur;
       const spread = state.shadowOpacity > 100 ? (state.shadowOpacity - 100) / 10 : 0;
       const color = `rgba(0, 0, 0, ${effectiveOpacity > 1 ? 1 : effectiveOpacity})`;
-      shadows.push(`${offsetX}px ${offsetY}px ${blurRadius}px ${spread}px ${color}`);
+      allShadows.push(`${offsetX}px ${offsetY}px ${blurRadius}px ${spread}px ${color}`);
     }
     
-    return shadows.join(', ');
+    return allShadows.join(', ');
   }, [state.strokeWidth, state.strokeColor, state.strokeCornerStyle, state.shadowBlur, state.shadowOpacity]);
 
   const renderTextWithEmojis = () => {
     const parts = state.text.split(EMOJI_REGEX);
-    return parts.map((part, index) => {
-      // Se for texto normal (sempre par ou zero)
-      if (index % 2 === 0) { 
-        return <span key={index}>{part}</span>;
-      }
-      // Se for um emoji (sempre ímpar)
-      return (
-        <span key={index} style={{ textShadow: state.applyEffectsToEmojis ? 'inherit' : 'none' }}>
-          {part}
-        </span>
-      );
-    });
-  };
+    return (
+        <div style={{ ...textStyle, textShadow: combinedShadow }}>
+            {parts.map((part, index) => {
+                if (index % 2 === 0) {
+                    return <span key={index}>{part}</span>;
+                }
+                return (
+                    <span key={index} style={{ textShadow: state.applyEffectsToEmojis ? 'inherit' : 'none' }}>
+                        {part}
+                    </span>
+                );
+            })}
+        </div>
+    );
+};
+
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full">
@@ -214,7 +221,6 @@ export function FerramentasEditor() {
       {/* Área de Pré-visualização */}
       <div className="flex-1 flex items-center justify-center bg-muted/40 p-4">
         <div
-          style={{ ...textStyle, textShadow: combinedShadow }}
           className="text-center break-words"
         >
           {renderTextWithEmojis()}
@@ -223,3 +229,4 @@ export function FerramentasEditor() {
     </div>
   );
 }
+
