@@ -43,7 +43,9 @@ export function FerramentasEditor() {
     setState((prev) => ({ ...prev, ...newState }));
   };
 
-  const textStyle: React.CSSProperties = {
+  // --- Lógica de Geração de Estilo ---
+
+  const textBaseStyle: React.CSSProperties = {
     fontWeight: state.fontWeight,
     fontStyle: state.fontStyle,
     fontSize: '60px',
@@ -51,35 +53,11 @@ export function FerramentasEditor() {
     fontFamily: 'Poppins, sans-serif',
   };
 
-  const combinedShadow = useMemo(() => {
-    const allShadows: string[] = [];
+  const textEffectsStyle = useMemo(() => {
+    const shadows: string[] = [];
+    const styles: React.CSSProperties = {};
 
-    // 1. Lógica do Contorno (Stroke)
-    if (state.strokeWidth > 0) {
-      const width = state.strokeWidth;
-      const color = state.strokeColor;
-      
-      if (state.strokeCornerStyle === 'rounded') {
-        const blur = width * 0.5;
-        const numSteps = 8;
-        for (let i = 0; i < numSteps; i++) {
-          const angle = (i / numSteps) * 2 * Math.PI;
-          const x = Math.cos(angle) * width;
-          const y = Math.sin(angle) * width;
-          allShadows.push(`${x}px ${y}px ${blur}px ${color}`);
-        }
-      } else { // 'square'
-        // Gera sombras em 8 direções para um contorno simétrico e nítido
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) continue;
-                allShadows.push(`${i * width}px ${j * width}px 0 ${color}`);
-            }
-        }
-      }
-    }
-
-    // 2. Lógica da Sombra Projetada (Drop Shadow)
+    // 1. Lógica da Sombra Projetada (Drop Shadow)
     if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
       const effectiveOpacity = state.shadowOpacity / 100;
       const offsetX = state.shadowBlur * 0.15;
@@ -87,25 +65,67 @@ export function FerramentasEditor() {
       const blurRadius = state.shadowBlur;
       const spread = state.shadowOpacity > 100 ? (state.shadowOpacity - 100) / 10 : 0;
       const color = `rgba(0, 0, 0, ${effectiveOpacity > 1 ? 1 : effectiveOpacity})`;
-      allShadows.push(`${offsetX}px ${offsetY}px ${blurRadius}px ${spread}px ${color}`);
+      shadows.push(`${offsetX}px ${offsetY}px ${blurRadius}px ${spread}px ${color}`);
     }
-    
-    return allShadows.join(', ');
-  }, [state.strokeWidth, state.strokeColor, state.strokeCornerStyle, state.shadowBlur, state.shadowOpacity]);
+
+    // 2. Lógica do Contorno (Stroke)
+    if (state.strokeWidth > 0) {
+      if (state.strokeCornerStyle === 'square') {
+        // Usa -webkit-text-stroke para um contorno nítido e profissional
+        styles.WebkitTextStroke = `${state.strokeWidth}px ${state.strokeColor}`;
+        styles.textStroke = `${state.strokeWidth}px ${state.strokeColor}`;
+      } else { // 'rounded'
+        // Usa a técnica de múltiplas sombras com desfoque para simular cantos arredondados
+        const width = state.strokeWidth;
+        const color = state.strokeColor;
+        const numSteps = 8;
+        for (let i = 0; i < numSteps; i++) {
+          const angle = (i / numSteps) * 2 * Math.PI;
+          const x = Math.cos(angle) * width;
+          const y = Math.sin(angle) * width;
+          shadows.push(`${x}px ${y}px 0 ${color}`);
+        }
+      }
+    }
+
+    if (shadows.length > 0) {
+      styles.textShadow = shadows.join(', ');
+    }
+
+    return styles;
+  }, [
+    state.shadowBlur,
+    state.shadowOpacity,
+    state.strokeWidth,
+    state.strokeColor,
+    state.strokeCornerStyle,
+  ]);
+
+  // --- Renderização ---
 
   const renderTextWithEmojis = () => {
     const parts = state.text.split(EMOJI_REGEX);
+    
+    // O estilo base e os efeitos são combinados aqui
+    const combinedStyle = { ...textBaseStyle, ...textEffectsStyle };
+
     return (
-        <div style={{ ...textStyle, textShadow: combinedShadow }}>
+        <div style={combinedStyle}>
             {parts.map((part, index) => {
-                if (index % 2 === 0) {
-                    return <span key={index}>{part}</span>;
+                // Se o segmento é um emoji (índice ímpar)
+                if (index % 2 !== 0) {
+                    // Se a aplicação de efeitos em emojis estiver DESATIVADA
+                    if (!state.applyEffectsToEmojis) {
+                        // Renderiza o emoji sem nenhum efeito
+                        return (
+                            <span key={index} style={{ textShadow: 'none', WebkitTextStroke: '0' }}>
+                                {part}
+                            </span>
+                        );
+                    }
                 }
-                return (
-                    <span key={index} style={{ textShadow: state.applyEffectsToEmojis ? 'inherit' : 'none' }}>
-                        {part}
-                    </span>
-                );
+                // Renderiza o texto ou o emoji com os efeitos padrão
+                return <span key={index}>{part}</span>;
             })}
         </div>
     );
@@ -229,4 +249,3 @@ export function FerramentasEditor() {
     </div>
   );
 }
-
