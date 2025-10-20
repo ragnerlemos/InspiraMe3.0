@@ -33,7 +33,7 @@ export function FerramentasEditor() {
     fontStyle: 'normal',
     shadowBlur: 5,
     shadowOpacity: 75,
-    strokeWidth: 0,
+    strokeWidth: 2,
     strokeColor: '#000000',
     strokeCornerStyle: 'rounded',
     applyEffectsToEmojis: true,
@@ -53,46 +53,53 @@ export function FerramentasEditor() {
     fontFamily: 'Poppins, sans-serif',
   };
 
-  const textEffectsStyle = useMemo(() => {
-    const allShadows: string[] = [];
-    const styles: React.CSSProperties = {};
+  const createDropShadow = (blur: number, opacity: number): string[] => {
+    if (opacity <= 0) return [];
+    const effectiveOpacity = opacity / 100;
+    const offsetX = blur * 0.2;
+    const offsetY = blur * 0.4;
+    const blurRadius = blur;
+    const color = `rgba(0, 0, 0, ${effectiveOpacity})`;
+    return [`${offsetX}px ${offsetY}px ${blurRadius}px ${color}`];
+  };
 
-    // 1. Lógica do Contorno (Stroke)
-    if (state.strokeWidth > 0) {
-      if (state.strokeCornerStyle === 'square') {
-        // Usa -webkit-text-stroke para um contorno nítido.
-        styles.WebkitTextStroke = `${state.strokeWidth}px ${state.strokeColor}`;
-        styles.textStroke = `${state.strokeWidth}px ${state.strokeColor}`;
-      } else { // 'rounded'
-        // Usa a técnica de múltiplas sombras para simular cantos arredondados.
-        const width = state.strokeWidth;
-        const color = state.strokeColor;
-        const numSteps = 8;
-        for (let i = 0; i < numSteps; i++) {
-          const angle = (i / numSteps) * 2 * Math.PI;
-          const x = Math.cos(angle) * width;
-          const y = Math.sin(angle) * width;
-          allShadows.push(`${x}px ${y}px 0 ${color}`);
-        }
+  const createStrokeShadows = (width: number, color: string, cornerStyle: 'rounded' | 'square'): string[] => {
+    if (width <= 0) return [];
+
+    const shadows: string[] = [];
+    if (cornerStyle === 'rounded') {
+      // Técnica para cantos arredondados: múltiplas sombras com um pequeno blur
+      const numSteps = 8;
+      const blurRadius = width * 0.5; // O blur ajuda a arredondar
+      for (let i = 0; i < numSteps; i++) {
+        const angle = (i / numSteps) * 2 * Math.PI;
+        const x = Math.cos(angle) * width;
+        const y = Math.sin(angle) * width;
+        shadows.push(`${x}px ${y}px ${blurRadius}px ${color}`);
       }
+    } else { // 'square'
+        // Para cantos quadrados, usamos sombras sem blur em mais direções para preencher
+        const W = width;
+        shadows.push(
+          `${W}px ${W}px 0 ${color}`, `${-W}px ${-W}px 0 ${color}`,
+          `${W}px ${-W}px 0 ${color}`, `${-W}px ${W}px 0 ${color}`,
+          `${W}px 0 0 ${color}`, `${-W}px 0 0 ${color}`,
+          `0 ${W}px 0 ${color}`, `0 ${-W}px 0 ${color}`
+        );
     }
+    return shadows;
+  };
+  
+  const textEffectsStyle = useMemo(() => {
+    const dropShadows = createDropShadow(state.shadowBlur, state.shadowOpacity);
+    const strokeShadows = createStrokeShadows(state.strokeWidth, state.strokeColor, state.strokeCornerStyle);
 
-    // 2. Lógica da Sombra Projetada (Drop Shadow)
-    if (state.shadowOpacity > 0 && state.shadowBlur > 0) {
-      const effectiveOpacity = state.shadowOpacity / 100;
-      const offsetX = state.shadowBlur * 0.15;
-      const offsetY = state.shadowBlur * 0.3;
-      const blurRadius = state.shadowBlur;
-      const spread = state.shadowOpacity > 100 ? (state.shadowOpacity - 100) / 10 : 0;
-      const color = `rgba(0, 0, 0, ${effectiveOpacity > 1 ? 1 : effectiveOpacity})`;
-      allShadows.push(`${offsetX}px ${offsetY}px ${blurRadius}px ${spread}px ${color}`);
-    }
+    const allShadows = [...strokeShadows, ...dropShadows];
     
     if (allShadows.length > 0) {
-      styles.textShadow = allShadows.join(', ');
+      return { textShadow: allShadows.join(', ') };
     }
-
-    return styles;
+    return {};
   }, [
     state.shadowBlur,
     state.shadowOpacity,
@@ -110,15 +117,16 @@ export function FerramentasEditor() {
     return (
       <div style={combinedStyle}>
         {parts.map((part, index) => {
-          if (index % 2 !== 0) { // É um emoji
-            if (!state.applyEffectsToEmojis) {
-              return (
-                <span key={index} style={{ textShadow: 'none', WebkitTextStroke: 'transparent' }}>
-                  {part}
-                </span>
-              );
-            }
+          // Se for um emoji (índice ímpar) e os efeitos estiverem desativados
+          if (index % 2 !== 0 && !state.applyEffectsToEmojis) {
+            // Renderiza o emoji sem os efeitos de sombra/contorno
+            return (
+              <span key={index} style={{ textShadow: 'none' }}>
+                {part}
+              </span>
+            );
           }
+          // Renderiza o texto ou emoji com os efeitos aplicados
           return <span key={index}>{part}</span>;
         })}
       </div>
@@ -176,11 +184,11 @@ export function FerramentasEditor() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="shadow-opacity">Intensidade da Sombra: {state.shadowOpacity}%</Label>
+            <Label htmlFor="shadow-opacity">Opacidade da Sombra: {state.shadowOpacity}%</Label>
             <Slider
               id="shadow-opacity"
               min={0}
-              max={200}
+              max={100}
               step={5}
               value={[state.shadowOpacity]}
               onValueChange={(v) => updateState({ shadowOpacity: v[0] })}
