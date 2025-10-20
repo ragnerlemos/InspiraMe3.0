@@ -89,15 +89,16 @@ export function FerramentasEditor() {
   const renderTextWithEmojis = () => {
     const parts = state.text.split(EMOJI_REGEX);
     return parts.map((part, index) => {
-        if (index % 2 === 1) { // It's an emoji
-            return <span key={index}>{part}</span>;
-        }
-        // It's a text part
+      // Se for um emoji (sempre ímpar no array resultante do split)
+      if (index % 2 === 1) { 
         return (
-            <span key={index} style={{ textShadow: state.applyEffectsToEmojis ? 'none' : combinedShadow }}>
-                {part}
-            </span>
+          <span key={index} style={{ textShadow: state.applyEffectsToEmojis ? 'inherit' : 'none' }}>
+            {part}
+          </span>
         );
+      }
+      // Se for texto normal
+      return <span key={index}>{part}</span>;
     });
   };
 
@@ -210,7 +211,7 @@ export function FerramentasEditor() {
       {/* Área de Pré-visualização */}
       <div className="flex-1 flex items-center justify-center bg-muted/40 p-4">
         <div
-          style={{ ...textStyle, textShadow: state.applyEffectsToEmojis ? combinedShadow : 'none' }}
+          style={{ ...textStyle, textShadow: combinedShadow }}
           className="text-center break-words"
         >
           {renderTextWithEmojis()}
