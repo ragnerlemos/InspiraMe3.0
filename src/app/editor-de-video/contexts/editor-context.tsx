@@ -4,18 +4,21 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useMemo } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
-import type { EditorState } from '../tipos';
+import type { EditorState, EstiloTexto } from '../tipos';
 import { captureAndDownload, captureThumbnail } from '../exportar';
 import { useProfile } from '@/hooks/use-profile';
 import { useWindowSize } from 'react-use';
+// Importando as novas funções de estilo
+import { createStrokeStyle, createDropShadowStyle } from '../utils/text-style-utils';
 
-
-// Interface for the shared editor state and controls
 export interface EditorContextType {
   isReady: boolean;
   canUndo: boolean;
   canRedo: boolean;
   currentState: EditorState | null;
+  // Novo: Passando os estilos base e de efeitos separadamente
+  baseTextStyle: EstiloTexto;
+  textEffectsStyle: EstiloTexto;
   undo: () => void;
   redo: () => void;
   updateState: (newState: Partial<EditorState>) => void;
@@ -28,8 +31,7 @@ export interface EditorContextType {
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
-// O estado padrão agora tem valores mais seguros para o primeiro render.
-// O texto inicial é nulo para que possamos mostrar o loading até a frase real ser carregada.
+// Estado padrão atualizado com as novas propriedades
 const defaultState: EditorState = {
     text: "",
     fontFamily: "Poppins",
@@ -38,11 +40,13 @@ const defaultState: EditorState = {
     fontStyle: "normal",
     textColor: "#FFFFFF",
     textAlign: "center",
-    textShadowBlur: 1,
-    textShadowOpacity: 75,
+    textShadowBlur: 1, // Desfoque
+    textShadowOpacity: 75, // Intensidade
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0,
+    textStrokeCornerStyle: 'rounded', // Novo
+    applyEffectsToEmojis: true, // Novo
     letterSpacing: 0,
     lineHeight: 1.3,
     wordSpacing: 0,
@@ -69,8 +73,6 @@ const defaultState: EditorState = {
     logoOpacity: 100,
 };
 
-
-// Editor Provider Component
 export function EditorProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<EditorState[]>([]);
   const [currentStateIndex, setCurrentStateIndex] = useState(-1);
@@ -78,66 +80,47 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const { addTemplate } = useTemplates();
   const { profile } = useProfile();
-  const { width: windowWidth } = useWindowSize();
 
   const currentState = isReady ? history[currentStateIndex] : null;
   const canUndo = currentStateIndex > 0;
   const canRedo = currentStateIndex < history.length - 1;
 
-    // A lógica para calcular o textStyle foi movida para dentro do contexto
-    // para que possa ser passada para as funções de exportação.
-    const textStyle = useMemo(() => {
-        if (!currentState) return {};
-        const [aspectW, aspectH] = currentState.aspectRatio.replace(/\s/g, "").split('/').map(Number);
-        const isVertical = aspectH > aspectW;
-        
-        // Simula uma largura de contêiner. Para exportação, usamos uma base fixa (ex: 1080px).
-        // Para a tela, podemos usar uma aproximação baseada na largura da janela.
-        const containerWidth = 1080; // Largura base para cálculo de exportação
-        const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
+  // Lógica de estilo REFEITA para usar as novas funções
+  const { baseTextStyle, textEffectsStyle } = useMemo(() => {
+      if (!currentState) return { baseTextStyle: {}, textEffectsStyle: {} };
 
-        const createTextStrokeShadow = (strokeWidth: number, color: string): string => {
-            if (strokeWidth <= 0) return "none";
-            const strokeWidthPx = (strokeWidth / 1000) * calculatedFontSize;
-            if (strokeWidthPx <= 0) return "none";
+      const containerWidth = 1080; // Largura base para cálculo de exportação
+      const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
 
-            const shadows = [];
-            const numPoints = 12;
-            for (let i = 0; i < numPoints; i++) {
-                const angle = (i / numPoints) * 2 * Math.PI;
-                const x = Math.cos(angle) * strokeWidthPx;
-                const y = Math.sin(angle) * strokeWidthPx;
-                shadows.push(`${x.toFixed(2)}px ${y.toFixed(2)}px 0 ${color}`);
-            }
-            return shadows.join(', ');
-        };
+      const baseStyle: EstiloTexto = {
+          fontFamily: currentState.fontFamily,
+          fontSize: `${calculatedFontSize}px`,
+          fontWeight: currentState.fontWeight,
+          fontStyle: currentState.fontStyle,
+          color: currentState.textColor,
+          textAlign: currentState.textAlign,
+          lineHeight: currentState.lineHeight,
+          letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
+          wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
+      };
 
-        const createMainShadow = (blur: number, opacity: number): string => {
-            if (opacity === 0) return "none";
-            const shadowOpacity = opacity / 100;
-            const blurAmount = (blur / 100) * (calculatedFontSize * 0.4);
-            const offsetY = blurAmount * 0.4;
-            const offsetX = 0;
-            return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity * 1.5})`;
-        };
+      // Stroke agora usa a nova função, com cantos configuráveis
+      const strokeStyle = createStrokeStyle(
+          (currentState.textStrokeWidth / 1000) * calculatedFontSize, // strokeWidth precisa ser ajustado
+          currentState.textStrokeColor,
+          currentState.textStrokeCornerStyle
+      );
+      
+      // Shadow agora usa o algoritmo de drop-shadow com intensidade
+      const shadowStyle = createDropShadowStyle(
+          (currentState.textShadowBlur / 100) * (calculatedFontSize * 0.4),
+          currentState.textShadowOpacity
+      );
 
-        const textStrokeShadow = createTextStrokeShadow(currentState.textStrokeWidth || 0, currentState.textStrokeColor || '#000');
-        const mainTextShadow = createMainShadow(currentState.textShadowBlur || 0, currentState.textShadowOpacity || 0);
+      const effectsStyle = { ...strokeStyle, ...shadowStyle };
 
-        return {
-            fontFamily: currentState.fontFamily,
-            fontSize: `${calculatedFontSize}px`,
-            fontWeight: currentState.fontWeight,
-            fontStyle: currentState.fontStyle,
-            color: currentState.textColor,
-            textAlign: currentState.textAlign,
-            lineHeight: currentState.lineHeight,
-            letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
-            wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
-            textShadow: textStrokeShadow !== "none" && mainTextShadow !== "none" ? `${textStrokeShadow}, ${mainTextShadow}` : textStrokeShadow !== "none" ? textStrokeShadow : mainTextShadow,
-        };
-    }, [currentState, windowWidth]);
-
+      return { baseTextStyle: baseStyle, textEffectsStyle: effectsStyle };
+  }, [currentState]);
 
   const setInitialState = useCallback((initialState: EditorState) => {
     setHistory([initialState]);
@@ -153,41 +136,32 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     setCurrentStateIndex(newHistory.length);
   }, [isReady, currentState, currentStateIndex, history]);
 
-  const undo = useCallback(() => {
-    if (canUndo) {
-      setCurrentStateIndex(currentStateIndex - 1);
-    }
-  }, [canUndo, currentStateIndex]);
-
-  const redo = useCallback(() => {
-    if (canRedo) {
-      setCurrentStateIndex(currentStateIndex + 1);
-    }
-  }, [canRedo, currentStateIndex]);
+  const undo = useCallback(() => { if (canUndo) setCurrentStateIndex(currentStateIndex - 1); }, [canUndo, currentStateIndex]);
+  const redo = useCallback(() => { if (canRedo) setCurrentStateIndex(currentStateIndex + 1); }, [canRedo, currentStateIndex]);
 
   const onSaveAsTemplate = useCallback(async () => {
+    // A função de exportação agora precisa dos dois objetos de estilo
     if (!currentState || !profile) return;
     const templateName = prompt("Digite um nome para o novo modelo:");
     if (!templateName) return;
 
-    const thumbnail = await captureThumbnail(toast, currentState, profile, textStyle);
+    const thumbnail = await captureThumbnail(toast, currentState, profile, baseTextStyle, textEffectsStyle);
     if (!thumbnail) return;
     
     addTemplate(templateName, currentState, thumbnail);
     toast({ title: "Modelo Salvo!", description: `O modelo "${templateName}" foi adicionado.` });
 
-  }, [addTemplate, currentState, toast, profile, textStyle]);
+  }, [addTemplate, currentState, toast, profile, baseTextStyle, textEffectsStyle]);
 
   const onExportJPG = useCallback(() => {
       if(!currentState || !profile) return;
-      captureAndDownload('jpeg', toast, currentState, profile, textStyle)
-  }, [toast, currentState, profile, textStyle]);
+      captureAndDownload('jpeg', toast, currentState, profile, baseTextStyle, textEffectsStyle);
+  }, [toast, currentState, profile, baseTextStyle, textEffectsStyle]);
   
   const onExportPNG = useCallback(() => {
       if(!currentState || !profile) return;
-      captureAndDownload('png', toast, currentState, profile, textStyle)
-  }, [toast, currentState, profile, textStyle]);
-
+      captureAndDownload('png', toast, currentState, profile, baseTextStyle, textEffectsStyle);
+  }, [toast, currentState, profile, baseTextStyle, textEffectsStyle]);
 
   const onExportMP4 = useCallback(() => {
     toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
@@ -198,6 +172,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     canUndo,
     canRedo,
     currentState,
+    baseTextStyle, // Exportando o estilo base
+    textEffectsStyle, // Exportando os efeitos
     undo,
     redo,
     updateState,
@@ -206,7 +182,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     onExportJPG,
     onExportPNG,
     onExportMP4,
-  }), [isReady, canUndo, canRedo, currentState, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
+  }), [isReady, canUndo, canRedo, currentState, baseTextStyle, textEffectsStyle, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
 
   return (
     <EditorContext.Provider value={value}>
@@ -215,7 +191,6 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook to use the editor context
 export function useEditor() {
   const context = useContext(EditorContext);
   if (context === undefined) {

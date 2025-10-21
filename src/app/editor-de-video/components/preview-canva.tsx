@@ -79,10 +79,22 @@ export function PreviewCanva(props: PreviewCanvaProps) {
   };
 
   const renderContent = () => {
+    // FIX: Destructure the props to separate the editorState from other props.
+    // The rest of the props are collected into the 'editorState' object.
+    const { profile, textStyle, scale, containerRef, ...editorState } = props;
+    
+    // Create the props object for the model components.
+    const modeloProps = {
+      editorState,
+      baseTextStyle: textStyle,
+      textEffectsStyle: {}, // Pass an empty object for now
+      profile,
+    };
+
     if (props.activeTemplateId === 'template-twitter') {
-      return <ModeloTwitter {...props} />;
+      return <ModeloTwitter {...modeloProps} />;
     }
-    return <ModeloPadrao {...props} />;
+    return <ModeloPadrao {...modeloProps} />;
   };
 
   return (

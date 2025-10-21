@@ -1,3 +1,4 @@
+
 // Arquivo para centralizar as definições de tipos compartilhadas entre os componentes do editor.
 import type { ProfileData } from "@/hooks/use-profile";
 import type React from "react";
@@ -25,10 +26,12 @@ export interface EditorState {
     textColor: string;
     textAlign: "left" | "center" | "right";
     textShadowBlur: number;
-    textShadowOpacity: number;
+    textShadowOpacity: number; // Agora é "Intensidade"
     textVerticalPosition: number;
     textStrokeColor: string;
     textStrokeWidth: number;
+    textStrokeCornerStyle: 'rounded' | 'square'; // Novo!
+    applyEffectsToEmojis: boolean; // Novo!
     letterSpacing: number;
     lineHeight: number;
     wordSpacing: number;
@@ -83,7 +86,7 @@ export interface VisualizacaoEditorProps {
     filmColor: string;
     filmOpacity: number;
     text: string;
-    textStyle: EstiloTexto;
+    // O textStyle foi removido daqui pois a lógica será mais complexa e gerenciada internamente
     textVerticalPosition: number;
     showProfileSignature: boolean;
     profile: ProfileData;
@@ -128,7 +131,7 @@ export interface PainelEstiloProps {
     onTextAlignChange: (align: "left" | "center" | "right") => void;
     textShadowBlur: number;
     onTextShadowBlurChange: (blur: number) => void;
-    textShadowOpacity: number;
+    textShadowOpacity: number; // Intensidade
     onTextShadowOpacityChange: (opacity: number) => void;
     textVerticalPosition: number;
     onTextVerticalPositionChange: (position: number) => void;
@@ -136,6 +139,10 @@ export interface PainelEstiloProps {
     onTextStrokeColorChange: (color: string) => void;
     textStrokeWidth: number;
     onTextStrokeWidthChange: (width: number) => void;
+    textStrokeCornerStyle: 'rounded' | 'square'; // Novo!
+    onTextStrokeCornerStyleChange: (style: 'rounded' | 'square') => void; // Novo!
+    applyEffectsToEmojis: boolean; // Novo!
+    onApplyEffectsToEmojisChange: (apply: boolean) => void; // Novo!
     letterSpacing: number;
     onLetterSpacingChange: (spacing: number) => void;
     lineHeight: number;
@@ -203,7 +210,7 @@ export interface PainelCoresProps {
 export interface VisualizacaoPerfilProps {
   profile: ProfileData;
   text: string;
-  textStyle: EstiloTexto;
+  // textStyle foi removido
   textVerticalPosition: number;
   profileVerticalPosition: number;
 }
