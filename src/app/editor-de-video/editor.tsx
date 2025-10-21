@@ -14,6 +14,8 @@ import { useTemplates } from "@/hooks/use-templates";
 import { useEditor } from "./contexts/editor-context";
 import Loading from './loading';
 import { getAllQuotes } from '@/lib/dados';
+import { createStrokeStyle } from "./ferramentas/Ferramenta-Contorno";
+import { createDropShadowStyle } from "./ferramentas/Ferramenta-Sombra";
 
 const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     fontFamily: "Poppins",
@@ -27,6 +29,8 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0,
+    textStrokeCornerStyle: 'rounded',
+    applyEffectsToEmojis: false,
     letterSpacing: 0,
     lineHeight: 1.3,
     wordSpacing: 0,
@@ -128,24 +132,16 @@ export default function Editor() {
     const containerWidth = previewContainerRef.current.offsetWidth;
     const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
 
-    const createTextStroke = (strokeWidth: number, color: string) => {
-        const strokePx = (strokeWidth / 100) * (calculatedFontSize / 4);
-        if (strokePx <= 0) return {};
-        return {
-            WebkitTextStroke: `${strokePx}px ${color}`,
-            textStroke: `${strokePx}px ${color}`,
-            paintOrder: 'stroke fill',
-        };
-    };
+    const strokeStyle = createStrokeStyle(
+        currentState.textStrokeWidth,
+        currentState.textStrokeColor,
+        currentState.textStrokeCornerStyle,
+    );
 
-    const createMainShadow = (blur: number, opacity: number): string => {
-        if (opacity <= 0) return 'none';
-        const shadowOpacity = opacity / 100;
-        const blurAmount = (blur / 100) * (calculatedFontSize * 0.5);
-        const offsetY = blurAmount * 0.4;
-        const offsetX = 0;
-        return `${offsetX.toFixed(2)}px ${offsetY.toFixed(2)}px ${blurAmount.toFixed(2)}px rgba(0,0,0,${shadowOpacity})`;
-    };
+    const shadowStyle = createDropShadowStyle(
+        currentState.textShadowBlur,
+        currentState.textShadowOpacity
+    );
     
     return {
         fontFamily: currentState.fontFamily,
@@ -157,8 +153,8 @@ export default function Editor() {
         lineHeight: currentState.lineHeight,
         letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
         wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
-        textShadow: createMainShadow(currentState.textShadowBlur, currentState.textShadowOpacity),
-        ...createTextStroke(currentState.textStrokeWidth, currentState.textStrokeColor),
+        ...strokeStyle,
+        ...shadowStyle,
     }
   }, [
     currentState,
@@ -194,6 +190,8 @@ export default function Editor() {
     textShadowOpacity: currentState.textShadowOpacity, onTextShadowOpacityChange: (val: number) => updateState({ textShadowOpacity: val }),
     textStrokeColor: currentState.textStrokeColor, onTextStrokeColorChange: (val: string) => updateState({ textStrokeColor: val }),
     textStrokeWidth: currentState.textStrokeWidth, onTextStrokeWidthChange: (val: number) => updateState({ textStrokeWidth: val }),
+    textStrokeCornerStyle: currentState.textStrokeCornerStyle, onTextStrokeCornerStyleChange: (val: 'rounded' | 'square') => updateState({ textStrokeCornerStyle: val }),
+    applyEffectsToEmojis: currentState.applyEffectsToEmojis, onApplyEffectsToEmojisChange: (val: boolean) => updateState({ applyEffectsToEmojis: val }),
     letterSpacing: currentState.letterSpacing, onLetterSpacingChange: (val: number) => updateState({ letterSpacing: val }),
     lineHeight: currentState.lineHeight, onLineHeightChange: (val: number) => updateState({ lineHeight: val }),
     wordSpacing: currentState.wordSpacing, onWordSpacingChange: (val: number) => updateState({ wordSpacing: val }),
@@ -245,5 +243,3 @@ export default function Editor() {
     </div>
   );
 }
-
-    

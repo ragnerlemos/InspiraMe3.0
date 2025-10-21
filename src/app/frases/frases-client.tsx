@@ -142,7 +142,7 @@ export function FrasesClientPage({
         <Button
           variant='ghost'
           onClick={() => handleMainCategorySelect('Todos')}
-          className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
+          className={cn('w-full justify-start text-base font-semibold px-3 py-2 transition-colors rounded-md hover:bg-muted/50',
              selectedMainCategory === 'Todos' && 'bg-primary/10 text-primary'
           )}
         >
@@ -159,7 +159,7 @@ export function FrasesClientPage({
                     key={mainCat}
                     variant='ghost'
                     onClick={() => handleMainCategorySelect(mainCat)}
-                    className={cn('w-full justify-start text-base font-semibold px-3 transition-colors rounded-md hover:bg-muted/50',
+                    className={cn('w-full justify-start text-base font-semibold px-3 py-2 transition-colors rounded-md hover:bg-muted/50',
                       selectedMainCategory === mainCat && selectedSubCategory === 'Todos' && 'bg-primary/10 text-primary'
                     )}
                   >
@@ -172,11 +172,11 @@ export function FrasesClientPage({
                   <AccordionTrigger
                      onClick={() => handleMainCategorySelect(mainCat)}
                      className={cn(
-                      'font-semibold text-base hover:no-underline px-3 py-2 transition-colors rounded-md hover:bg-muted/50',
+                      'font-semibold text-base hover:no-underline px-3 py-2 transition-colors rounded-md hover:bg-muted/50 w-full justify-start',
                       selectedMainCategory === mainCat && 'bg-primary/10 text-primary'
                     )}
                   >
-                    {mainCat}
+                    <span className="flex-1 text-left">{mainCat}</span>
                   </AccordionTrigger>
                   <AccordionContent className='pt-1'>
                     <div className="flex flex-col items-start gap-1 pl-4 border-l-2 border-muted ml-3">
