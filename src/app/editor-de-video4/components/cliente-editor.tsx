@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { quotes, templates } from "@/lib/dados";
 import type { EstiloTexto, ProporcaoTela, EditorState } from "./tipos";
@@ -16,7 +16,7 @@ import { useEditor } from "../contexts/editor-context";
 const getInitialState = (): EditorState => ({
     text: "",
     fontFamily: "Poppins",
-    fontSize: 5, // Agora representa um percentual da largura do container (cqw)
+    fontSize: 5, 
     fontWeight: "normal",
     fontStyle: "normal",
     textColor: "#FFFFFF",
@@ -47,7 +47,6 @@ const getInitialState = (): EditorState => ({
 });
 
 
-// Componente que exibe um esqueleto de carregamento enquanto o editor está sendo preparado.
 function EditorSkeleton() {
     return (
         <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
@@ -62,22 +61,19 @@ function EditorSkeleton() {
     );
 }
 
-// Componente principal do cliente do editor de vídeo.
 export function EditorClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { toast } = useToast();
   const { profile, isLoaded: isProfileLoaded } = useProfile();
-  const { setUndoState } = useEditor();
+  const { setUndoState, setHandlers } = useEditor();
 
-
-  // Histórico de estados para a funcionalidade de desfazer.
   const [history, setHistory] = useState<EditorState[]>([getInitialState()]);
   const [currentStateIndex, setCurrentStateIndex] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   const currentState = history[currentStateIndex];
   
-  // Função para atualizar o estado e adicionar ao histórico.
   const updateState = (newState: Partial<EditorState>) => {
     const nextState = { ...currentState, ...newState };
     const newHistory = history.slice(0, currentStateIndex + 1);
@@ -85,36 +81,80 @@ export function EditorClient() {
     setCurrentStateIndex(newHistory.length);
   };
   
-  // Função para desfazer a última ação.
   const undo = useCallback(() => {
     if (currentStateIndex > 0) {
       setCurrentStateIndex(currentStateIndex - 1);
     }
   }, [currentStateIndex]);
+  
+  const redo = useCallback(() => {
+    if (currentStateIndex < history.length - 1) {
+      setCurrentStateIndex(currentStateIndex + 1);
+    }
+  }, [currentStateIndex, history.length]);
 
   const canUndo = currentStateIndex > 0;
-  
-  useEffect(() => {
-    setUndoState({ canUndo, undo });
-  }, [canUndo, undo, setUndoState]);
+  const canRedo = currentStateIndex < history.length - 1;
 
-  // Efeito para inicializar o editor com base nos parâmetros da URL.
   useEffect(() => {
-    if (!isProfileLoaded) return; // Aguarda o perfil ser carregado
+    setUndoState({ canUndo, canRedo });
+  }, [canUndo, canRedo, setUndoState]);
+
+  const handleSaveProject = useCallback(async () => {
+    if (!profile) {
+      toast({
+        title: "Você precisa estar logado",
+        description: "Para salvar um projeto, você precisa estar autenticado.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      // Aqui você adicionaria a lógica para salvar o `currentState` 
+      // Por exemplo, enviando para o seu backend
+      console.log("Salvando o projeto...", currentState);
+
+      toast({ title: "Projeto salvo com sucesso!" });
+      
+      // Redireciona para a página de projetos
+      router.push("/projetos");
+
+    } catch (error) {
+      console.error("Erro ao salvar o projeto:", error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o projeto. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    }
+  }, [currentState, profile, router, toast]);
+
+
+  useEffect(() => {
+    // Registra as funções de manipulação no contexto do editor
+    setHandlers({
+        undo,
+        redo,
+        onSaveProject: handleSaveProject,
+        // Adicione outras funções de exportação aqui quando implementadas
+    });
+  }, [undo, redo, handleSaveProject, setHandlers]);
+
+
+  useEffect(() => {
+    if (!isProfileLoaded) return;
 
     const quoteParam = searchParams.get("quote");
     const templateIdParam = searchParams.get("templateId");
     
     let initialState = getInitialState();
 
-    // Define o texto inicial a partir do parâmetro 'quote' ou de uma citação aleatória.
     if (quoteParam) {
       initialState.text = decodeURIComponent(quoteParam);
     } else {
       initialState.text = quotes[Math.floor(Math.random() * quotes.length)].text;
     }
     
-    // Configura o editor com base em um modelo, se um 'templateId' for fornecido.
     if (templateIdParam) {
       const templateId = parseInt(templateIdParam);
       const template = templates.find(t => t.id === templateId);
@@ -123,14 +163,14 @@ export function EditorClient() {
         initialState.activeTemplateId = templateId;
         initialState.aspectRatio = template.aspectRatio as ProporcaoTela;
         
-        if (template.id === -1) { // Se for o modelo padrão (ID -1), aplica estilos específicos.
+        if (template.id === -1) { 
             initialState.backgroundStyle = { type: 'solid', value: '#000000' };
             initialState.textStrokeWidth = 0.2;
             initialState.textShadowBlur = 1;
             initialState.textVerticalPosition = 50;
             initialState.textAlign = 'center';
             initialState.textColor = '#FFFFFF';
-        } else if (template.id === -2) { // Modelo Twitter (do Perfil)
+        } else if (template.id === -2) { 
             initialState.backgroundStyle = { type: 'solid', value: 'var(--card)' };
             initialState.textColor = 'var(--foreground)';
             initialState.fontFamily = 'PT Sans';
@@ -145,20 +185,18 @@ export function EditorClient() {
         }
       }
     } else {
-         // Se nenhum template for selecionado, usa um fundo preto como padrão.
          initialState.backgroundStyle = { type: 'solid', value: '#000000' };
     }
     
     setHistory([initialState]);
     setCurrentStateIndex(0);
-    // Marca o editor como pronto para ser renderizado.
     setIsReady(true);
   }, [searchParams, isProfileLoaded]);
 
   const createTextStrokeShadow = useCallback((width: number, color: string): string => {
     if (width === 0) return "none";
     const shadows = [];
-    const numPoints = 12; // Número de pontos ao redor
+    const numPoints = 12;
     for (let i = 0; i < numPoints; i++) {
         const angle = (i / numPoints) * 2 * Math.PI;
         const x = Math.cos(angle) * (width * 0.1);
@@ -171,8 +209,8 @@ export function EditorClient() {
   const createMainShadow = useCallback((blur: number): string => {
     if (blur === 0) return "none";
     const shadows = [];
-    const numPoints = 8; // Menos pontos para um efeito mais sutil
-    const opacity = 0.5; // Opacidade da sombra
+    const numPoints = 8; 
+    const opacity = 0.5;
 
     for (let i = 0; i < numPoints; i++) {
         const angle = (i / numPoints) * 2 * Math.PI;
@@ -212,7 +250,6 @@ export function EditorClient() {
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full overflow-hidden">
-      {/* Área de visualização */}
       <div className="flex-1 flex justify-center items-center bg-muted/40 overflow-auto">
         <VisualizacaoEditor
             aspectRatio={currentState.aspectRatio}
@@ -238,7 +275,6 @@ export function EditorClient() {
         />
       </div>
       
-      {/* Painel de Controles */}
       <div className="w-full md:w-96 border-t md:border-t-0 md:border-l bg-background">
         <PainelControles
             text={currentState.text}
