@@ -22,8 +22,8 @@ const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     fontStyle: "normal",
     textColor: "#FFFFFF",
     textAlign: "center",
-    textShadowBlur: 1,
-    textShadowOpacity: 75,
+    textShadowBlur: 17,
+    textShadowOpacity: 32,
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0,
@@ -76,9 +76,7 @@ export default function Editor() {
   const [activeControl, setActiveControl] = useState<string | null>('texto');
   const [scale, setScale] = useState(1);
 
-  // Efeito de inicialização
   useEffect(() => {
-    // Evita re-inicialização
     if (isReady || !isProfileLoaded || !areTemplatesLoaded) return;
 
     const initialize = () => {
