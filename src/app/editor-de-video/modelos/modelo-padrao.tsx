@@ -47,8 +47,8 @@ export function ModeloPadrao({
             <>
                 {parts.map((part, index) => {
                     const isEmoji = EMOJI_REGEX.test(part);
+                    // Se for um emoji e os efeitos estiverem desativados, renderiza sem eles
                     if (isEmoji && !applyEffectsToEmojis) {
-                        // Se for um emoji e os efeitos estiverem desativados, renderiza sem eles
                         return <span key={index} style={{ textShadow: 'none', filter: 'none' }}>{part}</span>;
                     }
                     // Caso contrário, renderiza a parte do texto (ou emoji com efeitos)

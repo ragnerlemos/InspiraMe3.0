@@ -114,6 +114,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
           currentState.textShadowOpacity
       );
 
+      // Combina os estilos de efeito (contorno e sombra) em um único objeto.
       const effectsStyle = { ...strokeStyle, ...shadowStyle };
 
       return { baseTextStyle: baseStyle, textEffectsStyle: effectsStyle };

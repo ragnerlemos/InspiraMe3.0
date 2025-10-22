@@ -2,9 +2,8 @@
 'use client';
 
 import * as htmlToImage from 'html-to-image';
-import type { EditorState } from './tipos';
+import type { EditorState, EstiloTexto } from './tipos';
 import type { ProfileData } from '@/hooks/use-profile';
-import { useToast } from '@/hooks/use-toast';
 
 // Tipos importados diretamente, pois este arquivo não é um componente React
 interface ToastProps {
@@ -17,7 +16,7 @@ type ToastFn = (props: ToastProps) => void;
 /**
  * Captura a imagem do preview e inicia o download.
  */
-export const captureAndDownload = async (format: 'jpeg' | 'png', toast: ToastFn, state: EditorState, profile: ProfileData, textStyle: React.CSSProperties) => {
+export const captureAndDownload = async (format: 'jpeg' | 'png', toast: ToastFn, state: EditorState, profile: ProfileData, baseTextStyle: EstiloTexto, textEffectsStyle: EstiloTexto) => {
     const previewElement = document.getElementById('editor-preview-content');
 
     if (!previewElement) {
@@ -61,7 +60,7 @@ export const captureAndDownload = async (format: 'jpeg' | 'png', toast: ToastFn,
 /**
  * Captura o estado atual do canvas como uma thumbnail.
  */
-export const captureThumbnail = async (toast: ToastFn, state: EditorState, profile: ProfileData, textStyle: React.CSSProperties): Promise<string | null> => {
+export const captureThumbnail = async (toast: ToastFn, state: EditorState, profile: ProfileData, baseTextStyle: EstiloTexto, textEffectsStyle: EstiloTexto): Promise<string | null> => {
   const previewElement = document.getElementById('editor-preview-content');
 
   if (!previewElement) {
