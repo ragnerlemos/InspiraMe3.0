@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useRef, useMemo } from "react";
@@ -228,6 +227,8 @@ interface CommonStyleProps {
   onTextStrokeColorChange: (color: string) => void;
   textStrokeWidth: number;
   onTextStrokeWidthChange: (width: number) => void;
+  textStrokeCornerStyle: 'rounded' | 'square';
+  onTextStrokeCornerStyleChange: (style: 'rounded' | 'square') => void;
   letterSpacing: number;
   onLetterSpacingChange: (spacing: number) => void;
   lineHeight: number;
@@ -542,6 +543,14 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
              return (
                  <div className="space-y-4">
                     <div className="space-y-2">
+                        <Label>Tipo de Canto</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button variant={props.textStrokeCornerStyle === 'rounded' ? 'secondary' : 'outline'} onClick={() => props.onTextStrokeCornerStyleChange('rounded')}>Arredondado</Button>
+                            <Button variant={props.textStrokeCornerStyle === 'square' ? 'secondary' : 'outline'} onClick={() => props.onTextStrokeCornerStyleChange('square')}>Quadrado</Button>
+                        </div>
+                    </div>
+                    <Separator />
+                    <div className="space-y-2">
                         <Label htmlFor="stroke-color" className="text-xs text-muted-foreground">Cor</Label>
                          <div className="relative h-10 w-full rounded-md border overflow-hidden">
                             <Input
@@ -812,5 +821,3 @@ export function Sidebar({
         </aside>
     );
 }
-
-    

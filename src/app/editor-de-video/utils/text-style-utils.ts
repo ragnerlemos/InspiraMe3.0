@@ -13,17 +13,31 @@ export const createStrokeStyle = (
   if (strokeWidth <= 0) {
     return {};
   }
+  const widthInCqw = strokeWidth * 0.1;
 
-  const numPoints = strokeCornerStyle === 'rounded' ? 12 : 4;
+  if (strokeCornerStyle === 'square') {
+    return {
+      WebkitTextStroke: `${widthInCqw}cqw ${strokeColor}`,
+      textShadow: `
+        ${widthInCqw}cqw ${widthInCqw}cqw 0 ${strokeColor},
+        -${widthInCqw}cqw ${widthInCqw}cqw 0 ${strokeColor},
+        ${widthInCqw}cqw -${widthInCqw}cqw 0 ${strokeColor},
+        -${widthInCqw}cqw -${widthInCqw}cqw 0 ${strokeColor}
+      `,
+    }
+  }
+  
+  // Arredondado
+  const numPoints = 12;
   const angleIncrement = 360 / numPoints;
   const shadows = [];
 
   for (let i = 0; i < numPoints; i++) {
     const angle = i * angleIncrement;
     const rad = angle * (Math.PI / 180);
-    const x = Math.round(strokeWidth * Math.cos(rad));
-    const y = Math.round(strokeWidth * Math.sin(rad));
-    shadows.push(`${x}px ${y}px 0 ${strokeColor}`);
+    const x = widthInCqw * Math.cos(rad);
+    const y = widthInCqw * Math.sin(rad);
+    shadows.push(`${x.toFixed(2)}cqw ${y.toFixed(2)}cqw ${widthInCqw*0.5}cqw ${strokeColor}`);
   }
 
   return { textShadow: shadows.join(', ') };

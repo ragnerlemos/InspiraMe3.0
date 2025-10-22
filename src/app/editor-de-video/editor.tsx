@@ -19,7 +19,7 @@ import { createDropShadowStyle } from "./ferramentas/Ferramenta-Sombra";
 
 const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     fontFamily: "Poppins",
-    fontSize: 5,
+    fontSize: 2.7,
     fontWeight: "bold",
     fontStyle: "normal",
     textColor: "#FFFFFF",
@@ -70,6 +70,8 @@ export default function Editor() {
     currentState,
     updateState,
     setInitialState,
+    baseTextStyle,
+    textEffectsStyle,
   } = useEditor();
 
   const [activeControl, setActiveControl] = useState<string | null>('texto');
@@ -126,43 +128,6 @@ export default function Editor() {
     }
   }, [currentState?.aspectRatio, isDesktop, currentState]);
   
-  const textStyle = useMemo(() => {
-    if (!currentState || !previewContainerRef.current) return {};
-
-    const containerWidth = previewContainerRef.current.offsetWidth;
-    const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
-
-    const strokeStyle = createStrokeStyle(
-        currentState.textStrokeWidth,
-        currentState.textStrokeColor,
-        currentState.textStrokeCornerStyle,
-    );
-
-    const shadowStyle = createDropShadowStyle(
-        currentState.textShadowBlur,
-        currentState.textShadowOpacity
-    );
-    
-    return {
-        fontFamily: currentState.fontFamily,
-        fontSize: `${calculatedFontSize}px`,
-        fontWeight: currentState.fontWeight,
-        fontStyle: currentState.fontStyle,
-        color: currentState.textColor,
-        textAlign: currentState.textAlign,
-        lineHeight: currentState.lineHeight,
-        letterSpacing: `${(currentState.letterSpacing || 0) / 100}em`,
-        wordSpacing: `${(currentState.wordSpacing || 0) / 100}em`,
-        ...strokeStyle,
-        ...shadowStyle,
-    }
-  }, [
-    currentState,
-    previewContainerRef.current,
-    width
-  ]);
-
-
   if (!isReady || !isProfileLoaded || !currentState) {
     return <Loading />;
   }
@@ -220,7 +185,7 @@ export default function Editor() {
   const previewProps = {
     ...currentState,
     profile,
-    textStyle,
+    textStyle: baseTextStyle, // Passa o estilo base
     scale,
     containerRef: previewContainerRef,
   };

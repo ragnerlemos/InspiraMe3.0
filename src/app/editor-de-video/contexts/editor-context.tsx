@@ -35,7 +35,7 @@ const EditorContext = createContext<EditorContextType | undefined>(undefined);
 const defaultState: EditorState = {
     text: "",
     fontFamily: "Poppins",
-    fontSize: 5,
+    fontSize: 2.7,
     fontWeight: "bold",
     fontStyle: "normal",
     textColor: "#FFFFFF",
@@ -89,12 +89,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const { baseTextStyle, textEffectsStyle } = useMemo(() => {
       if (!currentState) return { baseTextStyle: {}, textEffectsStyle: {} };
 
-      const containerWidth = 1080; // Largura base para cálculo de exportação
-      const calculatedFontSize = (currentState.fontSize / 100) * containerWidth;
-
       const baseStyle: EstiloTexto = {
           fontFamily: currentState.fontFamily,
-          fontSize: `${calculatedFontSize}px`,
+          fontSize: `${currentState.fontSize}cqw`,
           fontWeight: currentState.fontWeight,
           fontStyle: currentState.fontStyle,
           color: currentState.textColor,
@@ -106,14 +103,14 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
       // Stroke agora usa a nova função, com cantos configuráveis
       const strokeStyle = createStrokeStyle(
-          (currentState.textStrokeWidth / 1000) * calculatedFontSize, // strokeWidth precisa ser ajustado
+          currentState.textStrokeWidth,
           currentState.textStrokeColor,
           currentState.textStrokeCornerStyle
       );
       
       // Shadow agora usa o algoritmo de drop-shadow com intensidade
       const shadowStyle = createDropShadowStyle(
-          (currentState.textShadowBlur / 100) * (calculatedFontSize * 0.4),
+          currentState.textShadowBlur,
           currentState.textShadowOpacity
       );
 
