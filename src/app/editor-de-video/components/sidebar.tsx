@@ -3,7 +3,7 @@
 
 import { useState, useRef, useMemo } from "react";
 import Link from 'next/link';
-import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film, AlignCenter, AlignRight, Italic, Box, Pilcrow, CaseUpper, Text } from "lucide-react";
+import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film, AlignCenter, AlignRight, Italic, Box, Pilcrow, CaseUpper, Text, SmilePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { EstiloFundo } from "../tipos";
+import { Switch } from "@/components/ui/switch";
 
 
 const aspectRatios = [
@@ -229,6 +230,8 @@ interface CommonStyleProps {
   onTextStrokeWidthChange: (width: number) => void;
   textStrokeCornerStyle: 'rounded' | 'square';
   onTextStrokeCornerStyleChange: (style: 'rounded' | 'square') => void;
+  applyEffectsToEmojis: boolean;
+  onApplyEffectsToEmojisChange: (apply: boolean) => void;
   letterSpacing: number;
   onLetterSpacingChange: (spacing: number) => void;
   lineHeight: number;
@@ -590,6 +593,24 @@ function renderEstiloControl(subControl: string | null, props: EstiloControlProp
                     </div>
                 </div>
             );
+        case 'emoji':
+            return (
+                <div className="space-y-4">
+                     <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                            <Label htmlFor="apply-emoji-effects">Aplicar efeitos em emojis</Label>
+                            <p className="text-xs text-muted-foreground">
+                                Desative para manter os emojis com aparência padrão.
+                            </p>
+                        </div>
+                        <Switch
+                            id="apply-emoji-effects"
+                            checked={props.applyEffectsToEmojis}
+                            onCheckedChange={props.onApplyEffectsToEmojisChange}
+                        />
+                    </div>
+                </div>
+            )
         default:
             return null;
     }
@@ -771,13 +792,14 @@ export function Sidebar({
                         <ScrollArea className="w-full whitespace-nowrap border-t mt-auto">
                             <div className="flex h-16 items-center w-max space-x-1 bg-background/90 backdrop-blur-sm px-2">
                                 <BotaoRecurso icon={Baseline} label="Contorno" onClick={() => setActiveSubControl('contorno')} isActive={activeSubControl === 'contorno'}/>
+                                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
                                 <BotaoRecurso icon={Pipette} label="Cor" onClick={() => setActiveSubControl('cor')} isActive={activeSubControl === 'cor'}/>
                                 <BotaoRecurso icon={CaseSensitive} label="Tamanho" onClick={() => setActiveSubControl('tamanho')} isActive={activeSubControl === 'tamanho'}/>
-                                <BotaoRecurso icon={Paintbrush} label="Sombra" onClick={() => setActiveSubControl('sombra')} isActive={activeSubControl === 'sombra'}/>
                                 <BotaoRecurso icon={MoveVertical} label="Posição" onClick={() => setActiveSubControl('posicao')} isActive={activeSubControl === 'posicao'}/>
                                 <BotaoRecurso icon={AlignLeft} label="Alinhar" onClick={() => setActiveSubControl('alinhamento')} isActive={activeSubControl === 'alinhamento'}/>
                                 <BotaoRecurso icon={Bold} label="Estilo" onClick={() => setActiveSubControl('estilo')} isActive={activeSubControl === 'estilo'}/>
                                 <BotaoRecurso icon={Type} label="Fonte" onClick={() => setActiveSubControl('fonte')} isActive={activeSubControl === 'fonte'}/>
+                                <BotaoRecurso icon={SmilePlus} label="Emoji" onClick={() => setActiveSubControl('emoji')} isActive={activeSubControl === 'emoji'}/>
                             </div>
                             <ScrollBar orientation="horizontal" className="h-2" />
                         </ScrollArea>

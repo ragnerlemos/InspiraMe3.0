@@ -70,7 +70,7 @@ export default function Editor() {
     setInitialState,
     baseTextStyle,
     textEffectsStyle,
-    dropShadowStyle, // Adicionado
+    dropShadowStyle,
   } = useEditor();
 
   const [activeControl, setActiveControl] = useState<string | null>('texto');

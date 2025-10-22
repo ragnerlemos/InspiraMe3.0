@@ -1,4 +1,3 @@
-
 // Arquivo para centralizar as definições de tipos compartilhadas entre os componentes do editor.
 import type { ProfileData } from "@/hooks/use-profile";
 import type React from "react";
