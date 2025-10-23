@@ -14,7 +14,7 @@
     "open:android": "npx cap open android",
     "build:apk": "cd android && ./gradlew assembleRelease",
     "build:aab": "cd android && ./gradlew bundleRelease",
-    "build:android": "npm run build:web && npm run deploy:web && npm run sync:android && npm run build:aab"
+    "build:android": "npm run build:web && npm run sync:android && npm run build:aab"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.0",
