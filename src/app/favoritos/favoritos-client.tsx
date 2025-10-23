@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Film, Copy, Trash2, Share2, HeartCrack } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { getAllQuotes } from '@/lib/dados';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface QuoteWithAuthor {
@@ -19,7 +18,11 @@ interface QuoteWithAuthor {
     subCategory?: string;
 }
 
-export function FavoritesClientPage() {
+interface FavoritesClientPageProps {
+  allQuotes: QuoteWithAuthor[];
+}
+
+export function FavoritesClientPage({ allQuotes }: FavoritesClientPageProps) {
   const { favorites, removeFavorite } = useFavorites();
   const { toast } = useToast();
   
@@ -27,28 +30,13 @@ export function FavoritesClientPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFavoriteQuotes = async () => {
-      setIsLoading(true);
-      try {
-        const allQuotes = await getAllQuotes();
-        if (allQuotes) {
-          const userFavorites = allQuotes.filter(quote => favorites.includes(quote.id));
-          setFavoriteQuotes(userFavorites);
-        }
-      } catch (error) {
-        console.error("Failed to fetch quotes:", error);
-        toast({
-            title: "Erro ao carregar favoritos",
-            description: "Não foi possível buscar suas frases favoritas. Tente novamente mais tarde.",
-            variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchFavoriteQuotes();
-  }, [favorites, toast]);
+    setIsLoading(true);
+    if (allQuotes) {
+      const userFavorites = allQuotes.filter(quote => favorites.includes(quote.id));
+      setFavoriteQuotes(userFavorites);
+    }
+    setIsLoading(false);
+  }, [favorites, allQuotes]);
 
   const handleCopy = (text: string, author?: string) => {
     const textToCopy = author ? `${text} - ${author}` : text;

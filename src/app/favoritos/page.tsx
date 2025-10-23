@@ -1,8 +1,11 @@
-
 import { FavoritesClientPage } from './favoritos-client';
+import { getAllQuotes } from '@/lib/dados';
 
-export default function FavoritesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function FavoritesPage() {
+  const allQuotes = await getAllQuotes();
   return (
-    <FavoritesClientPage />
+    <FavoritesClientPage allQuotes={allQuotes} />
   );
 }
