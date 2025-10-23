@@ -2,13 +2,14 @@
 import type { EditorState, EstiloTexto } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
 import { EMOJI_REGEX } from '../utils/text-style-utils';
+import type { ProfileData } from '@/hooks/use-profile';
 
 interface ModeloPadraoProps {
     editorState: EditorState;
     baseTextStyle: EstiloTexto;
     textEffectsStyle: EstiloTexto;
     dropShadowStyle: EstiloTexto; // Adicionado
-    profile: any;
+    profile: ProfileData;
 }
 
 export function ModeloPadrao({
