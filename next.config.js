@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@motion-canvas/core', '@motion-canvas/2d', '@motion-canvas/player'],
   typescript: {
     ignoreBuildErrors: true,
   },
