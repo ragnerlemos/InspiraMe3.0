@@ -16,39 +16,6 @@ interface FerramentaContornoProps {
   }) => void;
 }
 
-export const createStrokeStyleV1 = (
-  width: number,
-  color: string,
-  cornerStyle: "rounded" | "square"
-): React.CSSProperties => {
-  if (width <= 0) {
-    return {};
-  }
-
-  const shadows: string[] = [];
-  if (cornerStyle === "rounded") {
-    const numSteps = 8;
-    const blurRadius = width * 0.5;
-    for (let i = 0; i < numSteps; i++) {
-      const angle = (i / numSteps) * 2 * Math.PI;
-      const x = Math.cos(angle) * width;
-      const y = Math.sin(angle) * width;
-      shadows.push(`${x.toFixed(2)}px ${y.toFixed(2)}px ${blurRadius}px ${color}`);
-    }
-  } else {
-    // Algoritmo definitivo para contorno quadrado: cria um bloco sólido e denso.
-    // Funciona de forma consistente no texto e nos emojis.
-    const W = Math.ceil(width);
-    for (let x = -W; x <= W; x++) {
-      for (let y = -W; y <= W; y++) {
-        shadows.push(`${x}px ${y}px 0 ${color}`);
-      }
-    }
-  }
-
-  return { textShadow: shadows.join(", ") };
-};
-
 export function FerramentaContorno({
   strokeWidth,
   strokeColor,

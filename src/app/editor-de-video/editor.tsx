@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { useTemplates } from "@/hooks/use-templates";
 import { useEditor } from "./contexts/editor-context";
 import Loading from './loading';
+import { getAllQuotes } from '@/lib/dados';
 
 const getInitialState = (): Omit<EditorState, 'activeTemplateId' | 'text'> => ({
     fontFamily: "Poppins",
@@ -91,12 +92,7 @@ export default function Editor() {
             text = decodeURIComponent(quoteParam);
         } else {
             try {
-                const response = await fetch('/api/quotes');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch quotes');
-                }
-                const allQuotes = await response.json();
-
+                const allQuotes = await getAllQuotes();
                 if (allQuotes.length > 0) {
                     text = allQuotes[Math.floor(Math.random() * allQuotes.length)].quote;
                 }
