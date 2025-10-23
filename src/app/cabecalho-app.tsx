@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, Feather, Wrench } from "lucide-react";
+import { Film, GalleryVertical, Menu, Star, Settings, User, Clapperboard, GalleryHorizontal, Quote, Undo, Save, FileImage, Video, Redo, Feather, Wrench, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth, useUser } from "@/firebase";
+import { signOut } from "firebase/auth";
 
 // Itens de navegação exibidos no cabeçalho.
 const navItems = [
@@ -93,17 +95,47 @@ export function AppHeader() {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const auth = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
       setIsClient(true);
   }, []);
   
+  const handleLogout = async () => {
+    if (auth) {
+        await signOut(auth);
+    }
+  };
+
   const isEditorPage = pathname.startsWith('/editor-de-video');
 
   const renderNavLinks = (isMobile = false) => {
-    return navItems.map((item) => {
-        const isActive = pathname.startsWith(item.href);
+    const navAndActions = [
+      ...navItems,
+      ...(user ? [{ href: '#', label: 'Sair', icon: LogOut, onClick: handleLogout }] : []),
+    ];
+
+    return navAndActions.map((item) => {
+        const isActive = pathname.startsWith(item.href) && item.href !== '#';
         const commonClasses = "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary";
+        
+        if (item.onClick) {
+            const buttonProps = {
+                key: item.label,
+                onClick: () => {
+                    item.onClick();
+                    if(isMobile) setIsSheetOpen(false);
+                },
+                className: cn(commonClasses, "text-muted-foreground text-base", isMobile ? "" : "text-sm font-medium"),
+            };
+            return (
+                 <button {...buttonProps} >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                </button>
+            )
+        }
         
         if (isMobile) {
             return (
@@ -145,14 +177,13 @@ export function AppHeader() {
     return null;
   }
   
-  if (pathname.startsWith('/boas-vindas')) {
+  if (pathname.startsWith('/boas-vindas') || pathname.startsWith('/login')) {
     return null;
   }
   
   if (pathname.startsWith('/editor-de-video/ferramentas')) {
     return null;
   }
-
 
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur-sm">
