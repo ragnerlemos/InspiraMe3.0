@@ -16,7 +16,7 @@ interface FerramentaContornoProps {
   }) => void;
 }
 
-export const createStrokeStyle = (
+export const createStrokeStyleV1 = (
   width: number,
   color: string,
   cornerStyle: "rounded" | "square"

@@ -3,8 +3,8 @@
 
 import { useState, useMemo } from 'react';
 // createStrokeStyle agora contém o algoritmo definitivo que funciona para tudo.
-import { FerramentaContorno, createStrokeStyle } from './Ferramenta-Contorno';
-import { FerramentaSombra, createDropShadowStyle } from './Ferramenta-Sombra';
+import { FerramentaContorno, createStrokeStyleV1 } from './Ferramenta-Contorno';
+import { FerramentaSombra, createDropShadowStyleV1 } from './Ferramenta-Sombra';
 import { FerramentasBasicas } from './Ferramentas-Basicas';
 import { FerramentaEmojis } from './Ferramenta-Emojis';
 
@@ -42,9 +42,9 @@ export default function FerramentasEditorPage() {
   // --- Lógica de Estilo 100% Unificada ---
   const textEffectsStyle = useMemo(() => {
     // 1. Gera o estilo de contorno (quadrado ou redondo) usando o novo algoritmo.
-    const stroke = createStrokeStyle(state.strokeWidth, state.strokeColor, state.strokeCornerStyle);
+    const stroke = createStrokeStyleV1(state.strokeWidth, state.strokeColor, state.strokeCornerStyle);
     // 2. Gera a sombra projetada.
-    const dropShadow = createDropShadowStyle(state.shadowBlur, state.shadowOpacity);
+    const dropShadow = createDropShadowStyleV1(state.shadowBlur, state.shadowOpacity);
     
     // 3. Combina os dois efeitos em uma única propriedade text-shadow.
     const combinedShadows = [stroke.textShadow, dropShadow.textShadow]

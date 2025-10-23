@@ -15,7 +15,7 @@ interface FerramentaSombraProps {
  * @param opacity - A opacidade da sombra (pode ser > 100 para um efeito mais forte).
  * @returns Um objeto de estilo React com a propriedade textShadow.
  */
-export const createDropShadowStyle = (blur: number, opacity: number): React.CSSProperties => {
+export const createDropShadowStyleV1 = (blur: number, opacity: number): React.CSSProperties => {
   if (blur <= 0 || opacity <= 0) {
     return {};
   }
