@@ -1,20 +1,33 @@
 
-import type { VisualizacaoEditorProps, EstiloTexto } from '../tipos';
+import type { EditorState, EstiloTexto } from '../tipos';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
+import { ProfileData } from '@/hooks/use-profile';
 
-interface ModeloTwitterProps extends VisualizacaoEditorProps {
-    textStyle: EstiloTexto;
+interface ModeloTwitterProps {
+    editorState: EditorState;
+    baseTextStyle: EstiloTexto;
+    textEffectsStyle: EstiloTexto;
+    dropShadowStyle: EstiloTexto;
+    profile: ProfileData;
 }
 
 
 export function ModeloTwitter({
   profile,
-  text,
-  textStyle,
+  editorState,
+  baseTextStyle,
+  textEffectsStyle,
+  dropShadowStyle,
 }: ModeloTwitterProps) {
+  
+  const combinedTextStyle: EstiloTexto = {
+      ...baseTextStyle,
+      ...textEffectsStyle,
+    };
+
   return (
-    <div className="absolute inset-0 flex items-center justify-center p-8">
+    <div className="absolute inset-0 flex items-center justify-center p-8" style={dropShadowStyle}>
       {/* Container que agrupa a assinatura e o texto para garantir o alinhamento */}
       <div className="relative w-full space-y-4 transition-all duration-200">
         {/* Cabeçalho do Perfil */}
@@ -28,7 +41,7 @@ export function ModeloTwitter({
           <div className="flex-1 pt-1">
             <p
               className="font-bold text-lg"
-              style={{ color: textStyle.color }}
+              style={{ color: editorState.textColor }}
             >
               {profile.username}
             </p>
@@ -42,8 +55,8 @@ export function ModeloTwitter({
         </div>
 
         {/* Texto da Frase */}
-        <div style={textStyle} className="break-words w-full">
-          {text}
+        <div style={combinedTextStyle} className="break-words w-full">
+          {editorState.text}
         </div>
       </div>
     </div>
