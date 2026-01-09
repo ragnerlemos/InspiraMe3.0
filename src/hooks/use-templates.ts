@@ -18,9 +18,9 @@ export interface Template {
 
 // Modelos padrão que não são editáveis pelo usuário
 const defaultTemplatesData: Template[] = [
-  { id: 'template-default', name: "Modelo Padrão", editorState: { fontSize: 2.7, showProfileSignature: true, showSignaturePhoto: true, signatureScale: 63, signaturePositionY: 90, aspectRatio: "9 / 16", activeTemplateId: 'template-default' }, isCustom: false, thumbnail: null },
+  { id: 'template-default', name: "Modelo Padrão", editorState: { fontSize: 3.2, showProfileSignature: true, showSignaturePhoto: true, signatureScale: 63, signaturePositionY: 90, aspectRatio: "9 / 16", activeTemplateId: 'template-default' }, isCustom: false, thumbnail: null },
   { id: 'template-twitter', name: "Post Twitter", editorState: { fontSize: 0.9, aspectRatio: "9 / 16", activeTemplateId: 'template-twitter', textShadowOpacity: 0 }, isCustom: false, thumbnail: null },
-  { id: 'template-mountain', name: "Paisagem na Montanha", editorState: { fontSize: 2.7, aspectRatio: "9 / 16", backgroundStyle: { type: 'media', value: 'https://picsum.photos/id/1018/1080/1920' }, activeTemplateId: 'template-mountain', showProfileSignature: true, showSignaturePhoto: true }, isCustom: false, thumbnail: "https://picsum.photos/id/1018/400/400" },
+  { id: 'template-mountain', name: "Paisagem na Montanha", editorState: { fontSize: 3.2, aspectRatio: "9 / 16", backgroundStyle: { type: 'media', value: 'https://picsum.photos/id/1018/1080/1920' }, activeTemplateId: 'template-mountain', showProfileSignature: true, showSignaturePhoto: true }, isCustom: false, thumbnail: "https://picsum.photos/id/1018/400/400" },
 ];
 
 
