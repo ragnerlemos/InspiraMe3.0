@@ -18,7 +18,7 @@ import { getAllQuotes } from '@/lib/dados';
 const getInitialState = (): Omit<EditorState, 'text'> => ({
     activeTemplateId: "template-twitter",
     fontFamily: "Poppins",
-    fontSize: 0.8,
+    fontSize: 0.9,
     fontWeight: "bold",
     fontStyle: "normal",
     textColor: "#FFFFFF",
