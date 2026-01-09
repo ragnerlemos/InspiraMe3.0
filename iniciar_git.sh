@@ -8,12 +8,17 @@ echo "---"
 echo "🔧 Iniciando a configuração do repositório Git..."
 echo "---"
 
-# 1. Inicializa o repositório Git localmente
-git init -b main
-echo "✅ Repositório Git local inicializado."
+# 1. Inicializa o repositório Git localmente, se não existir.
+if [ ! -d ".git" ]; then
+    git init -b main
+    echo "✅ Repositório Git local inicializado."
+else
+    echo "✅ Repositório Git já existe."
+fi
 
-# 2. Adiciona a conexão com seu repositório remoto no GitHub
-git remote add origin "$GITHUB_URL"
+# 2. Configura ou corrige a URL do repositório remoto 'origin'.
+# Este comando funciona tanto para adicionar um novo remoto quanto para corrigir um existente.
+git remote set-url origin "$GITHUB_URL" 2>/dev/null || git remote add origin "$GITHUB_URL"
 echo "✅ Conectado ao repositório remoto: $GITHUB_URL"
 
 # 3. Adiciona todos os arquivos para o primeiro commit

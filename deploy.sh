@@ -10,7 +10,7 @@ echo "Criando commit com a mensagem: $COMMIT_MESSAGE"
 git commit -m "$COMMIT_MESSAGE"
 
 echo "Enviando alterações para o repositório no GitHub..."
-# Usa 'origin' que foi configurado pelo 'iniciar_git.sh'
+# Usa 'origin', que foi configurado pelo 'iniciar_git.sh'
 if git push -u origin main; then
   echo "✅ Versão salva no GitHub com sucesso!"
 else
