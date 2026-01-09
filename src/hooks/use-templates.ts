@@ -18,9 +18,9 @@ export interface Template {
 
 // Modelos padrão que não são editáveis pelo usuário
 const defaultTemplatesData: Template[] = [
-  { id: 'template-default', name: "Modelo Padrão", editorState: { aspectRatio: "9 / 16", activeTemplateId: 'template-default' }, isCustom: false, thumbnail: null },
+  { id: 'template-default', name: "Modelo Padrão", editorState: { fontSize: 1.3, showProfileSignature: true, signatureScale: 63, signaturePositionY: 90, aspectRatio: "9 / 16", activeTemplateId: 'template-default' }, isCustom: false, thumbnail: null },
   { id: 'template-twitter', name: "Post Twitter", editorState: { aspectRatio: "9 / 16", activeTemplateId: 'template-twitter', textShadowOpacity: 0 }, isCustom: false, thumbnail: null },
-  { id: 'template-mountain', name: "Paisagem na Montanha", editorState: { aspectRatio: "9 / 16", backgroundStyle: { type: 'media', value: 'https://picsum.photos/id/1018/1080/1920' }, activeTemplateId: 'template-mountain' }, isCustom: false, thumbnail: "https://picsum.photos/id/1018/400/400" },
+  { id: 'template-mountain', name: "Paisagem na Montanha", editorState: { fontSize: 1.3, aspectRatio: "9 / 16", backgroundStyle: { type: 'media', value: 'https://picsum.photos/id/1018/1080/1920' }, activeTemplateId: 'template-mountain' }, isCustom: false, thumbnail: "https://picsum.photos/id/1018/400/400" },
 ];
 
 
