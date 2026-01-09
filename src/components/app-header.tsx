@@ -17,6 +17,7 @@ import {
   User as UserIcon,
   PlusSquare,
   ChevronLeft,
+  Edit,
 } from 'lucide-react';
 import { NavLink } from '@/components/ui/nav-link';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -29,6 +30,7 @@ function MainNavigationLinks({ onLinkClick }: { onLinkClick?: () => void }) {
   return (
     <>
       <NavLink href="/frases" icon={FileText} label="Frases" onClick={onLinkClick} />
+      <NavLink href="/editor-de-video" icon={Edit} label="Editor" onClick={onLinkClick} />
       <NavLink href="/favoritos" icon={Heart} label="Favoritos" onClick={onLinkClick} />
       <NavLink href="/projetos" icon={Clapperboard} label="Projetos" onClick={onLinkClick} />
       <NavLink href="/modelos" icon={LayoutTemplate} label="Modelos" onClick={onLinkClick} />
