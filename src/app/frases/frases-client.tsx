@@ -343,12 +343,11 @@ export function FrasesClientPage({
 };
 
   const handleShare = async (text: string, author?: string) => {
-    const shareText = author ? `"${text}" - ${author}` : text;
+    const shareText = author ? `${text} - ${author}` : text;
 
     if (Capacitor.isNativePlatform()) {
         try {
             await Share.share({
-                title: 'InspireMe',
                 text: shareText,
                 dialogTitle: 'Compartilhar Frase'
             });
@@ -362,7 +361,6 @@ export function FrasesClientPage({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'InspireMe',
           text: shareText,
         });
       } catch (error) {
@@ -674,3 +672,4 @@ export function FrasesClientPage({
     
 
     
+
