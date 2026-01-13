@@ -61,10 +61,6 @@
   body {
     @apply bg-background text-foreground;
   }
-  
-  .dark body {
-    background-color: transparent;
-  }
 }
 
 
