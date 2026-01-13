@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "build:android": "npx cap sync android && cd android && ./gradlew build"
+    "lint": "next lint"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
