@@ -25,9 +25,11 @@ const nextConfig = {
       },
     ],
   },
-  serverActions: {
-    enabled: true,
-  }
+  experimental: {
+    allowedDevOrigins: [
+      "https://9000-firebase-studio-1760549506110.cluster-l2bgochoazbomqgfmlhuvdvgiy.cloudworkstations.dev",
+    ],
+  },
 };
 
 module.exports = nextConfig;
