@@ -26,7 +26,7 @@ const nextConfig = {
     ],
   },
   serverActions: {
-    enabled: false,
+    enabled: true,
   }
 };
 
