@@ -6,7 +6,7 @@ import Editor from "./editor";
 import Loading from "./loading";
 import { PageHeader } from "@/components/page-header";
 import { ClientOnly } from "@/components/client-only";
-import { EditorActions } from "./components/editor-de-video/components/editor-actions";
+import { EditorActions } from "@/components/editor-de-video/components/editor-actions";
 import { useEditor } from "./contexts/editor-context";
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
