@@ -263,7 +263,7 @@ export function CadastroClientPage({ initialSheetData, initialSheetNames }: Cada
 
                         {selectedMainCategory && selectedMainCategory !== '__new__' && (
                           <>
-                            <Label htmlFor="sub-category-name" className="mt-4 block">Subcategoria (Opcional)</Label>
+                            <Label htmlFor="sub-category-name" className="mt-4 block text-primary">Subcategoria (Opcional)</Label>
                              <Select value={selectedSubCategory} onValueChange={(value) => {
                                 setSelectedSubCategory(value);
                                 if(value !== '__new__') setNewSubCategoryInput('');
