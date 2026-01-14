@@ -1,13 +1,12 @@
-
 'use client';
 
 import { Suspense } from 'react';
-import Editor from './editor';
-import Loading from './loading';
+import Editor from '@/components/editor-de-video/editor';
+import Loading from '@/components/editor-de-video/loading';
 import { PageHeader } from '@/components/page-header';
 import { ClientOnly } from '@/components/client-only';
 import { EditorActions } from '@/components/editor-de-video/components/editor-actions';
-import { useEditor, EditorProvider } from '@/components/editor-de-video/contexts/editor-context';
+import { useEditor } from '@/components/editor-de-video/contexts/editor-context';
 import { Button } from '@/components/ui/button';
 import { Share2 } from 'lucide-react';
 
@@ -30,7 +29,7 @@ function EditorHeaderActions() {
   );
 }
 
-function EditorPageContent() {
+export default function EditorPage() {
   return (
     <div className="flex flex-col h-full">
       <ClientOnly>
@@ -45,13 +44,4 @@ function EditorPageContent() {
       </div>
     </div>
   );
-}
-
-
-export default function EditorPage() {
-    return (
-        <EditorProvider>
-            <EditorPageContent />
-        </EditorProvider>
-    )
 }

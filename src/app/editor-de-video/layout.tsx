@@ -1,19 +1,19 @@
+'use client';
 
-'use client'
-
-import { FirebaseClientProvider } from "@/firebase";
+import { EditorProvider } from '@/components/editor-de-video/contexts/editor-context';
+import { FirebaseClientProvider } from '@/firebase';
 import { useGoogleFonts } from '@/hooks/use-google-fonts';
 
 // Layout específico para a página do editor, que não possui o cabeçalho principal.
 export default function EditorLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    useGoogleFonts();
-    return (
-        <FirebaseClientProvider>
-            {children}
-        </FirebaseClientProvider>
-    );
+  useGoogleFonts();
+  return (
+    <FirebaseClientProvider>
+      <EditorProvider>{children}</EditorProvider>
+    </FirebaseClientProvider>
+  );
 }
