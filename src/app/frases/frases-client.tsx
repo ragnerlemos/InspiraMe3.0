@@ -175,7 +175,7 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
             URL.revokeObjectURL(memeUrl);
         }
     }
-  }, [shareDirectly]);
+  }, [shareDirectly, quote, toast, onClose]);
 
   const handleDownloadClick = () => {
     if (!memeUrl) return;
@@ -596,7 +596,11 @@ export function FrasesClientPage({
   return (
     <>
       <Sheet open={isCategorySheetOpen} onOpenChange={setIsCategorySheetOpen}>
-        <SheetContent side="left" className="flex flex-col">
+        <SheetContent 
+          side="left" 
+          className="flex flex-col"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           <SheetHeader>
             <SheetTitle>Categorias</SheetTitle>
           </SheetHeader>
