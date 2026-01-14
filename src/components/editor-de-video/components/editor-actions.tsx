@@ -2,7 +2,7 @@
 "use client";
 
 import {
-  Download, MoreVertical, Undo2, Redo2, Save, FilePlus, FolderUp
+  Download, MoreVertical, Undo2, Redo2, Save, FilePlus, FolderUp, Share2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,6 +74,10 @@ export function EditorActions() {
                 <DropdownMenuItem onClick={() => onExportPNG(false)}>
                     <Download className="mr-2 h-4 w-4" />
                     <span>Exportar como PNG</span>
+                </DropdownMenuItem>
+                 <DropdownMenuItem onClick={() => onExportPNG(true)}>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    <span>Compartilhar PNG</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onExportMP4}>
                     <Download className="mr-2 h-4 w-4" />

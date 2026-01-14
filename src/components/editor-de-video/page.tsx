@@ -34,7 +34,7 @@ export default function EditorPage() {
   return (
     <div className="flex flex-col h-full">
       <ClientOnly>
-        <PageHeader title="Editor" showBack showHome>
+        <PageHeader title="Editor" showBack>
           <EditorHeaderActions />
         </PageHeader>
       </ClientOnly>
