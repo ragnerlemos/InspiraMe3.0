@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
@@ -54,20 +54,23 @@ export function AppHeader() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [showBack, setShowBack] = useState(false);
 
-  // Páginas que devem mostrar o botão de voltar
-  const backButtonPages = [
-      '/editor-de-video',
-      '/assinatura',
-      '/configuracoes',
-      '/perfil',
-      '/projetos',
-      '/modelos',
-      '/galeria',
-      '/favoritos',
-      '/cadastro'
-  ];
-  const showBack = backButtonPages.some(path => pathname.startsWith(path));
+  // Efeito para determinar a visibilidade do botão "Voltar" apenas no cliente
+  useEffect(() => {
+    const backButtonPages = [
+        '/editor-de-video',
+        '/assinatura',
+        '/configuracoes',
+        '/perfil',
+        '/projetos',
+        '/modelos',
+        '/galeria',
+        '/favoritos',
+        '/cadastro'
+    ];
+    setShowBack(backButtonPages.some(path => pathname.startsWith(path)));
+  }, [pathname]);
 
   const handleBack = () => {
     if (window.history.length > 1) {
