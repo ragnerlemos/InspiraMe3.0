@@ -100,11 +100,11 @@ export function PreviewCanva(props: PreviewCanvaProps) {
   };
 
   return (
-    <main className="w-full h-full p-4 flex items-start justify-center overflow-hidden">
+    <div className="w-full h-full p-4 flex items-center justify-center">
       <div 
         style={{
           transform: `scale(${scale})`,
-          transformOrigin: "top center",
+          transformOrigin: "center center",
         }}
         className="transition-transform duration-300 ease-in-out"
       >
@@ -131,6 +131,6 @@ export function PreviewCanva(props: PreviewCanvaProps) {
             </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

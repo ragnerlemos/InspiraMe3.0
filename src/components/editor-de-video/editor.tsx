@@ -229,18 +229,19 @@ export default function Editor() {
   return (
     <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
       <PanelGroup direction="horizontal" className="flex-1 min-h-0">
-         <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
-            <Sidebar {...commonProps} />
+        <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
+          <Sidebar {...commonProps} />
         </Panel>
         {isDesktop && <PanelResizeHandle />}
-        <Panel>
-            <main className="flex-1 w-full h-full overflow-auto">
-                <PreviewCanva {...previewProps} />
-            </main>
+        <Panel className="flex flex-col">
+          <div className="flex-1 overflow-auto">
+            <PreviewCanva {...previewProps} />
+          </div>
+          <div className="md:hidden">
+            <MobileToolbar {...commonProps} />
+          </div>
         </Panel>
       </PanelGroup>
-
-      <MobileToolbar {...commonProps} />
     </div>
   );
 }
