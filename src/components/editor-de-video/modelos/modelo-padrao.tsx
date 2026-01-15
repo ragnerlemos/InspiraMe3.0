@@ -1,3 +1,4 @@
+
 import type { EditorState, EstiloTexto } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
 import { EMOJI_REGEX } from '../utils/text-style-utils';
@@ -63,9 +64,9 @@ export function ModeloPadrao({
     };
     
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full overflow-hidden">
             <div
-                className="absolute w-full px-8"
+                className="absolute w-full px-8 break-words"
                 style={{
                     top: `${textVerticalPosition}%`,
                     left: '50%',
@@ -76,7 +77,7 @@ export function ModeloPadrao({
             >
                 <div
                     style={combinedTextStyle}
-                    className="break-words relative"
+                    className="relative"
                 >
                     {renderTextWithEmojis()}
                 </div>
