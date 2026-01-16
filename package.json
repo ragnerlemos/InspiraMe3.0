@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
-    "deploy": "bash deploy.sh"
+    "deploy": "bash deploy.sh",
+    "build:web": "next build",
+    "sync:android": "npx cap sync android",
+    "open:android": "npx cap open android",
+    "build:apk": "cd android && ./gradlew assembleRelease",
+    "build:android": "npm run build:web && npm run sync:android && npm run build:apk"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.1.2",
