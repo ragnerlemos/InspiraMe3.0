@@ -11,6 +11,13 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import * as htmlToImage from 'html-to-image';
 import { Heart, RefreshCw, Loader2, MessageSquare, Smartphone, Copy as CopyIcon, MoreVertical, Download, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 // --- Dados e Tipos ---
 interface Quote {
@@ -231,21 +238,31 @@ export default function TesteCompartilharPage() {
                 <Button variant="ghost" size="icon" onClick={() => handleCopy(currentQuote.quote, currentQuote.author)} title="Copiar Texto">
                   <CopyIcon className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => setProcessingAction('share-web')} title="Compartilhar Imagem (Web)">
-                  <Share2 className="h-5 w-5 text-blue-500" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setProcessingAction('share-capacitor')} title="Compartilhar Imagem (App)">
-                  <Smartphone className="h-5 w-5 text-green-500" />
-                </Button>
                 <Button variant="ghost" size="icon" onClick={() => setIsFavorited(!isFavorited)} title="Favoritar">
                   <Heart className={cn("h-5 w-5", isFavorited ? "text-red-500 fill-current" : "text-gray-400")} />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-primary" onClick={() => handleShareText(currentQuote.quote, currentQuote.author)} title="Compartilhar Texto">
-                  <MessageSquare className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon" title="Mais opções">
-                  <MoreVertical className="h-5 w-5" />
-                </Button>
+                
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" title="Compartilhar">
+                            <Share2 className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => handleShareText(currentQuote.quote, currentQuote.author)}>
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            Compartilhar Texto
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setProcessingAction('share-web')}>
+                            <Share2 className="mr-2 h-4 w-4" />
+                            Compartilhar Imagem (Web)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setProcessingAction('share-capacitor')}>
+                            <Smartphone className="mr-2 h-4 w-4" />
+                            Compartilhar Imagem (App)
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardFooter>
           </Card>
