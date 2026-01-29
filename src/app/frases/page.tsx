@@ -38,8 +38,6 @@ export default async function FrasesPage() {
   // Usa getSheetData para obter a hierarquia completa
   const sheetData = await getSheetData();
 
-  const dataFetchError = allQuotes.length === 0;
-
   // Extrai as categorias principais e a hierarquia
   const mainCategories = ['Todos'];
   const categories: { [mainCategory: string]: string[] } = {};
@@ -62,7 +60,6 @@ export default async function FrasesPage() {
         initialQuotes={allQuotes}
         initialMainCategories={mainCategories}
         initialSubCategories={categories}
-        dataFetchError={dataFetchError}
       />
     </Suspense>
   );

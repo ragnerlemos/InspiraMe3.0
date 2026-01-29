@@ -1,14 +1,15 @@
-
 import { google } from 'googleapis';
 
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
+const SPREADSHEET_ID = "1F7fiEGqeh3uJhnlz3nzbFx_mnIaKWSwHJ3HLwR-CnwU";
+const GOOGLE_SERVICE_ACCOUNT_EMAIL = "inspirame@quotevid2-57726828-e0133.iam.gserviceaccount.com";
+const GOOGLE_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCpnkXS9iMLH1FR\nMqRE2MyR0JK2ZD43+NiMAHbhnfiRxpLsncTi8Z95/d8Z8XG3osFV3nrXM0WxHHEj\nvBxjmjLjDIKWNxch239w6a+SgeXt9/uBz/2D5kwR0sK9l3k0clMV1qebCtaSfDNj\nx+NZUga1vo12HtwcCbnzaToKM0qo7DYjxudZdlh/9Fb7pGkeynigWyhvlfEQk4wG\nOLLZsFaigo7TMTFj1xp5wbRHtGp++ny6N4a/8sVT7MDdRlT5cO+YW30ZkHL0wtRi\nR27yyOTNrKkX+PgJZXhdtsuSPAQCxatLKUa+QddU0tNSIWZol6bbEm0ivpme5dx8\n5DuvTJ0nAgMBAAECggEAArHK3l4rOIu2HeOZKQzTbYRfAeDxMH0JngO937l3Auqg\n8XuG7quaKUGnfMDrDQwO8f9d4gBLAzrDI1p89JCB1KO7IvBbs9DjiXz03VxATyAp\nRMRaL/FSVDz0YgQMS8R+Xf9YdawqgQ44pMU+ojy22MYSEJ/OrSImBZNhqPRsPOdP\ndydUnPLdv/13bUd7ohclgNwvnMUKxuEZaLWcpiFASIw2VCZH1IYOBoP0kJofT8JA\naR/DfOXMp+9wmM6O1WOiKHVMUGpdWomDC9VzDzg5cCTmCaJa7sPa0LyE4kWOEE0o\nn28fvnGnN9w3gibj/Q687lGptPKHP23NVJ3OS8uH5QKBgQDmxFid72JldohJ0oP3\nw1HufMjB6EjlbNi3AiOX9TFYBrY+Wmjv8HfoIN44pJ6tCyaUrEjK/TE/BR9yOWPE\n7k0jU7SSEMKT2esY9yl+oMnIqKRYR5Y6GXhE2+2u8C27CV4E0gE/eIx7mgnlAJKH\njGlOzLjdgT8SjalOZ5p3dZIBvQKBgQC8Kj626n0eUylcYFogXc/VWzIXNs549Wvt\nevE9SGcXJinh+f9EYDIjCQ03SgAyR/50HxouD8wu6JwL94ZLG59yP586erUXzrjz\nRjWYa77eSRiZLCevuDXLOcE8/rLzj70kP+zleEPQWo7byS+HEG1LrG+7/NCAagQ7\nEJtzB/peswKBgG4/c87QZQPwYyBRsLaX2/bCKu9o2Bqzq72TCgo5G//gBQU5EFVB\nXyfJPCF3lE87uozg2k4QNIzVF7bscBvPdY7hGK2H0E3umIDu5CYZDw4Mc6exW7Ya\nIPlU0PL40ABBc2d+JRZ7szIB36RGZ7rWfCEncVJxwv5MK4zHtmZIBx9JAoGAUy0x\nb9YT3NXSEL2e2XPerWeUquJVPu7t+JpCDV72Ayuhk/zYtDb5srcLmochsxhUCKy+\n++GL1qiIYlnWiVj6kJxDHKylZJLC+vbsNiZaxxP0xbDZEjoRvXYYT4gfPr8pUt7X\nL1CMWYvOXqV+VuwSBEODWMwWts0mdZ2PuberGzUCgYAB6LgAMjc9QSX7bj/ZT4Kk\ntzCGrJSM7Ja2NtEFtuRRttBVMGaG1RFmDrvZQR9GYhht8hlTiMwNBWjo+XG2Z9/F\n+61Yc7dlOpKI7H7ffwJKQwthVj02nsHaPDi0cHaHxCMxqBBVGW7t05wJSQR4t4FD\n5rpyEnmNuTv8Tc6H4e2qkg==\n-----END PRIVATE KEY-----\n".replace(/\\n/g, '\n');
 
 const auth = new google.auth.GoogleAuth({
   credentials: {
-    client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    client_email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    private_key: GOOGLE_PRIVATE_KEY,
   },
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'], // Use readonly scope for safety
+  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
 });
 
 const sheets = google.sheets({
@@ -22,7 +23,7 @@ export interface QuoteWithAuthor {
     author?: string;
     category: string;
     subCategory?: string;
-    sheetName: string; 
+    sheetName: string;
 }
 
 interface CategoriesHierarchy {
@@ -48,9 +49,9 @@ const mapRowToQuote = (row: any[], index: number, sheetName: string): QuoteWithA
     };
 };
 
-export async function getAllSheetNames(): Promise<string[]> {
+export async function getAllSheetNames(forceRefresh = false): Promise<string[]> {
     if (!SPREADSHEET_ID) {
-        console.error('SPREADSHEET_ID is not defined in the environment.');
+        console.error('SPREADSHEET_ID is not defined.');
         return [];
     }
 
@@ -58,33 +59,28 @@ export async function getAllSheetNames(): Promise<string[]> {
         const spreadsheetMeta = await sheets.spreadsheets.get({
             spreadsheetId: SPREADSHEET_ID
         });
-        
+
         const sheetNames = spreadsheetMeta.data.sheets
             ?.map(sheet => sheet.properties?.title)
-            .filter((title): title is string => !!title && title !== 'Modelo'); // Exclude the template sheet
-        
-        if (!sheetNames) {
-            console.warn('No sheets found in the spreadsheet.');
-            return [];
-        }
-        
-        return sheetNames;
+            .filter((title): title is string => !!title && title !== 'Modelo');
+
+        return sheetNames || [];
 
     } catch (error) {
         console.error('Error fetching sheet names:', error);
-        return []; // Return empty array on error
+        return [];
     }
 }
 
 
-export async function getAllQuotes(): Promise<QuoteWithAuthor[]> {
+export async function getAllQuotes(forceRefresh = false): Promise<QuoteWithAuthor[]> {
     if (!SPREADSHEET_ID) {
-        console.error('SPREADSHEET_ID is not defined in the environment.');
+        console.error('SPREADSHEET_ID is not defined.');
         return [];
     }
 
     try {
-        const sheetNames = await getAllSheetNames();
+        const sheetNames = await getAllSheetNames(forceRefresh);
         if (sheetNames.length === 0) {
             return [];
         }
@@ -100,12 +96,11 @@ export async function getAllQuotes(): Promise<QuoteWithAuthor[]> {
             console.warn('batchGet returned no valueRanges.');
             return [];
         }
-        
+
         const quotes: QuoteWithAuthor[] = [];
         valueRanges.forEach((range, rangeIndex) => {
-            const sheetName = sheetNames[rangeIndex]; // More reliable way to get sheet name
+            const sheetName = sheetNames[rangeIndex];
             if (range.values) {
-                // Start at 1 to skip header row
                 for (let i = 1; i < range.values.length; i++) {
                     const quote = mapRowToQuote(range.values[i], i, sheetName);
                     if (quote) {
@@ -114,17 +109,17 @@ export async function getAllQuotes(): Promise<QuoteWithAuthor[]> {
                 }
             }
         });
-        
+
         return quotes;
 
     } catch (error) {
         console.error('Error fetching data from Google Sheets:', error);
-        return []; // Return empty array on error
+        return [];
     }
 }
 
-export async function getSheetData(): Promise<SheetHierarchy> {
-    const quotes = await getAllQuotes();
+export async function getSheetData(forceRefresh = false): Promise<SheetHierarchy> {
+    const quotes = await getAllQuotes(forceRefresh);
     const sheetHierarchy: SheetHierarchy = {};
 
     quotes.forEach(quote => {
@@ -141,7 +136,7 @@ export async function getSheetData(): Promise<SheetHierarchy> {
             }
         }
     });
-    
+
     for (const sheetName in sheetHierarchy) {
         for (const cat in sheetHierarchy[sheetName]) {
             sheetHierarchy[sheetName][cat].sort();
