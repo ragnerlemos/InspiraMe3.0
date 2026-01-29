@@ -29,18 +29,104 @@ const sampleQuotes: Quote[] = [
 
 const FILENAME = 'InspiraMe_Teste.png';
 
+// --- Componente Gerador de Imagem ---
+function TesteMemeGenerator({
+  quote,
+  onClose,
+  action,
+}: {
+  quote: Quote;
+  onClose: () => void;
+  action: 'download' | 'share-web' | 'share-capacitor';
+}) {
+  const memeRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  const generateAndProcess = useCallback(async () => {
+    if (!memeRef.current) {
+        toast({ variant: 'destructive', title: 'Erro', description: 'Elemento do meme não encontrado.' });
+        onClose();
+        return;
+    }
+
+    try {
+        await document.fonts.ready;
+        await new Promise(resolve => setTimeout(resolve, 200));
+        const blob = await htmlToImage.toBlob(memeRef.current, { pixelRatio: 2 });
+        if (!blob) throw new Error('Falha ao gerar a imagem (blob nulo).');
+
+        if (action === 'download') {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = FILENAME;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast({ title: 'Sucesso!', description: `Imagem baixada como ${FILENAME}` });
+        } else if (action === 'share-web') {
+            const file = new File([blob], FILENAME, { type: blob.type });
+            if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [file] })) {
+                throw new Error('Web Share API (arquivos) não é suportada neste navegador.');
+            }
+            await navigator.share({ files: [file], title: 'Meme Inspirador' });
+        } else if (action === 'share-capacitor') {
+            if (!Capacitor.isNativePlatform()) {
+                throw new Error('Não está em um ambiente nativo Capacitor. Use o compartilhamento Web.');
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = async () => {
+                const base64Data = (reader.result as string).split('base64,')[1];
+                const { uri } = await Filesystem.writeFile({
+                    path: FILENAME,
+                    data: base64Data,
+                    directory: Directory.Cache,
+                });
+                await Share.share({ url: uri, title: 'Meme Inspirador' });
+            };
+        }
+    } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+             toast({ title: 'Cancelado', description: 'Compartilhamento cancelado pelo usuário.' });
+        } else {
+            toast({ variant: 'destructive', title: 'Falha na Operação', description: `${error}` });
+        }
+    } finally {
+        onClose();
+    }
+  }, [action, quote, toast, onClose]);
+
+  useEffect(() => {
+    generateAndProcess();
+  }, [generateAndProcess]);
+  
+  return (
+    <>
+        <div className="fixed inset-0 bg-black/60 z-50 flex flex-col items-center justify-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-white" />
+            <p className="text-white text-lg">Processando...</p>
+        </div>
+        <div ref={memeRef} className="fixed top-[-9999px] left-[-9999px] bg-black text-white p-12 flex flex-col justify-center items-center" style={{ width: '500px', height: '500px' }}>
+            <p style={{ fontFamily: 'Poppins', fontSize: '32px', textAlign: 'center', lineHeight: '1.3' }}>{quote.quote}</p>
+            {quote.author && <p style={{ fontFamily: 'Poppins', fontSize: '24px', textAlign: 'right', alignSelf:'flex-end', paddingTop: '50px' }}>- {quote.author}</p>}
+        </div>
+    </>
+  );
+}
+
 // --- Página de Teste ---
 export default function TesteCompartilharPage() {
   const { toast } = useToast();
-  const memeRef = useRef<HTMLDivElement>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [currentQuote, setCurrentQuote] = useState<Quote>(() => sampleQuotes[0]);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [processingAction, setProcessingAction] = useState<'download' | 'share-web' | 'share-capacitor' | null>(null);
 
   const getNewQuote = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * sampleQuotes.length);
     setCurrentQuote(sampleQuotes[randomIndex]);
-    setIsFavorited(false); // Reseta o favorito ao pegar nova frase
+    setIsFavorited(false);
   }, []);
 
   useEffect(() => { getNewQuote() }, [getNewQuote]);
@@ -80,7 +166,7 @@ export default function TesteCompartilharPage() {
     }
   };
 
-  const handleShare = async (text: string, author?: string) => {
+  const handleShareText = async (text: string, author?: string) => {
     const shareText = author ? `"${text}" - ${author}` : text;
     
     if (Capacitor.isNativePlatform()) {
@@ -113,110 +199,15 @@ export default function TesteCompartilharPage() {
     }
   };
 
-  const generateImageBlob = async (): Promise<Blob> => {
-    if (!memeRef.current) throw new Error('Referência do meme não encontrada.');
-    await document.fonts.ready;
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const blob = await htmlToImage.toBlob(memeRef.current, { pixelRatio: 2 });
-    if (!blob) throw new Error('Falha ao gerar a imagem (blob nulo).');
-    return blob;
-  };
-
-  const getBase64FromBlob = (blob: Blob) => {
-    return new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve((reader.result as string).split('base64,')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-  }
-  
-  const handleDownload = async () => {
-    setIsProcessing(true);
-    try {
-      const blob = await generateImageBlob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = FILENAME;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      toast({ title: 'Sucesso!', description: `Imagem baixada como ${FILENAME}` });
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Falha no Download', description: `${error}` });
-    }
-    setIsProcessing(false);
-  };
-
-  const handleShareImageWeb = async () => {
-    setIsProcessing(true);
-    try {
-        const blob = await generateImageBlob();
-        const file = new File([blob], FILENAME, { type: blob.type });
-
-        if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [file] })) {
-            throw new Error('Web Share API (arquivos) não é suportada neste navegador.');
-        }
-
-        await navigator.share({
-            files: [file],
-            title: 'Meme Inspirador',
-            text: 'Criado com o InspireMe',
-        });
-        toast({ title: 'Sucesso!', description: 'Imagem compartilhada via Web Share API.' });
-    } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
-             toast({ title: 'Cancelado', description: 'Compartilhamento cancelado pelo usuário.' });
-        } else {
-            toast({ variant: 'destructive', title: 'Falha ao Compartilhar (Web)', description: `${error}` });
-        }
-    }
-    setIsProcessing(false);
-  };
-
-  const handleShareImageCapacitor = async () => {
-    setIsProcessing(true);
-    try {
-        if (!Capacitor.isNativePlatform()) {
-            throw new Error('Não está em um ambiente nativo Capacitor.');
-        }
-        const blob = await generateImageBlob();
-        const base64Data = await getBase64FromBlob(blob);
-        
-        const { uri } = await Filesystem.writeFile({
-            path: FILENAME,
-            data: base64Data,
-            directory: Directory.Cache,
-        });
-
-        await Share.share({
-            url: uri,
-            title: 'Meme Inspirador',
-            dialogTitle: 'Compartilhar Imagem',
-        });
-
-        toast({ title: 'Sucesso!', description: 'Imagem compartilhada via Capacitor.' });
-    } catch (error) {
-        toast({ variant: 'destructive', title: 'Falha ao Compartilhar (Capacitor)', description: `${error}` });
-    }
-    setIsProcessing(false);
-  };
-
   return (
     <div className="container mx-auto p-4 flex flex-col items-center gap-6">
-      {isProcessing && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex flex-col items-center justify-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-white" />
-          <p className="text-white text-lg">Processando...</p>
-        </div>
+      {processingAction && (
+        <TesteMemeGenerator 
+            quote={currentQuote}
+            action={processingAction}
+            onClose={() => setProcessingAction(null)}
+        />
       )}
-
-      <div ref={memeRef} className="fixed top-[-9999px] left-[-9999px] bg-black text-white p-12 flex flex-col justify-center items-center" style={{ width: '500px', height: '500px' }}>
-        <p style={{ fontFamily: 'Poppins', fontSize: '32px', textAlign: 'center', lineHeight: '1.3' }}>{currentQuote.quote}</p>
-        {currentQuote.author && <p style={{ fontFamily: 'Poppins', fontSize: '24px', textAlign: 'right', alignSelf:'flex-end', paddingTop: '50px' }}>- {currentQuote.author}</p>}
-      </div>
 
       <div className="w-full max-w-md">
           <h1 className="text-center text-2xl font-bold mb-2">Card de Teste</h1>
@@ -234,22 +225,22 @@ export default function TesteCompartilharPage() {
               {currentQuote.author && <p className="font-medium text-sm text-muted-foreground text-right w-full pr-2">- {currentQuote.author}</p>}
               
               <div className="flex justify-around items-center w-full pt-2">
-                <Button variant="ghost" size="icon" onClick={handleDownload} title="Baixar Imagem">
+                <Button variant="ghost" size="icon" onClick={() => setProcessingAction('download')} title="Baixar Imagem">
                     <Download className="h-5 w-5" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => handleCopy(currentQuote.quote, currentQuote.author)} title="Copiar Texto">
                   <CopyIcon className="h-5 w-5" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleShareImageWeb} title="Compartilhar Imagem (Web)">
+                <Button variant="ghost" size="icon" onClick={() => setProcessingAction('share-web')} title="Compartilhar Imagem (Web)">
                   <Share2 className="h-5 w-5 text-blue-500" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={handleShareImageCapacitor} title="Compartilhar Imagem (App)">
+                <Button variant="ghost" size="icon" onClick={() => setProcessingAction('share-capacitor')} title="Compartilhar Imagem (App)">
                   <Smartphone className="h-5 w-5 text-green-500" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => setIsFavorited(!isFavorited)} title="Favoritar">
                   <Heart className={cn("h-5 w-5", isFavorited ? "text-red-500 fill-current" : "text-gray-400")} />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-primary" onClick={() => handleShare(currentQuote.quote, currentQuote.author)} title="Compartilhar Texto">
+                <Button variant="ghost" size="icon" className="text-primary" onClick={() => handleShareText(currentQuote.quote, currentQuote.author)} title="Compartilhar Texto">
                   <MessageSquare className="h-5 w-5" />
                 </Button>
                 <Button variant="ghost" size="icon" title="Mais opções">
