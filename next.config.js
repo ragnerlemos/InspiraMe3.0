@@ -24,6 +24,7 @@ const nextConfig = {
       },
     ],
   },
+  allowedDevOrigins: ['https://*.cloudworkstations.dev'],
 };
 
 module.exports = nextConfig;
