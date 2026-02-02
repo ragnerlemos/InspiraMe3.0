@@ -1,13 +1,15 @@
+
 import type { EditorState, EstiloTexto } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
 import { EMOJI_REGEX } from '../utils/text-style-utils';
+import type { ProfileData } from '@/hooks/use-profile';
 
 interface ModeloPadraoProps {
     editorState: EditorState;
     baseTextStyle: EstiloTexto;
     textEffectsStyle: EstiloTexto;
     dropShadowStyle: EstiloTexto;
-    profile: any;
+    profile: ProfileData;
 }
 
 export function ModeloPadrao({
@@ -31,6 +33,8 @@ export function ModeloPadrao({
         showSignatureBackground,
         signatureBgColor,
         signatureBgOpacity,
+        signatureUsernameColor,
+        signatureSocialColor,
         showLogo,
         logoPositionX,
         logoPositionY,
@@ -89,7 +93,17 @@ export function ModeloPadrao({
             )}
             {showProfileSignature && (
                 <div className="absolute" style={{ zIndex: 2, top: `${signaturePositionY}%`, left: `${signaturePositionX}%`, transform: `translate(-50%, -50%) scale(${signatureScale / 100})`, transformOrigin: 'center center' }}>
-                    <AssinaturaPerfil profile={profile} showPhoto={showSignaturePhoto} showUsername={showSignatureUsername} showSocial={showSignatureSocial} showBackground={showSignatureBackground} bgColor={signatureBgColor} bgOpacity={signatureBgOpacity} />
+                    <AssinaturaPerfil 
+                        profile={profile} 
+                        showPhoto={showSignaturePhoto} 
+                        showUsername={showSignatureUsername} 
+                        showSocial={showSignatureSocial} 
+                        showBackground={showSignatureBackground} 
+                        bgColor={signatureBgColor} 
+                        bgOpacity={signatureBgOpacity} 
+                        usernameColor={signatureUsernameColor}
+                        socialColor={signatureSocialColor}
+                    />
                 </div>
             )}
         </div>

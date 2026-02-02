@@ -46,6 +46,8 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     showSignatureBackground: false,
     signatureBgColor: "#000000",
     signatureBgOpacity: 30,
+    signatureUsernameColor: "#FFFFFF",
+    signatureSocialColor: "#E5E7EB",
     profileVerticalPosition: 25,
     showLogo: false,
     logoPositionX: 50,
@@ -178,6 +180,8 @@ export default function Editor() {
     showSignatureBackground: currentState.showSignatureBackground, onShowSignatureBackgroundChange: (val: boolean) => updateState({ showSignatureBackground: val }),
     signatureBgColor: currentState.signatureBgColor, onSignatureBgColorChange: (val: string) => updateState({ signatureBgColor: val }),
     signatureBgOpacity: currentState.signatureBgOpacity, onSignatureBgOpacityChange: (val: number) => updateState({ signatureBgOpacity: val }),
+    signatureUsernameColor: currentState.signatureUsernameColor, onSignatureUsernameColorChange: (val: string) => updateState({ signatureUsernameColor: val }),
+    signatureSocialColor: currentState.signatureSocialColor, onSignatureSocialColorChange: (val: string) => updateState({ signatureSocialColor: val }),
     // Logo
     showLogo: currentState.showLogo, onShowLogoChange: (val: boolean) => updateState({ showLogo: val }),
     logoPositionX: currentState.logoPositionX, onLogoPositionXChange: (val: number) => updateState({ logoPositionX: val }),

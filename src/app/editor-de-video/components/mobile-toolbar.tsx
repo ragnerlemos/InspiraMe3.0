@@ -50,6 +50,7 @@ import {
   CaseUpper,
   Text,
   SmilePlus,
+  FlipHorizontal,
 } from "lucide-react";
 import { BotaoRecurso } from "../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -683,6 +684,10 @@ interface MobileToolbarProps extends ControleAssinaturaProps, ControleLogoProps,
   setFilmOpacity: (opacity: number) => void;
   fgColor: string;
   setFgColor: (color: string) => void;
+  signatureUsernameColor: string;
+  onSignatureUsernameColorChange: (color: string) => void;
+  signatureSocialColor: string;
+  onSignatureSocialColorChange: (color: string) => void;
   activeControl: string | null;
   setActiveControl: (control: string | null) => void;
   text: string;
@@ -703,6 +708,10 @@ export function MobileToolbar({
   setFilmOpacity,
   fgColor,
   setFgColor,
+  signatureUsernameColor,
+  onSignatureUsernameColorChange,
+  signatureSocialColor,
+  onSignatureSocialColorChange,
   activeControl,
   setActiveControl,
   text,
@@ -710,6 +719,7 @@ export function MobileToolbar({
   ...props
 }: MobileToolbarProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [activeSubControl, setActiveSubControl] = useState<string | null>(null);
 
@@ -718,6 +728,21 @@ export function MobileToolbar({
     setActiveControl(panel);
     setActiveSubControl(null); // Reset sub-controls when main panel changes
   };
+  
+    const handleInvertColors = () => {
+        if (backgroundStyle.type === 'solid') {
+            const oldBg = backgroundStyle.value;
+            const oldFg = fgColor;
+            setBackgroundStyle({ type: 'solid', value: oldFg });
+            setFgColor(oldBg);
+        } else {
+            toast({
+                variant: 'default',
+                title: 'Ação não suportada',
+                description: 'A inversão de cores só funciona com um fundo de cor sólida.'
+            })
+        }
+    };
 
   const renderPanelContent = () => {
     if (!activePanel) return null;
@@ -769,31 +794,67 @@ export function MobileToolbar({
         </div>
       ),
       cores: (
-        <div className="p-4 grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="text-left block">Cor do Fundo</Label>
-            <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                <Input
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
-                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                />
-                 <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
-            </div>
-          </div>
-          <div className="space-y-2">
-              <Label className="text-left block">Cor do Texto</Label>
-              <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                   <Input
-                      type="color"
-                      value={fgColor}
-                      onChange={e => setFgColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                  />
-                   <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
+        <div className="p-4 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-left block">Cor do Fundo</Label>
+                <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                    <Input
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
+                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                    />
+                     <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
+                </div>
               </div>
-          </div>
+              <div className="space-y-2">
+                  <Label className="text-left block">Cor do Texto</Label>
+                  <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                       <Input
+                          type="color"
+                          value={fgColor}
+                          onChange={e => setFgColor(e.target.value)}
+                          className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                      />
+                       <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
+                  </div>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full flex items-center gap-2" onClick={handleInvertColors}>
+                <FlipHorizontal className="h-4 w-4" />
+                Inverter Cores
+            </Button>
+            <Separator />
+            <div>
+                <h3 className="text-base font-medium mb-3">Cores da Assinatura</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                         <Label className="text-left block">Nome de Usuário</Label>
+                          <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                              <Input
+                                type="color"
+                                value={signatureUsernameColor}
+                                onChange={e => onSignatureUsernameColorChange(e.target.value)}
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                            />
+                            <div className="w-full h-full" style={{ backgroundColor: signatureUsernameColor }} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                         <Label className="text-left block">Rede Social</Label>
+                          <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                              <Input
+                                type="color"
+                                value={signatureSocialColor}
+                                onChange={e => onSignatureSocialColorChange(e.target.value)}
+                                className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                            />
+                            <div className="w-full h-full" style={{ backgroundColor: signatureSocialColor }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       ),
       filtro: (

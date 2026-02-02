@@ -1,3 +1,4 @@
+
 // Componente que simula a aparência de um post no Twitter.
 // Usa os dados do perfil do usuário para criar uma visualização de "meme" com a frase.
 
@@ -25,7 +26,7 @@ export function ModeloTwitter({
     const { text, textColor, showLogo, logoOpacity, logoScale, logoPositionX, logoPositionY,
         showProfileSignature, signaturePositionX, signaturePositionY, signatureScale,
         showSignaturePhoto, showSignatureUsername, showSignatureSocial, signatureBgColor,
-        signatureBgOpacity, showSignatureBackground
+        signatureBgOpacity, showSignatureBackground, signatureUsernameColor, signatureSocialColor
      } = editorState;
     const { showIcon, showDate } = profile;
 
@@ -88,6 +89,8 @@ export function ModeloTwitter({
                         showBackground={showSignatureBackground} 
                         bgColor={signatureBgColor} 
                         bgOpacity={signatureBgOpacity}
+                        usernameColor={signatureUsernameColor}
+                        socialColor={signatureSocialColor}
                     />
                 </div>
             )}
