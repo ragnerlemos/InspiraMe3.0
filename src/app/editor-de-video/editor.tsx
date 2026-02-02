@@ -21,7 +21,7 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     fontSize: 0.9,
     fontWeight: "bold",
     fontStyle: "normal",
-    textColor: "#FFFFFF",
+    textColor: "#000000",
     textAlign: "center",
     textShadowBlur: 1,
     textShadowOpacity: 75,
@@ -33,7 +33,7 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     letterSpacing: 0,
     lineHeight: 1.3,
     wordSpacing: 0,
-    backgroundStyle: { type: 'solid', value: '#000000' },
+    backgroundStyle: { type: 'solid', value: '#FFFFFF' },
     filmColor: "#000000",
     filmOpacity: 0,
     aspectRatio: "9 / 16",
@@ -104,15 +104,14 @@ export default function Editor() {
             text = decodeURIComponent(quoteParam);
         }
         
-        if (templateIdParam) {
-          const template = allTemplates.find(t => t.id === templateIdParam);
-          if (template) {
-            initialState = { ...baseState, ...template.editorState, text, activeTemplateId: template.id };
-          } else {
-            initialState = { ...baseState, text };
-          }
+        const templateIdToLoad = templateIdParam || baseState.activeTemplateId;
+        const template = allTemplates.find(t => t.id === templateIdToLoad);
+        
+        if (template) {
+          initialState = { ...baseState, ...template.editorState, text, activeTemplateId: template.id };
         } else {
-            initialState = { ...baseState, text };
+          // Fallback to base state if template not found
+          initialState = { ...baseState, text };
         }
         
         setInitialState(initialState);
