@@ -1,12 +1,12 @@
 'use client';
 
 import { Suspense } from 'react';
-import Editor from '@/components/editor-de-video/editor';
-import Loading from '@/components/editor-de-video/loading';
+import Editor from './editor';
+import Loading from './loading';
 import { PageHeader } from '@/components/page-header';
 import { ClientOnly } from '@/components/client-only';
-import { EditorActions } from '@/components/editor-de-video/components/editor-actions';
-import { useEditor } from '@/components/editor-de-video/contexts/editor-context';
+import { EditorActions } from './components/editor-actions';
+import { useEditor } from './contexts/editor-context';
 import { Button } from '@/components/ui/button';
 import { Share2 } from 'lucide-react';
 

@@ -4,11 +4,11 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useWindowSize } from "react-use";
 import { useProfile } from "@/hooks/use-profile";
-import { Sidebar } from "@/app/editor-de-video/components/sidebar";
-import { PreviewCanva } from "@/app/editor-de-video/components/preview-canva";
-import { MobileToolbar } from "@/app/editor-de-video/components/mobile-toolbar";
+import { Sidebar } from "./components/sidebar";
+import { PreviewCanva } from "./components/preview-canva";
+import { MobileToolbar } from "./components/mobile-toolbar";
 import { Panel, PanelGroup, PanelResizeHandle } from "@/components/ui/resizable";
-import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
+import type { EditorState, EstiloFundo } from "./tipos";
 import { useSearchParams } from "next/navigation";
 import { useTemplates } from "@/hooks/use-templates";
 import { useEditor } from "./contexts/editor-context";

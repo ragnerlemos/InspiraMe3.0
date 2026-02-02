@@ -1,6 +1,6 @@
 'use client';
 
-import { EditorProvider } from '@/components/editor-de-video/contexts/editor-context';
+import { EditorProvider } from './contexts/editor-context';
 import { FirebaseClientProvider } from '@/firebase';
 import { useGoogleFonts } from '@/hooks/use-google-fonts';
 

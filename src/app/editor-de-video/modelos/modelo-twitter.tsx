@@ -88,12 +88,9 @@ export function ModeloTwitter({
                         showBackground={showSignatureBackground} 
                         bgColor={signatureBgColor} 
                         bgOpacity={signatureBgOpacity}
-                        textColor={textColor}
                     />
                 </div>
             )}
         </div>
     );
 }
-
-    

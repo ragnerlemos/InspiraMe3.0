@@ -5,7 +5,6 @@ import { FirebaseClientProvider } from '@/firebase';
 import { useBackButton } from '@/hooks/use-back-button';
 import { useGoogleFonts } from '@/hooks/use-google-fonts';
 import { usePathname } from 'next/navigation';
-import { EditorProvider } from '@/components/editor-de-video/contexts/editor-context';
 
 // Componente de layout principal para as páginas do aplicativo.
 // Ele controla a exibição do cabeçalho e envolve o conteúdo com os provedores necessários.
