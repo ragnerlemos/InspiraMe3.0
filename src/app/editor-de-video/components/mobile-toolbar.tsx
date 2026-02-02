@@ -61,7 +61,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
-import type { EstiloFundo } from "../tipos";
+import type { EditorState, EstiloFundo } from "../tipos";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 
@@ -694,6 +694,7 @@ interface MobileToolbarProps extends ControleAssinaturaProps, ControleLogoProps,
   text: string;
   setText: (text: string) => void;
   profile: ProfileData;
+  updateState: (newState: Partial<EditorState>) => void;
 }
 
 export function MobileToolbar({
@@ -717,6 +718,7 @@ export function MobileToolbar({
   setActiveControl,
   text,
   setText,
+  updateState,
   ...props
 }: MobileToolbarProps) {
   const router = useRouter();
@@ -734,10 +736,12 @@ export function MobileToolbar({
         if (backgroundStyle.type === 'solid') {
             const oldBg = backgroundStyle.value;
             const oldFg = fgColor;
-            setBackgroundStyle({ type: 'solid', value: oldFg });
-            setFgColor(oldBg);
-            onSignatureUsernameColorChange(oldBg);
-            onSignatureSocialColorChange(oldBg);
+            updateState({
+                backgroundStyle: { type: 'solid', value: oldFg },
+                textColor: oldBg,
+                signatureUsernameColor: oldBg,
+                signatureSocialColor: oldBg,
+            });
         } else {
             toast({
                 variant: 'default',

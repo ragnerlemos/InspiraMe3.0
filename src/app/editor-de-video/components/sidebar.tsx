@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import type { EstiloFundo } from "../tipos";
+import type { EditorState, EstiloFundo } from "../tipos";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 
@@ -653,6 +653,7 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, Commo
     text: string;
     setText: (text: string) => void;
     profile: ProfileData;
+    updateState: (newState: Partial<EditorState>) => void;
 }
 
 export function Sidebar({
@@ -676,6 +677,7 @@ export function Sidebar({
     onSignatureUsernameColorChange,
     signatureSocialColor,
     onSignatureSocialColorChange,
+    updateState,
     ...props
 }: SidebarProps) {
     const router = useRouter();
@@ -693,10 +695,12 @@ export function Sidebar({
         if (backgroundStyle.type === 'solid') {
             const oldBg = backgroundStyle.value;
             const oldFg = fgColor;
-            setBackgroundStyle({ type: 'solid', value: oldFg });
-            setFgColor(oldBg);
-            onSignatureUsernameColorChange(oldBg);
-            onSignatureSocialColorChange(oldBg);
+            updateState({
+                backgroundStyle: { type: 'solid', value: oldFg },
+                textColor: oldBg,
+                signatureUsernameColor: oldBg,
+                signatureSocialColor: oldBg,
+            });
         } else {
             toast({
                 variant: 'default',

@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useMemo, useState, useRef } from "react";
@@ -190,6 +191,7 @@ export default function Editor() {
     logoOpacity: currentState.logoOpacity, onLogoOpacityChange: (val: number) => updateState({ logoOpacity: val }),
     // Controle
     activeControl, setActiveControl,
+    updateState,
   };
 
   const previewProps = {
