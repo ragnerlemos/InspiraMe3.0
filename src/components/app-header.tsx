@@ -41,6 +41,7 @@ function SettingsNavigationLinks({ onLinkClick }: { onLinkClick?: () => void }) 
     return (
         <>
             <NavLink href="/cadastro" icon={PlusSquare} label="Cadastro" onClick={onLinkClick} />
+            <NavLink href="/cadastro/abas" icon={PenSquare} label="Abas" onClick={onLinkClick} />
             <NavLink href="/configuracoes" icon={Settings} label="Configurações" onClick={onLinkClick} />
             <NavLink href="/perfil" icon={UserIcon} label="Perfil" onClick={onLinkClick} />
         </>
