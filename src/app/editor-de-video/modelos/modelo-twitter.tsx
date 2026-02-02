@@ -26,7 +26,7 @@ export function ModeloTwitter({
     const { text, textColor, showLogo, logoOpacity, logoScale, logoPositionX, logoPositionY,
         showProfileSignature, signaturePositionX, signaturePositionY, signatureScale,
         showSignaturePhoto, showSignatureUsername, showSignatureSocial, signatureBgColor,
-        signatureBgOpacity, showSignatureBackground, signatureUsernameColor, signatureSocialColor
+        signatureBgOpacity, showSignatureBackground,
      } = editorState;
     const { showIcon, showDate } = profile;
 
@@ -80,7 +80,7 @@ export function ModeloTwitter({
             )}
             
             {showProfileSignature && (
-                 <div className="absolute" style={{ zIndex: 2, top: `${signaturePositionY}%`, left: `${signaturePositionX}%`, transform: `translate(-50%, -50%) scale(${signatureScale / 100})`, transformOrigin: 'center center' }}>
+                 <div className="absolute" style={{ zIndex: 2, top: `${signaturePositionY}%`, left: `${signaturePositionX}%`, transform: `translate(-50%, -50%) scale(${signatureScale / 100})`, transformOrigin: 'center center', color: textColor }}>
                     <AssinaturaPerfil 
                         profile={profile} 
                         showPhoto={showSignaturePhoto} 
@@ -89,8 +89,6 @@ export function ModeloTwitter({
                         showBackground={showSignatureBackground} 
                         bgColor={signatureBgColor} 
                         bgOpacity={signatureBgOpacity}
-                        usernameColor={signatureUsernameColor}
-                        socialColor={signatureSocialColor}
                     />
                 </div>
             )}

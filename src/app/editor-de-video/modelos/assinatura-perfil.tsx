@@ -47,7 +47,7 @@ export function AssinaturaPerfil({
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
           <AvatarFallback>
-            <User className="text-white" />
+            <User />
           </AvatarFallback>
         </Avatar>
       )}
