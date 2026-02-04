@@ -1,3 +1,4 @@
+
 import type { EditorState, EstiloTexto } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
 import { EMOJI_REGEX } from '../utils/text-style-utils';
@@ -19,8 +20,10 @@ export function ModeloPadrao({
 }: ModeloPadraoProps) {
     const {
         text,
+        textColor,
         textVerticalPosition,
         applyEffectsToEmojis,
+        applyTextColorToSignature,
         showProfileSignature,
         signaturePositionX,
         signaturePositionY,
@@ -61,9 +64,9 @@ export function ModeloPadrao({
     };
     
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full overflow-hidden">
             <div
-                className="absolute w-full px-8"
+                className="absolute w-full px-8 break-words"
                 style={{
                     top: `${textVerticalPosition}%`,
                     left: '50%',
@@ -74,7 +77,7 @@ export function ModeloPadrao({
             >
                 <div
                     style={combinedTextStyle}
-                    className="break-words relative"
+                    className="relative"
                 >
                     {renderTextWithEmojis()}
                 </div>
@@ -89,7 +92,16 @@ export function ModeloPadrao({
             )}
             {showProfileSignature && (
                 <div className="absolute" style={{ zIndex: 2, top: `${signaturePositionY}%`, left: `${signaturePositionX}%`, transform: `translate(-50%, -50%) scale(${signatureScale / 100})`, transformOrigin: 'center center' }}>
-                    <AssinaturaPerfil profile={profile} showPhoto={showSignaturePhoto} showUsername={showSignatureUsername} showSocial={showSignatureSocial} showBackground={showSignatureBackground} bgColor={signatureBgColor} bgOpacity={signatureBgOpacity} />
+                    <AssinaturaPerfil 
+                        profile={profile} 
+                        showPhoto={showSignaturePhoto} 
+                        showUsername={showSignatureUsername} 
+                        showSocial={showSignatureSocial} 
+                        showBackground={showSignatureBackground} 
+                        bgColor={signatureBgColor} 
+                        bgOpacity={signatureBgOpacity}
+                        textColor={applyTextColorToSignature ? textColor : '#FFFFFF'}
+                    />
                 </div>
             )}
         </div>

@@ -13,6 +13,8 @@ export type EstiloFundo = {
 
 export interface EditorState {
     text: string;
+    category?: string;
+    subCategory?: string;
     fontFamily: string;
     fontSize: number;
     fontWeight: "normal" | "bold";
@@ -26,6 +28,7 @@ export interface EditorState {
     textStrokeWidth: number;
     textStrokeCornerStyle: 'rounded' | 'square';
     applyEffectsToEmojis: boolean;
+    applyTextColorToSignature: boolean; // Novo campo
     letterSpacing: number;
     lineHeight: number;
     wordSpacing: number;

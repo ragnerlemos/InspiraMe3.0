@@ -3,12 +3,12 @@
 
 import { useState, useRef, useMemo } from "react";
 import Link from 'next/link';
-import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film, AlignCenter, AlignRight, Italic, Box, Pilcrow, CaseUpper, Text, SmilePlus } from "lucide-react";
+import { Wand2, RectangleHorizontal, RectangleVertical, Square, LayoutTemplate, UserCheck, ImageUp, Paintbrush, Type, CaseSensitive, Pipette, AlignLeft, Bold, MoveVertical, Baseline, Upload, Image as ImageIcon, Palette, Layers, Check, Edit, User, MoveHorizontal, ZoomIn, AtSign, BadgePercent, Film, AlignCenter, AlignRight, Italic, Box, Pilcrow, CaseUpper, Text, SmilePlus, Repeat, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import { BotaoRecurso } from "../botao-recurso";
+import { BotaoRecurso } from "@/app/editor-de-video/botao-recurso";
 import TextareaAutosize from 'react-textarea-autosize';
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -233,6 +233,8 @@ interface CommonStyleProps {
   onTextStrokeCornerStyleChange: (style: 'rounded' | 'square') => void;
   applyEffectsToEmojis: boolean;
   onApplyEffectsToEmojisChange: (apply: boolean) => void;
+  applyTextColorToSignature: boolean;
+  onApplyTextColorToSignatureChange: (apply: boolean) => void;
   letterSpacing: number;
   onLetterSpacingChange: (spacing: number) => void;
   lineHeight: number;
@@ -648,6 +650,8 @@ interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, Commo
     text: string;
     setText: (text: string) => void;
     profile: ProfileData;
+    onInvertColors: () => void;
+    onRestoreDefaultColors: () => void;
 }
 
 export function Sidebar({
@@ -667,6 +671,8 @@ export function Sidebar({
     setFilmOpacity,
     fgColor,
     setFgColor,
+    onInvertColors,
+    onRestoreDefaultColors,
     ...props
 }: SidebarProps) {
     const router = useRouter();
@@ -678,8 +684,6 @@ export function Sidebar({
             setActiveSubControl(null);
         }
     }
-    
-    const bgColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     const renderActiveControl = () => {
         if (!activeControl) {
@@ -733,30 +737,49 @@ export function Sidebar({
                 );
             case 'cores':
                  return (
-                    <div className="p-4 grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-left block">Cor do Fundo</Label>
-                             <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                                 <Input
-                                    type="color"
-                                    value={bgColor}
-                                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                                />
-                                <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
+                    <div className="p-4 space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-left block">Cor do Fundo</Label>
+                                 <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                                     <Input
+                                        type="color"
+                                        value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
+                                        onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
+                                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                                    />
+                                    <div className="w-full h-full" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' }} />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-left block">Cor do Texto</Label>
+                                 <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                                     <Input
+                                        type="color"
+                                        value={fgColor}
+                                        onChange={e => setFgColor(e.target.value)}
+                                        className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                                    />
+                                    <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
+                                </div>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-left block">Cor do Texto</Label>
-                             <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                                 <Input
-                                    type="color"
-                                    value={fgColor}
-                                    onChange={e => setFgColor(e.target.value)}
-                                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                                />
-                                <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
-                            </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button variant="outline" size="sm" onClick={onRestoreDefaultColors}>
+                                <RotateCcw className="mr-2 h-4 w-4" /> Restaurar Padrão
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={onInvertColors}>
+                                <Repeat className="mr-2 h-4 w-4" /> Inverter Cores
+                            </Button>
+                        </div>
+                        <Separator />
+                        <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                             <Label htmlFor="apply-color-signature" className="flex-1 cursor-pointer">Aplicar cor do texto na assinatura</Label>
+                            <Switch 
+                                id="apply-color-signature"
+                                checked={props.applyTextColorToSignature}
+                                onCheckedChange={props.onApplyTextColorToSignatureChange}
+                            />
                         </div>
                     </div>
                  );

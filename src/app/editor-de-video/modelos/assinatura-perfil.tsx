@@ -10,6 +10,7 @@ interface AssinaturaPerfilProps {
   showBackground: boolean;
   bgColor: string;
   bgOpacity: number;
+  textColor?: string;
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -31,9 +32,22 @@ export function AssinaturaPerfil({
   showBackground,
   bgColor,
   bgOpacity,
+  textColor,
 }: AssinaturaPerfilProps) {
   const bgRgb = hexToRgb(bgColor);
   const backgroundColor = bgRgb ? `rgba(${bgRgb.r}, ${bgRgb.g}, ${bgRgb.b}, ${bgOpacity / 100})` : `rgba(0, 0, 0, ${bgOpacity / 100})`;
+
+  // Use a cor passada se ela existir, caso contrário, use branco como padrão.
+  const finalTextColor = textColor || '#FFFFFF';
+
+  const usernameStyle = {
+    color: finalTextColor,
+  };
+
+  const socialStyle = {
+    color: finalTextColor,
+    opacity: 0.8,
+  };
 
   return (
     <div 
@@ -46,20 +60,20 @@ export function AssinaturaPerfil({
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={profile.photo || ""} alt={profile.username} />
           <AvatarFallback>
-            <User className="text-white" />
+            <User style={{ color: finalTextColor }} />
           </AvatarFallback>
         </Avatar>
       )}
 
       {(showUsername || showSocial) && (
-        <div className="flex flex-col justify-center text-white space-y-0">
+        <div className="flex flex-col justify-center space-y-0">
           {showUsername && (
-            <p className="font-bold text-sm leading-none">
+            <p className="font-bold text-sm leading-none" style={usernameStyle}>
               {profile.username}
             </p>
           )}
           {showSocial && (
-            <p className="text-gray-300 text-xs leading-tight pt-0.5">
+            <p className="text-xs leading-tight pt-0.5" style={socialStyle}>
               {profile.social}
             </p>
           )}

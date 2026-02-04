@@ -14,7 +14,7 @@ import { useTemplates } from "@/hooks/use-templates";
 import { useEditor } from "./contexts/editor-context";
 import Loading from './loading';
 
-const getInitialState = (): Omit<EditorState, 'text'> => ({
+const getInitialState = (): Omit<EditorState, 'text' | 'category' | 'subCategory'> => ({
     activeTemplateId: "template-twitter",
     fontFamily: "Poppins",
     fontSize: 0.9,
@@ -22,13 +22,14 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     fontStyle: "normal",
     textColor: "#FFFFFF",
     textAlign: "center",
-    textShadowBlur: 1,
-    textShadowOpacity: 75,
+    textShadowBlur: 0,
+    textShadowOpacity: 0,
     textVerticalPosition: 50,
     textStrokeColor: "#000000",
     textStrokeWidth: 0,
     textStrokeCornerStyle: 'rounded',
     applyEffectsToEmojis: true,
+    applyTextColorToSignature: false,
     letterSpacing: 0,
     lineHeight: 1.3,
     wordSpacing: 0,
@@ -79,39 +80,45 @@ export default function Editor() {
   useEffect(() => {
     if (isReady || !isProfileLoaded || !areTemplatesLoaded) return;
 
-    const initialize = async () => {
+    const initialize = () => {
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
+        const categoryParam = searchParams.get("category");
+        const subCategoryParam = searchParams.get("subCategory");
         
         let initialState: EditorState;
         const baseState = getInitialState();
 
-        let text = "A inspiração está a caminho...";
-        try {
-            const response = await fetch('/api/quotes');
-            if (response.ok) {
-                const allQuotes = await response.json();
-                if (allQuotes.length > 0) {
-                    text = allQuotes[Math.floor(Math.random() * allQuotes.length)].quote;
-                }
-            }
-        } catch (error) {
-            console.error("Failed to fetch quotes", error);
-        }
-
-        if (quoteParam) {
-            text = decodeURIComponent(quoteParam);
-        }
+        const text = quoteParam 
+            ? decodeURIComponent(quoteParam) 
+            : "A inspiração está a caminho...";
         
         if (templateIdParam) {
           const template = allTemplates.find(t => t.id === templateIdParam);
           if (template) {
-            initialState = { ...baseState, ...template.editorState, text, activeTemplateId: template.id };
+            initialState = { 
+              ...baseState, 
+              ...template.editorState, 
+              text, 
+              activeTemplateId: template.id,
+              category: categoryParam || undefined,
+              subCategory: subCategoryParam || undefined,
+            };
           } else {
-            initialState = { ...baseState, text };
+            initialState = { 
+              ...baseState, 
+              text,
+              category: categoryParam || undefined,
+              subCategory: subCategoryParam || undefined,
+            };
           }
         } else {
-            initialState = { ...baseState, text };
+            initialState = { 
+              ...baseState, 
+              text,
+              category: categoryParam || undefined,
+              subCategory: subCategoryParam || undefined,
+            };
         }
         
         setInitialState(initialState);
@@ -137,6 +144,23 @@ export default function Editor() {
   if (!isReady || !isProfileLoaded || !currentState) {
     return <Loading />;
   }
+  
+  const handleInvertColors = () => {
+    if (!currentState) return;
+    const currentBgColor = currentState.backgroundStyle.type === 'solid' ? currentState.backgroundStyle.value : '#000000';
+    const currentTextColor = currentState.textColor;
+    updateState({
+        textColor: currentBgColor,
+        backgroundStyle: { type: 'solid', value: currentTextColor }
+    });
+  };
+
+  const handleRestoreDefaultColors = () => {
+      updateState({
+          textColor: '#FFFFFF',
+          backgroundStyle: { type: 'solid', value: '#000000' }
+      });
+  };
 
   const commonProps = {
     // Canvas
@@ -163,6 +187,7 @@ export default function Editor() {
     textStrokeWidth: currentState.textStrokeWidth, onTextStrokeWidthChange: (val: number) => updateState({ textStrokeWidth: val }),
     textStrokeCornerStyle: currentState.textStrokeCornerStyle, onTextStrokeCornerStyleChange: (val: 'rounded' | 'square') => updateState({ textStrokeCornerStyle: val }),
     applyEffectsToEmojis: currentState.applyEffectsToEmojis, onApplyEffectsToEmojisChange: (val: boolean) => updateState({ applyEffectsToEmojis: val }),
+    applyTextColorToSignature: currentState.applyTextColorToSignature, onApplyTextColorToSignatureChange: (val: boolean) => updateState({ applyTextColorToSignature: val }),
     letterSpacing: currentState.letterSpacing, onLetterSpacingChange: (val: number) => updateState({ letterSpacing: val }),
     lineHeight: currentState.lineHeight, onLineHeightChange: (val: number) => updateState({ lineHeight: val }),
     wordSpacing: currentState.wordSpacing, onWordSpacingChange: (val: number) => updateState({ wordSpacing: val }),
@@ -186,6 +211,9 @@ export default function Editor() {
     logoOpacity: currentState.logoOpacity, onLogoOpacityChange: (val: number) => updateState({ logoOpacity: val }),
     // Controle
     activeControl, setActiveControl,
+    // Funções de Cor
+    onInvertColors: handleInvertColors,
+    onRestoreDefaultColors: handleRestoreDefaultColors,
   };
 
   const previewProps = {
@@ -199,20 +227,22 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-background font-body text-foreground h-full">
+    <div className="flex flex-col w-full bg-background font-body text-foreground h-full md:pb-0 pb-[64px]">
       <PanelGroup direction="horizontal" className="flex-1 min-h-0">
-         <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
-            <Sidebar {...commonProps} />
+        <Panel defaultSize={30} minSize={25} maxSize={40} className="hidden md:flex flex-col">
+          <Sidebar {...commonProps} />
         </Panel>
         {isDesktop && <PanelResizeHandle />}
-        <Panel>
-            <main className="flex-1 w-full h-full overflow-auto">
-                <PreviewCanva {...previewProps} />
-            </main>
+        <Panel className="flex flex-col">
+          <div className="flex-1 overflow-auto">
+            <PreviewCanva {...previewProps} />
+          </div>
         </Panel>
       </PanelGroup>
 
-      <MobileToolbar {...commonProps} />
+      {!isDesktop && (
+          <MobileToolbar {...commonProps} />
+      )}
     </div>
   );
 }

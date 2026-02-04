@@ -50,12 +50,14 @@ import {
   CaseUpper,
   Text,
   SmilePlus,
+  Repeat,
+  RotateCcw,
 } from "lucide-react";
 import { BotaoRecurso } from "../botao-recurso";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import TextareaAutosize from 'react-textarea-autosize';
 import { cn } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import type { ProfileData } from "@/hooks/use-profile";
@@ -199,7 +201,7 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
             
             {activeTab === 'gradient' && (
                  <div className="space-y-4">
-                    <div className="flex items-end gap-2">
+                   <div className="flex items-end gap-2">
                          <div className="space-y-2">
                             <Label>Tipo</Label>
                             <div className="flex gap-1">
@@ -273,6 +275,8 @@ interface CommonStyleProps {
   onTextStrokeCornerStyleChange: (style: 'rounded' | 'square') => void;
   applyEffectsToEmojis: boolean;
   onApplyEffectsToEmojisChange: (apply: boolean) => void;
+  applyTextColorToSignature: boolean;
+  onApplyTextColorToSignatureChange: (apply: boolean) => void;
   letterSpacing: number;
   onLetterSpacingChange: (spacing: number) => void;
   lineHeight: number;
@@ -688,6 +692,8 @@ interface MobileToolbarProps extends ControleAssinaturaProps, ControleLogoProps,
   text: string;
   setText: (text: string) => void;
   profile: ProfileData;
+  onInvertColors: () => void;
+  onRestoreDefaultColors: () => void;
 }
 
 export function MobileToolbar({
@@ -707,6 +713,8 @@ export function MobileToolbar({
   setActiveControl,
   text,
   setText,
+  onInvertColors,
+  onRestoreDefaultColors,
   ...props
 }: MobileToolbarProps) {
   const router = useRouter();
@@ -721,8 +729,6 @@ export function MobileToolbar({
 
   const renderPanelContent = () => {
     if (!activePanel) return null;
-    
-    const bgColor = backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000';
 
     const panels: Record<string, JSX.Element | null> = {
       texto: (
@@ -769,31 +775,50 @@ export function MobileToolbar({
         </div>
       ),
       cores: (
-        <div className="p-4 grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="text-left block">Cor do Fundo</Label>
-            <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                <Input
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
-                    className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                />
-                 <div className="w-full h-full" style={{ backgroundColor: bgColor }} />
+        <div className="p-4 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label className="text-left block">Cor do Fundo</Label>
+                    <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                        <Input
+                            type="color"
+                            value={backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000'}
+                            onChange={(e) => setBackgroundStyle({ type: 'solid', value: e.target.value })}
+                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                        />
+                         <div className="w-full h-full" style={{ backgroundColor: backgroundStyle.type === 'solid' ? backgroundStyle.value : '#000000' }} />
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-left block">Cor do Texto</Label>
+                    <div className="relative h-10 w-full rounded-md border overflow-hidden">
+                         <Input
+                            type="color"
+                            value={fgColor}
+                            onChange={e => setFgColor(e.target.value)}
+                            className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
+                        />
+                         <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
+                    </div>
+                </div>
             </div>
-          </div>
-          <div className="space-y-2">
-              <Label className="text-left block">Cor do Texto</Label>
-              <div className="relative h-10 w-full rounded-md border overflow-hidden">
-                   <Input
-                      type="color"
-                      value={fgColor}
-                      onChange={e => setFgColor(e.target.value)}
-                      className="absolute inset-0 w-full h-full p-0 border-none cursor-pointer opacity-0"
-                  />
-                   <div className="w-full h-full" style={{ backgroundColor: fgColor }} />
-              </div>
-          </div>
+            <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" size="sm" onClick={onRestoreDefaultColors}>
+                    <RotateCcw className="mr-2 h-4 w-4" /> Restaurar Padrão
+                </Button>
+                <Button variant="outline" size="sm" onClick={onInvertColors}>
+                    <Repeat className="mr-2 h-4 w-4" /> Inverter
+                </Button>
+            </div>
+            <Separator />
+            <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                <Label htmlFor="apply-color-signature-mobile" className="flex-1 cursor-pointer">Aplicar cor do texto na assinatura</Label>
+                <Switch 
+                    id="apply-color-signature-mobile"
+                    checked={props.applyTextColorToSignature}
+                    onCheckedChange={props.onApplyTextColorToSignatureChange}
+                />
+            </div>
         </div>
       ),
       filtro: (
@@ -881,7 +906,7 @@ export function MobileToolbar({
 
   return (
     <>
-      <div className="md:hidden fixed bottom-0 left-0 w-full z-10 bg-background border-t">
+      <div className="fixed bottom-0 left-0 w-full z-10 bg-background border-t h-16">
         {mainToolbar}
       </div>
 
