@@ -1,3 +1,4 @@
+
 import type { ProfileData } from "@/hooks/use-profile";
 import type React from "react";
 
@@ -12,6 +13,7 @@ export type EstiloFundo = {
 };
 
 export interface EditorState {
+    projectId?: string;
     text: string;
     category?: string;
     subCategory?: string;

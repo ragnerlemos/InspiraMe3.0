@@ -11,10 +11,13 @@ import { Panel, PanelGroup, PanelResizeHandle } from "@/components/ui/resizable"
 import type { EditorState, EstiloFundo } from "@/app/editor-de-video/tipos";
 import { useSearchParams } from "next/navigation";
 import { useTemplates } from "@/hooks/use-templates";
+import { useProjects } from "@/hooks/use-projects";
 import { useEditor } from "./contexts/editor-context";
 import Loading from './loading';
+import { useToast } from "@/hooks/use-toast";
 
 const getInitialState = (): Omit<EditorState, 'text' | 'category' | 'subCategory'> => ({
+    projectId: undefined,
     activeTemplateId: "template-twitter",
     fontFamily: "Poppins",
     fontSize: 0.9,
@@ -62,6 +65,8 @@ export default function Editor() {
   const { profile, isLoaded: isProfileLoaded } = useProfile();
   const searchParams = useSearchParams();
   const { templates: allTemplates, isLoaded: areTemplatesLoaded } = useTemplates();
+  const { projects: savedProjects, isLoaded: areProjectsLoaded } = useProjects();
+  const { toast } = useToast();
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -78,13 +83,24 @@ export default function Editor() {
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    if (isReady || !isProfileLoaded || !areTemplatesLoaded) return;
+    if (isReady || !isProfileLoaded || !areTemplatesLoaded || !areProjectsLoaded) return;
 
     const initialize = () => {
+        const projectIdParam = searchParams.get("projectId");
         const quoteParam = searchParams.get("quote");
         const templateIdParam = searchParams.get("templateId");
         const categoryParam = searchParams.get("category");
         const subCategoryParam = searchParams.get("subCategory");
+
+        if (projectIdParam) {
+            const project = savedProjects.find(p => p.id === projectIdParam);
+            if (project) {
+                setInitialState({ ...project.editorState, projectId: project.id });
+                return;
+            } else {
+                toast({ variant: 'destructive', title: 'Erro', description: 'Projeto não encontrado.'});
+            }
+        }
         
         let initialState: EditorState;
         const baseState = getInitialState();
@@ -125,7 +141,7 @@ export default function Editor() {
     }
 
     initialize();
-  }, [searchParams, isProfileLoaded, areTemplatesLoaded, isReady, setInitialState, allTemplates]);
+  }, [searchParams, isProfileLoaded, areTemplatesLoaded, areProjectsLoaded, isReady, setInitialState, allTemplates, savedProjects, toast]);
 
 
   useEffect(() => {

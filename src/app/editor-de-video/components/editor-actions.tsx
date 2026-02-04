@@ -20,6 +20,7 @@ export function EditorActions() {
         canUndo, undo, 
         canRedo, redo, 
         onSaveAsTemplate,
+        onSaveProject,
         onExportJPG,
         onExportPNG,
         onExportMP4,
@@ -27,8 +28,7 @@ export function EditorActions() {
     const { toast } = useToast();
 
     const handleSave = () => {
-        // Lógica de salvamento será implementada aqui
-        toast({ title: 'Projeto Salvo!'});
+        onSaveProject();
     }
 
   return (
@@ -71,12 +71,16 @@ export function EditorActions() {
                     <Download className="mr-2 h-4 w-4" />
                     <span>Exportar como JPG</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onExportPNG}>
+                <DropdownMenuItem onClick={() => onExportPNG(false)}>
                     <Download className="mr-2 h-4 w-4" />
                     <span>Exportar como PNG</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onExportMP4}>
+                 <DropdownMenuItem onClick={() => onExportPNG(true)}>
                     <Share2 className="mr-2 h-4 w-4" />
+                    <span>Compartilhar PNG</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onExportMP4}>
+                    <Download className="mr-2 h-4 w-4" />
                     <span>Exportar como MP4</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

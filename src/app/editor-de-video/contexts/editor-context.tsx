@@ -1,12 +1,13 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useCallback, ReactNode, useMemo } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState, EstiloTexto } from '../tipos';
-import { captureAndDownload, captureThumbnail } from '../exportar';
+import { captureAndDownload, captureAndShare, captureThumbnail } from '../exportar';
 import { useProfile } from '@/hooks/use-profile';
-import { useWindowSize } from 'react-use';
+import { useProjects } from '@/hooks/use-projects';
 import { createStrokeStyle, createDropShadowStyle } from '../utils/text-style-utils';
 
 export interface EditorContextType {
@@ -22,8 +23,9 @@ export interface EditorContextType {
   updateState: (newState: Partial<EditorState>) => void;
   setInitialState: (initialState: EditorState) => void;
   onSaveAsTemplate: () => Promise<void>;
+  onSaveProject: () => Promise<void>;
   onExportJPG: () => void;
-  onExportPNG: () => void;
+  onExportPNG: (share?: boolean) => void;
   onExportMP4: () => void;
 }
 
@@ -36,6 +38,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   const { addTemplate } = useTemplates();
   const { profile } = useProfile();
+  const { addProject, updateProject } = useProjects();
 
   const currentState = isReady ? history[currentStateIndex] : null;
   const canUndo = currentStateIndex > 0;
@@ -104,14 +107,49 @@ export function EditorProvider({ children }: { children: ReactNode }) {
 
   }, [addTemplate, currentState, toast, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
+  const onSaveProject = useCallback(async () => {
+    if (!currentState || !profile) return;
+
+    const thumbnail = await captureThumbnail(toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
+    if (!thumbnail) {
+        toast({ variant: 'destructive', title: 'Erro ao Salvar', description: 'Não foi possível gerar a miniatura do projeto.'});
+        return;
+    }
+
+    if (currentState.projectId) {
+        // Atualizar projeto existente
+        updateProject(currentState.projectId, currentState, thumbnail);
+        toast({ title: 'Projeto Atualizado!', description: 'Suas alterações foram salvas.'});
+    } else {
+        // Salvar como novo projeto
+        const projectName = prompt("Digite um nome para o novo projeto:");
+        if (!projectName) return;
+
+        const newProjectId = addProject({
+            name: projectName,
+            editorState: currentState,
+            thumbnail: thumbnail,
+        });
+
+        // Atualiza o estado atual com o novo ID do projeto para salvamentos futuros
+        updateState({ projectId: newProjectId });
+
+        toast({ title: 'Projeto Salvo!', description: `O projeto "${projectName}" foi salvo.`});
+    }
+  }, [currentState, profile, toast, baseTextStyle, textEffectsStyle, dropShadowStyle, addProject, updateProject, updateState]);
+
   const onExportJPG = useCallback(() => {
       if(!currentState || !profile) return;
       captureAndDownload('jpeg', toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
   }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
   
-  const onExportPNG = useCallback(() => {
+  const onExportPNG = useCallback((share = false) => {
       if(!currentState || !profile) return;
-      captureAndDownload('png', toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
+      if (share) {
+          captureAndShare(toast, currentState);
+      } else {
+          captureAndDownload('png', toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
+      }
   }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
   const onExportMP4 = useCallback(() => {
@@ -131,10 +169,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     updateState,
     setInitialState,
     onSaveAsTemplate,
+    onSaveProject,
     onExportJPG,
     onExportPNG,
     onExportMP4,
-  }), [isReady, canUndo, canRedo, currentState, baseTextStyle, textEffectsStyle, dropShadowStyle, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
+  }), [isReady, canUndo, canRedo, currentState, baseTextStyle, textEffectsStyle, dropShadowStyle, undo, redo, updateState, setInitialState, onSaveAsTemplate, onSaveProject, onExportJPG, onExportPNG, onExportMP4]);
 
   return (
     <EditorContext.Provider value={value}>
