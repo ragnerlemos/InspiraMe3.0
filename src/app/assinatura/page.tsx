@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Download, User, AtSign, Image as ImageIcon, Loader2, Twitter } from 'lucide-react';
-import { AssinaturaPerfil } from '@/app/(main)/editor-de-video/modelos/assinatura-perfil';
+import { AssinaturaPerfil } from '@/components/editor-de-video/modelos/assinatura-perfil';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Componente de pré-visualização da assinatura

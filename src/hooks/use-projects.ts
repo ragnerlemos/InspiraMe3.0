@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { nanoid } from 'nanoid';
-import type { EditorState } from "@/app/(main)/editor-de-video/tipos";
+import type { EditorState } from "@/components/editor-de-video/tipos";
 
 const PROJECTS_KEY = "quotevid_my_projects";
 
