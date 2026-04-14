@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic';
+
 import { Suspense } from 'react';
 import { getSheetData, getAllQuotes } from '@/lib/dados';
 import { FrasesClientPage } from './frases-client';
@@ -32,11 +34,11 @@ function FrasesLoadingSkeleton() {
 // This is a Server Component that fetches the initial data.
 export default async function FrasesPage() {
   
-  // Fetch all quotes and categories at build time.
+  // Fetch all quotes and categories from the latest data.
   // The client component will handle all the dynamic filtering.
-  const allQuotes = await getAllQuotes();
+  const allQuotes = await getAllQuotes(true);
   // Usa getSheetData para obter a hierarquia completa
-  const sheetData = await getSheetData();
+  const sheetData = await getSheetData(true);
 
   // Extrai as categorias principais e a hierarquia
   const mainCategories = ['Todos'];

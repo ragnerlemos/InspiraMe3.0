@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useRef, useEffect, ComponentType } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight } from 'lucide-react';
+import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -282,8 +282,9 @@ export function FrasesClientPage({
   initialSubCategories,
   pageTitle = "Inspire-se com Frases",
 }: FrasesClientPageProps) {
-  const [allQuotes] = useState<QuoteWithAuthor[]>(initialQuotes);
+  const [allQuotes, setAllQuotes] = useState<QuoteWithAuthor[]>(initialQuotes);
   const [isLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMainCategory, setSelectedMainCategory] = useState<string>('Todos');
@@ -296,6 +297,29 @@ export function FrasesClientPage({
   const { toast } = useToast();
   const router = useRouter();
   const { profile } = useProfile();
+
+  const handleRefreshQuotes = async () => {
+    setIsRefreshing(true);
+
+    try {
+      await fetch('/api/invalidate-cache', { method: 'POST' });
+      router.refresh();
+      toast({ title: 'Dados atualizados', description: 'Os dados da planilha foram recarregados.' });
+
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('refresh', Date.now().toString());
+      router.replace(`${currentUrl.pathname}${currentUrl.search}`);
+    } catch (error) {
+      console.error('Falha ao atualizar dados:', error);
+      toast({ variant: 'destructive', title: 'Erro ao atualizar', description: 'Não foi possível atualizar os dados agora.' });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    setAllQuotes(initialQuotes);
+  }, [initialQuotes]);
 
   useEffect(() => {
     const mainCatFromUrl = searchParams.get('mainCategory');
@@ -465,6 +489,15 @@ export function FrasesClientPage({
       <div className="space-y-1">
         {searchInput}
         <Button
+          variant="outline"
+          onClick={handleRefreshQuotes}
+          disabled={isRefreshing}
+          className="w-full justify-start text-base font-semibold px-3 py-2 rounded-md"
+        >
+          {isRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+          Atualizar
+        </Button>
+        <Button
           variant="ghost"
           onClick={() => {
             handleMainCategorySelect('Todos');
@@ -632,16 +665,27 @@ export function FrasesClientPage({
             </div>
           </aside>
           <div className="px-4">
-            <div className="w-full mb-8 flex justify-between items-center">
-               <div className="flex-1 text-center">
+            <div className="w-full mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+               <div className="text-center md:text-left md:flex-1">
                   <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">
                     {pageTitle}
                   </h1>
               </div>
-              <div className="md:hidden ml-4">
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRefreshQuotes}
+                  disabled={isRefreshing}
+                >
+                  {isRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                  Atualizar
+                </Button>
+                <div className="md:hidden">
                   <Button variant="outline" size="icon" onClick={() => setIsCategorySheetOpen(true)}>
                       <LayoutGrid className="h-5 w-5" />
                   </Button>
+                </div>
               </div>
             </div>
             
