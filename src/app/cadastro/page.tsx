@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getSheetData, getAllSheetNames } from '@/lib/dados';
 import { CadastroClientPage } from './cadastro-client';
 

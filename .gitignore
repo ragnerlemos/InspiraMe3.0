@@ -42,3 +42,7 @@ yarn-error.log*
 *.swp
 *.swo
 *#
+
+# Android signing keys
+release.keystore
+android/release.keystore
