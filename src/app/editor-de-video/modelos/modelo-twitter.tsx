@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Twitter } from "lucide-react";
 import type { EditorState, EstiloTexto } from "../tipos";
 import { AssinaturaPerfil } from "./assinatura-perfil";
+import { ResizableTextBox } from "../components/resizable-text-box";
 
 interface ModeloTwitterProps {
     editorState: EditorState;
@@ -14,6 +15,10 @@ interface ModeloTwitterProps {
     textEffectsStyle: EstiloTexto;
     dropShadowStyle: EstiloTexto;
     profile: ProfileData;
+    isTextSelected: boolean;
+    setIsTextSelected: (value: boolean) => void;
+    onTextBoxResize: (next: { widthPct: number; heightPx: number }) => void;
+    onTextChange: (text: string) => void;
 }
 
 export function ModeloTwitter({
@@ -21,12 +26,16 @@ export function ModeloTwitter({
     baseTextStyle,
     textEffectsStyle,
     dropShadowStyle,
-    profile
+    profile,
+    isTextSelected,
+    setIsTextSelected,
+    onTextBoxResize,
 }: ModeloTwitterProps) {
     const { text, textColor, showLogo, logoOpacity, logoScale, logoPositionX, logoPositionY,
         showProfileSignature, signaturePositionX, signaturePositionY, signatureScale,
         showSignaturePhoto, showSignatureUsername, showSignatureSocial, signatureBgColor,
         signatureBgOpacity, showSignatureBackground,
+        textBoxWidth, textBoxHeight,
      } = editorState;
     const { showIcon, showDate } = profile;
 
@@ -35,7 +44,7 @@ export function ModeloTwitter({
       ...baseTextStyle,
       ...textEffectsStyle,
       color: textColor || '#FFFFFF', // Garante que a cor seja aplicada
-      textAlign: 'left',
+      textAlign: editorState.textAlign,
       lineHeight: 1.4,
       fontSize: `${editorState.fontSize}rem`
     };
@@ -58,12 +67,23 @@ export function ModeloTwitter({
                         </div>
                     </div>
                 </div>
-                <div 
-                    className="mt-3 text-xl break-words" 
-                    style={{ ...dropShadowStyle }}
+                <ResizableTextBox
+                    widthPct={textBoxWidth ?? 80}
+                    heightPx={textBoxHeight ?? 0}
+                    isSelected={isTextSelected}
+                    editable
+                    text={text}
+                    onTextChange={onTextChange}
+                    onSelect={() => setIsTextSelected(true)}
+                    onResize={onTextBoxResize}
                 >
-                   <p style={combinedTextStyle}>{text}</p>
-                </div>
+                    <div
+                        className="mt-3 text-xl break-words"
+                        style={{ ...dropShadowStyle }}
+                    >
+                        <p style={combinedTextStyle}>{text}</p>
+                    </div>
+                </ResizableTextBox>
                  {showDate && (
                     <div className="mt-4 text-sm flex items-center gap-2" style={{ color: textColor, opacity: 0.7 }}>
                        <p>10:30 AM · 28 de Maio de 2024</p>

@@ -24,7 +24,7 @@ import { ModeloTwitter } from '../editor-de-video/modelos/modelo-twitter';
 import type { EditorState, EstiloTexto } from '../editor-de-video/tipos';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { ensureAppStoragePermission, saveFileToAppFolder } from '@/lib/file-storage';
 
 interface QuoteWithAuthor {
     id: string;
@@ -108,22 +108,41 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
             if (Capacitor.isNativePlatform()) {
                 // Lógica para App Nativo
                 const reader = new FileReader();
-                reader.readAsDataURL(blob);
                 reader.onloadend = async () => {
-                    const base64Data = reader.result?.toString().split('base64,')[1];
-                    if (!base64Data) {
-                         throw new Error("Não foi possível extrair os dados da imagem.");
+                    try {
+                        const base64Data = reader.result?.toString().split('base64,')[1];
+                        if (!base64Data) {
+                            throw new Error("Não foi possível extrair os dados da imagem.");
+                        }
+
+                        const permissionGranted = await ensureAppStoragePermission();
+                        if (!permissionGranted) {
+                            throw new Error('Permissão de armazenamento não concedida.');
+                        }
+                        
+                        const { uri } = await saveFileToAppFolder(base64Data, filename);
+                        if (!uri) throw new Error("Não foi possível salvar o arquivo na pasta do app.");
+                        await Share.share({ url: uri });
+                    } catch (error) {
+                        console.error('Erro no compartilhamento nativo:', error);
+                        toast({
+                            variant: 'destructive',
+                            title: 'Erro',
+                            description: 'Não foi possível compartilhar a imagem pelo app.',
+                        });
+                    } finally {
+                        onClose();
                     }
-                    
-                    const { uri } = await Filesystem.writeFile({
-                        path: filename,
-                        data: base64Data,
-                        directory: Directory.Cache,
+                };
+                reader.onerror = () => {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Erro',
+                        description: 'Falha ao preparar a imagem para compartilhamento.',
                     });
-                    if (!uri) throw new Error("Não foi possível salvar o arquivo temporário.");
-                    await Share.share({ url: uri });
                     onClose();
-                }
+                };
+                reader.readAsDataURL(blob);
             } else {
                 // Lógica para Web
                 const memeFile = new File([blob], filename, { type: 'image/png' });
@@ -135,14 +154,12 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         onClose(); // Fecha apenas se o compartilhamento for iniciado
                     } catch(error) {
                         if (error instanceof DOMException && error.name === 'AbortError') {
-                            // User cancelled the share sheet, do nothing. This is not an error.
                             console.log("Compartilhamento cancelado pelo usuário.");
-                            onClose(); // Fecha também se o usuário cancelar
                         } else {
-                             // For other errors, just close, as user may want to try again.
-                             console.error('Web Share API error:', error);
-                             onClose();
+                            console.error('Web Share API error:', error);
                         }
+                        await handleCopy(quote.quote, quote.author);
+                        onClose();
                     }
                 } else {
                     toast({
@@ -574,10 +591,17 @@ export function FrasesClientPage({
     );
   };
   
-    const renderSkeletons = () => (
+    const getCardClasses = (index: number) => cn(
+    'group flex flex-col justify-between transition-shadow duration-300 border',
+    index % 2 === 0
+      ? 'bg-slate-50 border-slate-200'
+      : 'bg-slate-100 border-slate-200'
+  );
+
+  const renderSkeletons = () => (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i}>
+                <Card key={i} className={getCardClasses(i)}>
                     <CardContent className="p-4 pb-0">
                         <Skeleton className="h-16 w-full" />
                     </CardContent>
@@ -659,7 +683,7 @@ export function FrasesClientPage({
         <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
           <aside className="hidden md:block pl-4">
             <div className="sticky top-24">
-              <ScrollArea className="h-[calc(100vh-10rem)] -mr-4 pr-4">
+              <ScrollArea className="max-h-[calc(100vh-10rem)] -mr-4 pr-4">
                 {renderFilters()}
               </ScrollArea>
             </div>
@@ -723,10 +747,10 @@ export function FrasesClientPage({
             
             {isLoading ? renderSkeletons() : filteredQuotes.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredQuotes.map((quote) => {
+                {filteredQuotes.map((quote, index) => {
                   const isFavorited = favorites.includes(quote.id);
                   return (
-                    <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
+                    <Card key={quote.id} className={getCardClasses(index)}>
                       
                       <CardContent className="p-4 pb-0 flex-1">
                         <p className="text-sm font-body">{quote.quote}</p>

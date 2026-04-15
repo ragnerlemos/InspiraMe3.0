@@ -127,7 +127,11 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
         const file = event.target.files?.[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+        const fileName = file.name.toLowerCase();
+        const isImage = file.type.startsWith('image/') || ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'].some(ext => fileName.endsWith(ext));
+        const isVideo = file.type.startsWith('video/') || ['.mp4', '.webm', '.ogg'].some(ext => fileName.endsWith(ext));
+
+        if (!isImage && !isVideo) {
             toast({ variant: "destructive", title: "Arquivo Inválido", description: "Por favor, selecione um arquivo de imagem ou vídeo." });
             return;
         }
@@ -174,7 +178,7 @@ function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { background
 
             {activeTab === 'media' && (
                 <div className="space-y-4">
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" className="hidden"/>
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*,.mp4" className="hidden"/>
                     <Button onClick={() => fileInputRef.current?.click()} className="w-full" variant="outline"><Upload className="mr-2 h-4 w-4" /> Carregar do Dispositivo</Button>
                      <Link href="/galeria?fromEditor=true" passHref>
                         <Button className="w-full" variant="outline">

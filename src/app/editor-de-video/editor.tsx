@@ -23,6 +23,8 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     fontStyle: "normal",
     textColor: "#000000",
     textAlign: "center",
+    textBoxWidth: 80,
+    textBoxHeight: 0,
     textShadowBlur: 1,
     textShadowOpacity: 75,
     textVerticalPosition: 50,
@@ -197,6 +199,8 @@ export default function Editor() {
     dropShadowStyle: dropShadowStyle,
     scale,
     containerRef: previewContainerRef,
+    updateState,
+    onTextChange: (text: string) => updateState({ text }),
   };
 
   return (

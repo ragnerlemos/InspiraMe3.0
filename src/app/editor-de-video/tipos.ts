@@ -20,6 +20,8 @@ export interface EditorState {
     fontStyle: "normal" | "italic";
     textColor: string;
     textAlign: "left" | "center" | "right";
+    textBoxWidth: number;
+    textBoxHeight: number;
     textShadowBlur: number;
     textShadowOpacity: number;
     textVerticalPosition: number;

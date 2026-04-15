@@ -8,7 +8,7 @@ import { AssinaturaPerfil } from "../modelos/assinatura-perfil";
 import { ModeloPadrao } from '../modelos/modelo-padrao';
 import { ModeloTwitter } from '../modelos/modelo-twitter'; // Importa o novo modelo
 import type { EditorState, EstiloTexto } from '../tipos';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface PreviewCanvaProps {
     editorState: EditorState;
@@ -18,6 +18,8 @@ interface PreviewCanvaProps {
     dropShadowStyle: EstiloTexto;
     scale: number;
     containerRef: React.RefObject<HTMLDivElement>;
+    updateState: (newState: Partial<EditorState>) => void;
+    onTextChange: (text: string) => void;
 }
 
 
@@ -52,9 +54,11 @@ export function PreviewCanva(props: PreviewCanvaProps) {
     const { 
         editorState,
         scale,
-        containerRef
+        containerRef,
+        updateState,
     } = props;
     const { activeTemplateId, aspectRatio, backgroundStyle, filmColor, filmOpacity } = editorState;
+    const [isTextSelected, setIsTextSelected] = useState(false);
   
   const filmRgb = hexToRgb(filmColor);
   const filmBackgroundColor = filmRgb ? `rgba(${filmRgb.r}, ${filmRgb.g}, ${filmRgb.b}, ${filmOpacity / 100})` : `rgba(0, 0, 0, ${filmOpacity / 100})`;
@@ -79,8 +83,12 @@ export function PreviewCanva(props: PreviewCanvaProps) {
     return <div className="absolute inset-0 bg-black" />;
   };
 
+  const handleTextBoxResize = (next: { widthPct: number; heightPx: number }) => {
+    updateState({ textBoxWidth: next.widthPct, textBoxHeight: next.heightPx });
+  };
+
   const renderContent = () => {
-    const { profile, baseTextStyle, textEffectsStyle, dropShadowStyle } = props;
+    const { profile, baseTextStyle, textEffectsStyle, dropShadowStyle, onTextChange } = props;
     
     const modeloProps = {
       editorState,
@@ -88,6 +96,10 @@ export function PreviewCanva(props: PreviewCanvaProps) {
       textEffectsStyle,
       dropShadowStyle,
       profile,
+      isTextSelected,
+      setIsTextSelected,
+      onTextBoxResize: handleTextBoxResize,
+      onTextChange,
     };
     
     // Lógica para escolher qual modelo renderizar
@@ -126,7 +138,7 @@ export function PreviewCanva(props: PreviewCanvaProps) {
             {filmOpacity > 0 && 
                 <div className="absolute inset-0 z-10" style={{ backgroundColor: filmBackgroundColor }} />
             }
-            <div className="relative z-20 h-full w-full">
+            <div className="relative z-20 h-full w-full" onPointerDown={() => setIsTextSelected(false)}>
                 {renderContent()}
             </div>
         </div>
