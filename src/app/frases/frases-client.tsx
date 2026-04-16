@@ -701,10 +701,10 @@ export function FrasesClientPage({
       </Sheet>
 
       <main className="overflow-y-auto safe-area py-8 no-scrollbar">
-        <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
+        <div className="grid md:grid-cols-[320px_1fr] gap-8 md:items-start">
           <aside className="hidden md:block pl-4">
             <div className="sticky top-24">
-              <ScrollArea className="max-h-[calc(100vh-10rem)] -mr-4 pr-4">
+              <ScrollArea className="max-h-[calc(100vh-8rem)] min-h-[calc(100vh-12rem)] -mr-4 pr-4">
                 {renderFilters()}
               </ScrollArea>
             </div>

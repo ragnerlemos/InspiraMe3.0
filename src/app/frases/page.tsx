@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // O componente de esqueleto para ser usado como fallback do Suspense.
 function FrasesLoadingSkeleton() {
   return (
-    <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start px-4">
+    <div className="grid md:grid-cols-[320px_1fr] gap-8 md:items-start px-4">
       <aside className="hidden md:block">
         <div className="sticky top-24 space-y-4">
           <Skeleton className="h-10 w-full" />
