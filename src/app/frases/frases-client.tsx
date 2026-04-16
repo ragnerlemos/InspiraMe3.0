@@ -1,9 +1,9 @@
 
 'use client';
 
-import { useState, useMemo, useRef, useEffect, ComponentType } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw } from 'lucide-react';
+import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -68,16 +68,26 @@ function generateFilename(quote: QuoteWithAuthor, format: 'png' | 'jpeg'): strin
 }
 
 // Componente para gerar e pré-visualizar o meme
-function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = false }: {
+function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = false, onCopy }: {
   quote: QuoteWithAuthor;
   profile: ReturnType<typeof useProfile>['profile'];
   editorState: EditorState;
   onClose: () => void;
   shareDirectly?: boolean;
+  onCopy: (text: string, author?: string) => Promise<void>;
 }) {
   const memeRef = useRef<HTMLDivElement>(null);
   const [memeUrl, setMemeUrl] = useState<string | null>(null);
+  const [isTextSelected, setIsTextSelected] = useState(false);
   const { toast } = useToast();
+
+  const handleTextBoxResize = (_next: { widthPct: number; heightPx: number }) => {
+    // preview não precisa refletir a mudança ativa de caixa de texto
+  };
+
+  const handleTextChange = (_text: string) => {
+    // preview apenas gera imagem; edição inline não precisa ser persistida aqui
+  };
 
   const baseTextStyle: EstiloTexto = {
       fontFamily: editorState.fontFamily,
@@ -158,7 +168,7 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         } else {
                             console.error('Web Share API error:', error);
                         }
-                        await handleCopy(quote.quote, quote.author);
+                        await onCopy(quote.quote, quote.author);
                         onClose();
                     }
                 } else {
@@ -229,6 +239,10 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         baseTextStyle={baseTextStyle}
                         textEffectsStyle={{}}
                         dropShadowStyle={{}}
+                        isTextSelected={isTextSelected}
+                        setIsTextSelected={setIsTextSelected}
+                        onTextBoxResize={handleTextBoxResize}
+                        onTextChange={handleTextChange}
                     />
                 </div>
             </div>
@@ -266,6 +280,10 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         baseTextStyle={baseTextStyle}
                         textEffectsStyle={{}}
                         dropShadowStyle={{}}
+                        isTextSelected={isTextSelected}
+                        setIsTextSelected={setIsTextSelected}
+                        onTextBoxResize={handleTextBoxResize}
+                        onTextChange={handleTextChange}
                     />
                 </div>
             </div>
@@ -275,7 +293,7 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
 }
 
 
-const getCategoryIcon = (categoryName: string): ComponentType<{className: string}> => {
+const getCategoryIcon = (categoryName: string): LucideIcon => {
     const lowerCaseName = categoryName.toLowerCase();
 
     if (lowerCaseName.includes('bom dia')) return Sun;
@@ -594,8 +612,8 @@ export function FrasesClientPage({
     const getCardClasses = (index: number) => cn(
     'group flex flex-col justify-between transition-shadow duration-300 border',
     index % 2 === 0
-      ? 'bg-slate-50 border-slate-200'
-      : 'bg-slate-100 border-slate-200'
+      ? 'bg-[#020817]/95 border-slate-200/70'
+      : 'bg-[#020817]/75 border-slate-200/70'
   );
 
   const renderSkeletons = () => (
@@ -616,8 +634,6 @@ export function FrasesClientPage({
     const getMemeEditorState = (quote: QuoteWithAuthor): EditorState => {
         return {
             text: quote.quote,
-            category: quote.category,
-            subCategory: quote.subCategory,
             fontFamily: "Poppins",
             fontSize: profile.memeFontSize,
             fontWeight: "bold",
@@ -827,6 +843,7 @@ export function FrasesClientPage({
             editorState={memeEditorState}
             onClose={() => setQuoteForMeme(null)}
             shareDirectly={quoteForMeme.action === 'share'}
+            onCopy={handleCopy}
           />
         )}
       </ClientOnly>

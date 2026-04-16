@@ -30,6 +30,7 @@ export function ModeloTwitter({
     isTextSelected,
     setIsTextSelected,
     onTextBoxResize,
+    onTextChange,
 }: ModeloTwitterProps) {
     const { text, textColor, showLogo, logoOpacity, logoScale, logoPositionX, logoPositionY,
         showProfileSignature, signaturePositionX, signaturePositionY, signatureScale,

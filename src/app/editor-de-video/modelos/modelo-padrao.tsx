@@ -26,6 +26,7 @@ export function ModeloPadrao({
     isTextSelected,
     setIsTextSelected,
     onTextBoxResize,
+    onTextChange,
 }: ModeloPadraoProps) {
     const {
         text,
