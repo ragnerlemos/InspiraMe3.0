@@ -18,9 +18,9 @@ export interface QuoteWithAuthor {
     id: string;
     quote: string;
     author?: string;
-    category: string;
+    category?: string;
     subCategory?: string;
-    sheetName: string; 
+    sheetName: string;
 }
 
 interface CategoriesHierarchy {
@@ -53,7 +53,7 @@ const mapRowToQuote = (row: any[], index: number, sheetName: string): QuoteWithA
         id: `${sheetName}-${index}`,
         quote: quoteText,
         author: row[9] || undefined,
-        category: category || 'Geral',
+        category: category || undefined,
         subCategory: subCategory || undefined,
         sheetName: sheetName,
     };
