@@ -616,7 +616,7 @@ export function FrasesClientPage({
     const getCardClasses = (index: number) => cn(
     'group flex flex-col justify-between transition-shadow duration-300 border',
     index % 2 === 0
-      ? 'bg-[#0072f5]/95 border-[#0072f5]/70'
+      ? 'bg-[#0a1530]/95 border-[#0a1530]/70'
       : 'bg-[#020817]/95 border-[#020817]/70'
   );
 
