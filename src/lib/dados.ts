@@ -45,12 +45,16 @@ const mapRowToQuote = (row: any[], index: number, sheetName: string): QuoteWithA
     if (!quoteText) {
         return null;
     }
+
+    const category = typeof row[3] === 'string' ? row[3].trim() : row[3];
+    const subCategory = typeof row[2] === 'string' ? row[2].trim() : row[2];
+
     return {
         id: `${sheetName}-${index}`,
         quote: quoteText,
         author: row[9] || undefined,
-        category: row[3] || 'Geral',
-        subCategory: row[2] || undefined,
+        category: category || 'Geral',
+        subCategory: subCategory || undefined,
         sheetName: sheetName,
     };
 };
