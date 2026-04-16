@@ -45,6 +45,9 @@ export default async function FrasesPage() {
   const categories: { [mainCategory: string]: string[] } = {};
 
   for (const sheetName in sheetData) {
+      if (!mainCategories.includes(sheetName)) {
+          mainCategories.push(sheetName);
+      }
       for (const mainCat in sheetData[sheetName]) {
           if (!mainCategories.includes(mainCat)) {
               mainCategories.push(mainCat);

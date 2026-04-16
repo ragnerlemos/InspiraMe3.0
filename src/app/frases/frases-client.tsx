@@ -371,7 +371,9 @@ export function FrasesClientPage({
     let quotes = allQuotes;
 
     if (selectedMainCategory !== 'Todos') {
-      quotes = quotes.filter(q => q.category === selectedMainCategory || q.subCategory === selectedMainCategory);
+      quotes = quotes.filter(
+        q => q.sheetName === selectedMainCategory || q.category === selectedMainCategory || q.subCategory === selectedMainCategory
+      );
     }
 
     if (searchTerm) {
