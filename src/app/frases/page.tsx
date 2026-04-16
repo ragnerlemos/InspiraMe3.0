@@ -40,30 +40,26 @@ export default async function FrasesPage() {
   // Usa getSheetData para obter a hierarquia completa
   const sheetData = await getSheetData(true);
 
-  // Extrai as categorias principais e a hierarquia
+  // Extrai somente as categorias internas para o menu,
+  // removendo os nomes das abas como entradas principais.
   const mainCategories = ['Todos'];
   const categories: { [mainCategory: string]: string[] } = {};
 
   for (const sheetName in sheetData) {
-      if (!mainCategories.includes(sheetName)) {
-          mainCategories.push(sheetName);
-      }
-      if (!categories[sheetName]) {
-          categories[sheetName] = [];
-      }
-
       for (const mainCat in sheetData[sheetName]) {
-          if (!mainCategories.includes(mainCat)) {
-              mainCategories.push(mainCat);
+          const normalizedMainCat = mainCat.trim();
+          if (!mainCategories.includes(normalizedMainCat)) {
+              mainCategories.push(normalizedMainCat);
           }
-          if (!categories[mainCat]) {
-              categories[mainCat] = [];
+          if (!categories[normalizedMainCat]) {
+              categories[normalizedMainCat] = [];
           }
-          categories[mainCat] = [...new Set([...categories[mainCat], ...sheetData[sheetName][mainCat]])];
 
-          if (!categories[sheetName].includes(mainCat)) {
-              categories[sheetName].push(mainCat);
-          }
+          const normalizedSubCategories = sheetData[sheetName][mainCat]
+              .map((subCat) => (typeof subCat === 'string' ? subCat.trim() : subCat))
+              .filter((subCat) => typeof subCat === 'string' && subCat.length > 0 && subCat !== 'Todos');
+
+          categories[normalizedMainCat] = [...new Set([...categories[normalizedMainCat], ...normalizedSubCategories])];
       }
   }
 
