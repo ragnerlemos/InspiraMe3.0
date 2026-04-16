@@ -124,7 +124,7 @@ export function ResizableTextBox({ widthPct, heightPx, isSelected, editable = fa
               onSelect();
             }}
             className="min-h-[1.3em] outline-none"
-            style={{ width: '100%' }}
+            style={{ width: '100%', textAlign: 'left' }}
           >
             {children}
           </div>
@@ -139,15 +139,15 @@ export function ResizableTextBox({ widthPct, heightPx, isSelected, editable = fa
         <>
           <div className="absolute inset-0 rounded-lg border-2 border-primary pointer-events-none" />
           <div
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-5 w-5 -mr-2 rounded-full bg-primary text-white shadow-lg cursor-ew-resize"
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-3 w-3 -mr-1 rounded-sm bg-primary shadow-lg cursor-ew-resize"
             onPointerDown={startResize('width')}
           />
           <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 w-5 -mb-2 rounded-full bg-primary text-white shadow-lg cursor-ns-resize"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-3 w-3 -mb-1 rounded-sm bg-primary shadow-lg cursor-ns-resize"
             onPointerDown={startResize('height')}
           />
           <div
-            className="absolute right-0 bottom-0 h-5 w-5 -mr-2 -mb-2 rounded-full bg-primary text-white shadow-lg cursor-nwse-resize"
+            className="absolute right-0 bottom-0 h-3 w-3 -mr-1 -mb-1 rounded-sm bg-primary shadow-lg cursor-nwse-resize"
             onPointerDown={startResize('both')}
           />
         </>
