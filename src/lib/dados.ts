@@ -176,6 +176,10 @@ export async function getSheetData(forceRefresh = false): Promise<SheetHierarchy
             if (quote.subCategory && !sheetCategories[quote.category].includes(quote.subCategory) && quote.subCategory !== 'Todos') {
                 sheetCategories[quote.category].push(quote.subCategory);
             }
+        } else if (quote.subCategory && quote.subCategory !== 'Todos') {
+            if (!sheetCategories[quote.subCategory]) {
+                sheetCategories[quote.subCategory] = [];
+            }
         }
     });
     
