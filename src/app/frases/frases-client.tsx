@@ -376,6 +376,12 @@ export function FrasesClientPage({
       );
     }
 
+    if (selectedSubCategory !== 'Todos') {
+      quotes = quotes.filter(
+        q => q.category === selectedSubCategory || q.subCategory === selectedSubCategory
+      );
+    }
+
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
       quotes = quotes.filter(q => 

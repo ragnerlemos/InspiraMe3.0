@@ -48,6 +48,10 @@ export default async function FrasesPage() {
       if (!mainCategories.includes(sheetName)) {
           mainCategories.push(sheetName);
       }
+      if (!categories[sheetName]) {
+          categories[sheetName] = [];
+      }
+
       for (const mainCat in sheetData[sheetName]) {
           if (!mainCategories.includes(mainCat)) {
               mainCategories.push(mainCat);
@@ -56,6 +60,10 @@ export default async function FrasesPage() {
               categories[mainCat] = [];
           }
           categories[mainCat] = [...new Set([...categories[mainCat], ...sheetData[sheetName][mainCat]])];
+
+          if (!categories[sheetName].includes(mainCat)) {
+              categories[sheetName].push(mainCat);
+          }
       }
   }
 
