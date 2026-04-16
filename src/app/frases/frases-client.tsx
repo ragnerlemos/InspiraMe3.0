@@ -1,9 +1,9 @@
 
 'use client';
 
-import { useState, useMemo, useRef, useEffect, ComponentType } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw } from 'lucide-react';
+import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -24,7 +24,7 @@ import { ModeloTwitter } from '../editor-de-video/modelos/modelo-twitter';
 import type { EditorState, EstiloTexto } from '../editor-de-video/tipos';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { ensureAppStoragePermission, saveFileToAppFolder } from '@/lib/file-storage';
 
 interface QuoteWithAuthor {
     id: string;
@@ -68,16 +68,26 @@ function generateFilename(quote: QuoteWithAuthor, format: 'png' | 'jpeg'): strin
 }
 
 // Componente para gerar e pré-visualizar o meme
-function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = false }: {
+function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = false, onCopy }: {
   quote: QuoteWithAuthor;
   profile: ReturnType<typeof useProfile>['profile'];
   editorState: EditorState;
   onClose: () => void;
   shareDirectly?: boolean;
+  onCopy: (text: string, author?: string) => Promise<void>;
 }) {
   const memeRef = useRef<HTMLDivElement>(null);
   const [memeUrl, setMemeUrl] = useState<string | null>(null);
+  const [isTextSelected, setIsTextSelected] = useState(false);
   const { toast } = useToast();
+
+  const handleTextBoxResize = (_next: { widthPct: number; heightPx: number }) => {
+    // preview não precisa refletir a mudança ativa de caixa de texto
+  };
+
+  const handleTextChange = (_text: string) => {
+    // preview apenas gera imagem; edição inline não precisa ser persistida aqui
+  };
 
   const baseTextStyle: EstiloTexto = {
       fontFamily: editorState.fontFamily,
@@ -108,22 +118,41 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
             if (Capacitor.isNativePlatform()) {
                 // Lógica para App Nativo
                 const reader = new FileReader();
-                reader.readAsDataURL(blob);
                 reader.onloadend = async () => {
-                    const base64Data = reader.result?.toString().split('base64,')[1];
-                    if (!base64Data) {
-                         throw new Error("Não foi possível extrair os dados da imagem.");
+                    try {
+                        const base64Data = reader.result?.toString().split('base64,')[1];
+                        if (!base64Data) {
+                            throw new Error("Não foi possível extrair os dados da imagem.");
+                        }
+
+                        const permissionGranted = await ensureAppStoragePermission();
+                        if (!permissionGranted) {
+                            throw new Error('Permissão de armazenamento não concedida.');
+                        }
+                        
+                        const { uri } = await saveFileToAppFolder(base64Data, filename);
+                        if (!uri) throw new Error("Não foi possível salvar o arquivo na pasta do app.");
+                        await Share.share({ url: uri });
+                    } catch (error) {
+                        console.error('Erro no compartilhamento nativo:', error);
+                        toast({
+                            variant: 'destructive',
+                            title: 'Erro',
+                            description: 'Não foi possível compartilhar a imagem pelo app.',
+                        });
+                    } finally {
+                        onClose();
                     }
-                    
-                    const { uri } = await Filesystem.writeFile({
-                        path: filename,
-                        data: base64Data,
-                        directory: Directory.Cache,
+                };
+                reader.onerror = () => {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Erro',
+                        description: 'Falha ao preparar a imagem para compartilhamento.',
                     });
-                    if (!uri) throw new Error("Não foi possível salvar o arquivo temporário.");
-                    await Share.share({ url: uri });
                     onClose();
-                }
+                };
+                reader.readAsDataURL(blob);
             } else {
                 // Lógica para Web
                 const memeFile = new File([blob], filename, { type: 'image/png' });
@@ -135,14 +164,12 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         onClose(); // Fecha apenas se o compartilhamento for iniciado
                     } catch(error) {
                         if (error instanceof DOMException && error.name === 'AbortError') {
-                            // User cancelled the share sheet, do nothing. This is not an error.
                             console.log("Compartilhamento cancelado pelo usuário.");
-                            onClose(); // Fecha também se o usuário cancelar
                         } else {
-                             // For other errors, just close, as user may want to try again.
-                             console.error('Web Share API error:', error);
-                             onClose();
+                            console.error('Web Share API error:', error);
                         }
+                        await onCopy(quote.quote, quote.author);
+                        onClose();
                     }
                 } else {
                     toast({
@@ -212,6 +239,10 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         baseTextStyle={baseTextStyle}
                         textEffectsStyle={{}}
                         dropShadowStyle={{}}
+                        isTextSelected={isTextSelected}
+                        setIsTextSelected={setIsTextSelected}
+                        onTextBoxResize={handleTextBoxResize}
+                        onTextChange={handleTextChange}
                     />
                 </div>
             </div>
@@ -249,6 +280,10 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                         baseTextStyle={baseTextStyle}
                         textEffectsStyle={{}}
                         dropShadowStyle={{}}
+                        isTextSelected={isTextSelected}
+                        setIsTextSelected={setIsTextSelected}
+                        onTextBoxResize={handleTextBoxResize}
+                        onTextChange={handleTextChange}
                     />
                 </div>
             </div>
@@ -258,7 +293,7 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
 }
 
 
-const getCategoryIcon = (categoryName: string): ComponentType<{className: string}> => {
+const getCategoryIcon = (categoryName: string): LucideIcon => {
     const lowerCaseName = categoryName.toLowerCase();
 
     if (lowerCaseName.includes('bom dia')) return Sun;
@@ -336,11 +371,15 @@ export function FrasesClientPage({
     let quotes = allQuotes;
 
     if (selectedMainCategory !== 'Todos') {
-      quotes = quotes.filter(q => q.category === selectedMainCategory);
+      quotes = quotes.filter(
+        q => q.sheetName === selectedMainCategory || q.category === selectedMainCategory || q.subCategory === selectedMainCategory
+      );
     }
-    
+
     if (selectedSubCategory !== 'Todos') {
-      quotes = quotes.filter(q => q.subCategory === selectedSubCategory);
+      quotes = quotes.filter(
+        q => q.category === selectedSubCategory || q.subCategory === selectedSubCategory
+      );
     }
 
     if (searchTerm) {
@@ -574,10 +613,17 @@ export function FrasesClientPage({
     );
   };
   
-    const renderSkeletons = () => (
+    const getCardClasses = (index: number) => cn(
+    'group flex flex-col justify-between transition-shadow duration-300 border',
+    index % 2 === 0
+      ? 'bg-[#0072f5]/95 border-[#0072f5]/70'
+      : 'bg-[#020817]/95 border-[#020817]/70'
+  );
+
+  const renderSkeletons = () => (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i}>
+                <Card key={i} className={getCardClasses(i)}>
                     <CardContent className="p-4 pb-0">
                         <Skeleton className="h-16 w-full" />
                     </CardContent>
@@ -592,8 +638,6 @@ export function FrasesClientPage({
     const getMemeEditorState = (quote: QuoteWithAuthor): EditorState => {
         return {
             text: quote.quote,
-            category: quote.category,
-            subCategory: quote.subCategory,
             fontFamily: "Poppins",
             fontSize: profile.memeFontSize,
             fontWeight: "bold",
@@ -659,7 +703,7 @@ export function FrasesClientPage({
         <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start">
           <aside className="hidden md:block pl-4">
             <div className="sticky top-24">
-              <ScrollArea className="h-[calc(100vh-10rem)] -mr-4 pr-4">
+              <ScrollArea className="max-h-[calc(100vh-10rem)] -mr-4 pr-4">
                 {renderFilters()}
               </ScrollArea>
             </div>
@@ -723,10 +767,10 @@ export function FrasesClientPage({
             
             {isLoading ? renderSkeletons() : filteredQuotes.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredQuotes.map((quote) => {
+                {filteredQuotes.map((quote, index) => {
                   const isFavorited = favorites.includes(quote.id);
                   return (
-                    <Card key={quote.id} className="group flex flex-col justify-between hover:shadow-lg transition-shadow duration-300">
+                    <Card key={quote.id} className={getCardClasses(index)}>
                       
                       <CardContent className="p-4 pb-0 flex-1">
                         <p className="text-sm font-body">{quote.quote}</p>
@@ -803,6 +847,7 @@ export function FrasesClientPage({
             editorState={memeEditorState}
             onClose={() => setQuoteForMeme(null)}
             shareDirectly={quoteForMeme.action === 'share'}
+            onCopy={handleCopy}
           />
         )}
       </ClientOnly>

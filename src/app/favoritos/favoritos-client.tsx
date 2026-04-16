@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import * as htmlToImage from 'html-to-image';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { ensureAppStoragePermission, saveFileToAppFolder } from '@/lib/file-storage';
 import { ClientOnly } from '@/components/client-only';
 import { useProfile } from '@/hooks/use-profile';
 import { ModeloTwitter } from '@/app/editor-de-video/modelos/modelo-twitter';
@@ -107,13 +107,14 @@ function MemeGenerator({ quote, profile, editorState, onClose, shareDirectly = f
                     if (!base64Data) {
                          throw new Error("Não foi possível extrair os dados da imagem.");
                     }
+
+                    const permissionGranted = await ensureAppStoragePermission();
+                    if (!permissionGranted) {
+                        throw new Error('Permissão de armazenamento não concedida.');
+                    }
                     
-                    const { uri } = await Filesystem.writeFile({
-                        path: filename,
-                        data: base64Data,
-                        directory: Directory.Cache,
-                    });
-                    if (!uri) throw new Error("Não foi possível salvar o arquivo temporário.");
+                    const { uri } = await saveFileToAppFolder(base64Data, filename);
+                    if (!uri) throw new Error("Não foi possível salvar o arquivo na pasta do app.");
                     await Share.share({ url: uri });
                     onClose();
                 }

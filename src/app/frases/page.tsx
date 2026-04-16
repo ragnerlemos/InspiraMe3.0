@@ -45,6 +45,13 @@ export default async function FrasesPage() {
   const categories: { [mainCategory: string]: string[] } = {};
 
   for (const sheetName in sheetData) {
+      if (!mainCategories.includes(sheetName)) {
+          mainCategories.push(sheetName);
+      }
+      if (!categories[sheetName]) {
+          categories[sheetName] = [];
+      }
+
       for (const mainCat in sheetData[sheetName]) {
           if (!mainCategories.includes(mainCat)) {
               mainCategories.push(mainCat);
@@ -53,6 +60,10 @@ export default async function FrasesPage() {
               categories[mainCat] = [];
           }
           categories[mainCat] = [...new Set([...categories[mainCat], ...sheetData[sheetName][mainCat]])];
+
+          if (!categories[sheetName].includes(mainCat)) {
+              categories[sheetName].push(mainCat);
+          }
       }
   }
 

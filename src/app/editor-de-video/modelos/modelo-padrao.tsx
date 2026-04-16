@@ -3,6 +3,7 @@ import type { EditorState, EstiloTexto } from '../tipos';
 import { AssinaturaPerfil } from './assinatura-perfil';
 import { EMOJI_REGEX } from '../utils/text-style-utils';
 import type { ProfileData } from '@/hooks/use-profile';
+import { ResizableTextBox } from '../components/resizable-text-box';
 
 interface ModeloPadraoProps {
     editorState: EditorState;
@@ -10,6 +11,10 @@ interface ModeloPadraoProps {
     textEffectsStyle: EstiloTexto;
     dropShadowStyle: EstiloTexto;
     profile: ProfileData;
+    isTextSelected: boolean;
+    setIsTextSelected: (value: boolean) => void;
+    onTextBoxResize: (next: { widthPct: number; heightPx: number }) => void;
+    onTextChange: (text: string) => void;
 }
 
 export function ModeloPadrao({
@@ -17,7 +22,11 @@ export function ModeloPadrao({
     baseTextStyle,
     textEffectsStyle,
     dropShadowStyle,
-    profile
+    profile,
+    isTextSelected,
+    setIsTextSelected,
+    onTextBoxResize,
+    onTextChange,
 }: ModeloPadraoProps) {
     const {
         text,
@@ -39,6 +48,8 @@ export function ModeloPadrao({
         logoPositionY,
         logoScale,
         logoOpacity,
+        textBoxWidth,
+        textBoxHeight,
     } = editorState;
 
     const renderTextWithEmojis = () => {
@@ -61,6 +72,8 @@ export function ModeloPadrao({
     const combinedTextStyle: EstiloTexto = {
       ...baseTextStyle,
       ...textEffectsStyle,
+      textAlign: editorState.textAlign,
+      fontSize: `${editorState.fontSize}rem`,
     };
     
     return (
@@ -75,12 +88,23 @@ export function ModeloPadrao({
                     ...dropShadowStyle,
                 }}
             >
-                <div
-                    style={combinedTextStyle}
-                    className="break-words relative"
+                <ResizableTextBox
+                    widthPct={textBoxWidth ?? 80}
+                    heightPx={textBoxHeight ?? 0}
+                    isSelected={isTextSelected}
+                    editable
+                    text={text}
+                    onTextChange={onTextChange}
+                    onSelect={() => setIsTextSelected(true)}
+                    onResize={onTextBoxResize}
                 >
-                    {renderTextWithEmojis()}
-                </div>
+                    <div
+                        style={combinedTextStyle}
+                        className="break-words relative"
+                    >
+                        {renderTextWithEmojis()}
+                    </div>
+                </ResizableTextBox>
             </div>
 
             {showLogo && profile.logo && (

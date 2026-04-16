@@ -18,9 +18,9 @@ export interface QuoteWithAuthor {
     id: string;
     quote: string;
     author?: string;
-    category: string;
+    category?: string;
     subCategory?: string;
-    sheetName: string; 
+    sheetName: string;
 }
 
 interface CategoriesHierarchy {
@@ -45,12 +45,16 @@ const mapRowToQuote = (row: any[], index: number, sheetName: string): QuoteWithA
     if (!quoteText) {
         return null;
     }
+
+    const category = typeof row[3] === 'string' ? row[3].trim() : row[3];
+    const subCategory = typeof row[2] === 'string' ? row[2].trim() : row[2];
+
     return {
         id: `${sheetName}-${index}`,
         quote: quoteText,
         author: row[9] || undefined,
-        category: row[3] || 'Geral',
-        subCategory: row[2] || undefined,
+        category: category || undefined,
+        subCategory: subCategory || undefined,
         sheetName: sheetName,
     };
 };
@@ -175,6 +179,10 @@ export async function getSheetData(forceRefresh = false): Promise<SheetHierarchy
             }
             if (quote.subCategory && !sheetCategories[quote.category].includes(quote.subCategory) && quote.subCategory !== 'Todos') {
                 sheetCategories[quote.category].push(quote.subCategory);
+            }
+        } else if (quote.subCategory && quote.subCategory !== 'Todos') {
+            if (!sheetCategories[quote.subCategory]) {
+                sheetCategories[quote.subCategory] = [];
             }
         }
     });

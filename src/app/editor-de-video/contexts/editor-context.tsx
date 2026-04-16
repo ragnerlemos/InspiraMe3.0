@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useCallback, ReactNode, use
 import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState, EstiloTexto } from '../tipos';
-import { captureAndDownload, captureThumbnail } from '../exportar';
+import { captureAndDownload, captureThumbnail, generateVideoBlob } from '../exportar';
 import { useProfile } from '@/hooks/use-profile';
 import { useWindowSize } from 'react-use';
 import { createStrokeStyle, createDropShadowStyle } from '../utils/text-style-utils';
@@ -24,7 +24,7 @@ export interface EditorContextType {
   onSaveAsTemplate: () => Promise<void>;
   onExportJPG: () => void;
   onExportPNG: () => void;
-  onExportMP4: () => void;
+  onExportMP4: () => Promise<Blob | null>;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -114,9 +114,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       captureAndDownload('png', toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
   }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
-  const onExportMP4 = useCallback(() => {
-    toast({ title: 'Em breve!', description: 'A exportação de vídeo MP4 estará disponível em futuras atualizações.' });
-  }, [toast]);
+  const onExportMP4 = useCallback(async (): Promise<Blob | null> => {
+    if (!currentState || !profile) return null;
+    return await generateVideoBlob(toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle, 3, 15);
+  }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
   const value = useMemo(() => ({
     isReady,
