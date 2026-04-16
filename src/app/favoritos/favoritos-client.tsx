@@ -32,8 +32,9 @@ interface QuoteWithAuthor {
     id: string;
     quote: string;
     author?: string;
-    category: string;
+    category?: string;
     subCategory?: string;
+    sheetName: string;
 }
 
 interface FavoritesClientPageProps {

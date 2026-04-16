@@ -40,21 +40,35 @@ let cachedSheetNames: string[] | null = null;
 let lastSheetNamesFetchTime: number = 0;
 
 
+const normalizeCellValue = (value: any): string | undefined => {
+    if (typeof value !== 'string') return undefined;
+
+    const normalized = value.trim();
+    if (!normalized) return undefined;
+
+    const lowerValue = normalized.toLowerCase();
+    if (lowerValue === 'undefined' || normalized === '$undefined' || lowerValue === 'todos') {
+        return undefined;
+    }
+
+    return normalized;
+};
+
 const mapRowToQuote = (row: any[], index: number, sheetName: string): QuoteWithAuthor | null => {
     const quoteText = row[5];
     if (!quoteText) {
         return null;
     }
 
-    const category = typeof row[3] === 'string' ? row[3].trim() : row[3];
-    const subCategory = typeof row[2] === 'string' ? row[2].trim() : row[2];
+    const category = normalizeCellValue(row[3]);
+    const subCategory = normalizeCellValue(row[2]);
 
     return {
         id: `${sheetName}-${index}`,
         quote: quoteText,
         author: row[9] || undefined,
-        category: category || undefined,
-        subCategory: subCategory || undefined,
+        category,
+        subCategory,
         sheetName: sheetName,
     };
 };
