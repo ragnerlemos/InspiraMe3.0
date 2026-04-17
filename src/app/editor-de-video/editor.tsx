@@ -23,7 +23,7 @@ const getInitialState = (): Omit<EditorState, 'text'> => ({
     fontStyle: "normal",
     textColor: "#000000",
     textAlign: "left",
-    textBoxWidth: 80,
+    textBoxWidth: 100,
     textBoxHeight: 0,
     textShadowBlur: 1,
     textShadowOpacity: 75,

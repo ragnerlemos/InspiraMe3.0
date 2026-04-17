@@ -82,7 +82,7 @@ export function ModeloPadrao({
                 className="absolute w-full px-8"
                 style={{
                     top: `${textVerticalPosition}%`,
-                    left: '8%',
+                    left: '0%',
                     transform: 'translate(0, -50%)',
                     zIndex: 1,
                     ...dropShadowStyle,
