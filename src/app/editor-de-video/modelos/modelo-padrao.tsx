@@ -72,7 +72,7 @@ export function ModeloPadrao({
     const combinedTextStyle: EstiloTexto = {
       ...baseTextStyle,
       ...textEffectsStyle,
-      textAlign: editorState.textAlign,
+      textAlign: 'left',
       fontSize: `${editorState.fontSize}rem`,
     };
     

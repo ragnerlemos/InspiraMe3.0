@@ -45,7 +45,7 @@ export function ModeloTwitter({
       ...baseTextStyle,
       ...textEffectsStyle,
       color: textColor || '#FFFFFF', // Garante que a cor seja aplicada
-      textAlign: editorState.textAlign,
+      textAlign: 'left',
       lineHeight: 1.4,
       fontSize: `${editorState.fontSize}rem`
     };

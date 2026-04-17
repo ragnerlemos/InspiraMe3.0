@@ -139,16 +139,28 @@ export function ResizableTextBox({ widthPct, heightPx, isSelected, editable = fa
         <>
           <div className="absolute inset-0 rounded-lg border-2 border-primary pointer-events-none" />
           <div
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-3 w-3 -mr-1 rounded-sm bg-primary shadow-lg cursor-ew-resize"
+            className="absolute left-0 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-lg cursor-nwse-resize"
+            onPointerDown={startResize('both')}
+          />
+          <div
+            className="absolute right-0 top-0 h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-lg cursor-nwse-resize"
+            onPointerDown={startResize('both')}
+          />
+          <div
+            className="absolute left-0 bottom-0 h-4 w-4 -translate-x-1/2 translate-y-1/2 rounded-full bg-primary shadow-lg cursor-nwse-resize"
+            onPointerDown={startResize('both')}
+          />
+          <div
+            className="absolute right-0 bottom-0 h-4 w-4 translate-x-1/2 translate-y-1/2 rounded-full bg-primary shadow-lg cursor-nwse-resize"
+            onPointerDown={startResize('both')}
+          />
+          <div
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-primary shadow-lg cursor-ew-resize"
             onPointerDown={startResize('width')}
           />
           <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-3 w-3 -mb-1 rounded-sm bg-primary shadow-lg cursor-ns-resize"
-            onPointerDown={startResize('height')}
-          />
-          <div
-            className="absolute right-0 bottom-0 h-3 w-3 -mr-1 -mb-1 rounded-sm bg-primary shadow-lg cursor-nwse-resize"
-            onPointerDown={startResize('both')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-4 translate-x-1/2 rounded-full bg-primary shadow-lg cursor-ew-resize"
+            onPointerDown={startResize('width')}
           />
         </>
       )}
