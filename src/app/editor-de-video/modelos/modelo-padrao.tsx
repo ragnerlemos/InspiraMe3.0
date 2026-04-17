@@ -72,7 +72,7 @@ export function ModeloPadrao({
     const combinedTextStyle: EstiloTexto = {
       ...baseTextStyle,
       ...textEffectsStyle,
-      textAlign: 'left',
+      textAlign: editorState.textAlign,
       fontSize: `${editorState.fontSize}rem`,
     };
     
@@ -82,8 +82,8 @@ export function ModeloPadrao({
                 className="absolute w-full px-8"
                 style={{
                     top: `${textVerticalPosition}%`,
-                    left: '0%',
-                    transform: 'translate(0, -50%)',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                     zIndex: 1,
                     ...dropShadowStyle,
                 }}

@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // O componente de esqueleto para ser usado como fallback do Suspense.
 function FrasesLoadingSkeleton() {
   return (
-    <div className="grid md:grid-cols-[320px_1fr] gap-8 md:items-start px-4">
+    <div className="grid md:grid-cols-[280px_1fr] gap-8 md:items-start px-4">
       <aside className="hidden md:block">
         <div className="sticky top-24 space-y-4">
           <Skeleton className="h-10 w-full" />
@@ -40,26 +40,30 @@ export default async function FrasesPage() {
   // Usa getSheetData para obter a hierarquia completa
   const sheetData = await getSheetData(true);
 
-  // Extrai somente as categorias internas para o menu,
-  // removendo os nomes das abas como entradas principais.
+  // Extrai as categorias principais e a hierarquia
   const mainCategories = ['Todos'];
   const categories: { [mainCategory: string]: string[] } = {};
 
   for (const sheetName in sheetData) {
+      if (!mainCategories.includes(sheetName)) {
+          mainCategories.push(sheetName);
+      }
+      if (!categories[sheetName]) {
+          categories[sheetName] = [];
+      }
+
       for (const mainCat in sheetData[sheetName]) {
-          const normalizedMainCat = mainCat.trim();
-          if (!mainCategories.includes(normalizedMainCat)) {
-              mainCategories.push(normalizedMainCat);
+          if (!mainCategories.includes(mainCat)) {
+              mainCategories.push(mainCat);
           }
-          if (!categories[normalizedMainCat]) {
-              categories[normalizedMainCat] = [];
+          if (!categories[mainCat]) {
+              categories[mainCat] = [];
           }
+          categories[mainCat] = [...new Set([...categories[mainCat], ...sheetData[sheetName][mainCat]])];
 
-          const normalizedSubCategories = sheetData[sheetName][mainCat]
-              .map((subCat) => (typeof subCat === 'string' ? subCat.trim() : subCat))
-              .filter((subCat) => typeof subCat === 'string' && subCat.length > 0 && subCat !== 'Todos');
-
-          categories[normalizedMainCat] = [...new Set([...categories[normalizedMainCat], ...normalizedSubCategories])];
+          if (!categories[sheetName].includes(mainCat)) {
+              categories[sheetName].push(mainCat);
+          }
       }
   }
 
