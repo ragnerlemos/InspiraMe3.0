@@ -83,8 +83,17 @@ export function PreviewCanva(props: PreviewCanvaProps) {
     return <div className="absolute inset-0 bg-black" />;
   };
 
-  const handleTextBoxResize = (next: { widthPct: number; heightPx: number }) => {
-    updateState({ textBoxWidth: next.widthPct, textBoxHeight: next.heightPx });
+  const handleTextBoxResize = (next: { widthPct: number; heightPx: number; fontSize?: number }) => {
+    const update: Partial<EditorState> = {
+      textBoxWidth: next.widthPct,
+      textBoxHeight: next.heightPx,
+    };
+
+    if (next.fontSize !== undefined) {
+      update.fontSize = next.fontSize;
+    }
+
+    updateState(update);
   };
 
   const renderContent = () => {

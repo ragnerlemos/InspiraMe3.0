@@ -13,7 +13,7 @@ interface ModeloPadraoProps {
     profile: ProfileData;
     isTextSelected: boolean;
     setIsTextSelected: (value: boolean) => void;
-    onTextBoxResize: (next: { widthPct: number; heightPx: number }) => void;
+    onTextBoxResize: (next: { widthPct: number; heightPx: number; fontSize?: number }) => void;
     onTextChange: (text: string) => void;
 }
 
@@ -91,6 +91,7 @@ export function ModeloPadrao({
                 <ResizableTextBox
                     widthPct={textBoxWidth ?? 80}
                     heightPx={textBoxHeight ?? 0}
+                    fontSize={editorState.fontSize}
                     isSelected={isTextSelected}
                     editable
                     text={text}
