@@ -24,7 +24,9 @@ const MIN_HEIGHT = 60;
 const MAX_HEIGHT = 700;
 const MIN_FONT_SIZE = 0.5;
 const MAX_FONT_SIZE = 20;
-const FONT_SCALE_SENSITIVITY = 1;
+const FONT_SCALE_SENSITIVITY = 0.002;
+const MIN_RESIZE_DELTA = 2;
+const FONT_LERP_FACTOR = 0.18;
 
 const isLeftDirection = (direction: ResizeDirection | undefined) => direction === 'nw' || direction === 'sw' || direction === 'w';
 const isTopDirection = (direction: ResizeDirection | undefined) => direction === 'nw' || direction === 'ne';
@@ -32,6 +34,8 @@ const isTopDirection = (direction: ResizeDirection | undefined) => direction ===
 export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, editable = false, text, onTextChange, onSelect, onResize, children }: ResizableTextBoxProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editableRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const pendingPointer = useRef<{ x: number; y: number } | null>(null);
   const resizeState = useRef<{
     type: ResizeType;
     direction?: ResizeDirection;
@@ -40,6 +44,7 @@ export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, edi
     startWidth: number;
     startHeight: number;
     startFontSize: number;
+    currentFontSize: number;
     parentWidth: number;
   }>(
     {
@@ -49,6 +54,7 @@ export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, edi
       startWidth: widthPct,
       startHeight: heightPx || MIN_HEIGHT,
       startFontSize: fontSize,
+      currentFontSize: fontSize,
       parentWidth: 0,
     }
   );
@@ -58,6 +64,7 @@ export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, edi
     resizeState.current.startWidth = widthPct;
     resizeState.current.startHeight = heightPx || MIN_HEIGHT;
     resizeState.current.startFontSize = fontSize;
+    resizeState.current.currentFontSize = fontSize;
   }, [widthPct, heightPx, fontSize]);
 
   useEffect(() => {
@@ -71,45 +78,97 @@ export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, edi
   const clampHeight = useCallback((value: number) => Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, value)), []);
   const clampFontSize = useCallback((value: number) => Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, value)), []);
 
-  const handlePointerMove = useCallback((event: PointerEvent) => {
-    if (!wrapperRef.current) return;
+  const getDirectionVector = useCallback((direction: ResizeDirection | undefined) => {
+    switch (direction) {
+      case 'nw': return { x: -1, y: -1 };
+      case 'ne': return { x: 1, y: -1 };
+      case 'sw': return { x: -1, y: 1 };
+      case 'se': return { x: 1, y: 1 };
+      case 'w': return { x: -1, y: 0 };
+      case 'e': return { x: 1, y: 0 };
+      default: return { x: 1, y: 1 };
+    }
+  }, []);
+
+  const lerp = useCallback((start: number, end: number, t: number) => start + (end - start) * t, []);
+
+  const performResize = useCallback(() => {
+    animationFrameRef.current = null;
+    const pointer = pendingPointer.current;
+    if (!pointer || !wrapperRef.current) return;
+
     const { type, direction, startX, startY, startWidth, startHeight, startFontSize, parentWidth } = resizeState.current;
     if (!type) return;
 
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
+    const deltaX = pointer.x - startX;
+    const deltaY = pointer.y - startY;
+    if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < MIN_RESIZE_DELTA) return;
+
     let nextWidth = startWidth;
     let nextHeight = startHeight;
     let nextFontSize: number | undefined;
 
     if (type === 'width' || type === 'both') {
       const startWidthPx = (startWidth / 100) * parentWidth;
-      const rawWidthPx = isLeftDirection(direction) ? startWidthPx - deltaX : startWidthPx + deltaX;
-      const clampedWidthPx = Math.max(1, rawWidthPx);
-      nextWidth = clampWidth((clampedWidthPx / parentWidth) * 100);
+      const signedDistance = isLeftDirection(direction) ? -deltaX : deltaX;
+      const nextWidthPx = Math.max(1, startWidthPx + signedDistance);
+      nextWidth = clampWidth((nextWidthPx / parentWidth) * 100);
     }
 
     if (type === 'height' || type === 'both') {
-      const rawHeight = isTopDirection(direction) ? startHeight - deltaY : startHeight + deltaY;
-      nextHeight = clampHeight(rawHeight);
+      const signedDistance = isTopDirection(direction) ? -deltaY : deltaY;
+      nextHeight = clampHeight(startHeight + signedDistance);
     }
 
     if (type === 'both') {
-      const startWidthPx = (startWidth / 100) * parentWidth;
-      const nextWidthPx = Math.max(1, (nextWidth / 100) * parentWidth);
-      const widthRatio = nextWidthPx / Math.max(startWidthPx, 1);
-      const heightRatio = nextHeight / Math.max(startHeight, 1);
-      const scaleRatio = Math.sqrt(widthRatio * heightRatio);
-      const adjustedScale = 1 + (scaleRatio - 1) * FONT_SCALE_SENSITIVITY;
-      nextFontSize = clampFontSize(startFontSize * adjustedScale);
+      const directionVector = getDirectionVector(direction);
+      const signedDistance = deltaX * directionVector.x + deltaY * directionVector.y;
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      if (Math.abs(signedDistance) < MIN_RESIZE_DELTA || distance < MIN_RESIZE_DELTA) return;
+
+      const scale = Math.max(0.1, 1 + signedDistance * FONT_SCALE_SENSITIVITY);
+      const targetWidth = clampWidth(startWidth * scale);
+      const targetHeight = clampHeight(startHeight * scale);
+      nextWidth = targetWidth;
+      nextHeight = targetHeight;
+
+      const targetFontSize = clampFontSize(startFontSize * scale);
+      const currentFontSize = resizeState.current.currentFontSize || startFontSize;
+      nextFontSize = clampFontSize(lerp(currentFontSize, targetFontSize, FONT_LERP_FACTOR));
+      resizeState.current.currentFontSize = nextFontSize;
+    } else if (type === 'width') {
+      const signedDistance = isLeftDirection(direction) ? -deltaX : deltaX;
+      if (Math.abs(signedDistance) < MIN_RESIZE_DELTA) return;
+      const widthScale = Math.max(0.1, 1 + signedDistance * FONT_SCALE_SENSITIVITY);
+      nextWidth = clampWidth(startWidth * widthScale);
+      nextFontSize = clampFontSize(startFontSize * widthScale);
+    } else if (type === 'height') {
+      const signedDistance = isTopDirection(direction) ? -deltaY : deltaY;
+      if (Math.abs(signedDistance) < MIN_RESIZE_DELTA) return;
+      const heightScale = Math.max(0.1, 1 + signedDistance * FONT_SCALE_SENSITIVITY);
+      nextHeight = clampHeight(startHeight * heightScale);
+      nextFontSize = clampFontSize(startFontSize * heightScale);
     }
 
     onResize({ widthPct: nextWidth, heightPx: nextHeight, fontSize: nextFontSize });
-  }, [clampHeight, clampWidth, clampFontSize, onResize]);
+  }, [clampHeight, clampWidth, clampFontSize, getDirectionVector, isLeftDirection, isTopDirection, lerp, onResize]);
+
+  const handlePointerMove = useCallback((event: PointerEvent) => {
+    pendingPointer.current = { x: event.clientX, y: event.clientY };
+    if (animationFrameRef.current !== null) return;
+    animationFrameRef.current = window.requestAnimationFrame(() => {
+      performResize();
+    });
+  }, [performResize]);
 
   const handlePointerUp = useCallback(() => {
     setIsResizing(false);
     resizeState.current.type = null;
+    pendingPointer.current = null;
+    if (animationFrameRef.current !== null) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
     window.removeEventListener('pointermove', handlePointerMove);
     window.removeEventListener('pointerup', handlePointerUp);
   }, [handlePointerMove]);
@@ -129,6 +188,7 @@ export function ResizableTextBox({ widthPct, heightPx, fontSize, isSelected, edi
       startWidth: widthPct,
       startHeight: heightPx || wrapperRef.current.getBoundingClientRect().height,
       startFontSize: fontSize,
+      currentFontSize: fontSize,
       parentWidth,
     };
 
