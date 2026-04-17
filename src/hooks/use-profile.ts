@@ -27,8 +27,8 @@ export const useProfile = () => {
     social: "@seuusario",
     photo: null,
     iconUrl: '',
-    showIcon: true,
-    showDate: true,
+    showIcon: false,
+    showDate: false,
     logo: null,
     logo2: null, // Valor inicial para a segunda logo
     memeFontSize: 1.3,
@@ -49,8 +49,8 @@ export const useProfile = () => {
             social: "@seuusario",
             photo: null,
             iconUrl: '',
-            showIcon: true,
-            showDate: true,
+            showIcon: false,
+            showDate: false,
             logo: null,
             logo2: null, // Garante valor padrão
             memeFontSize: 1.3,
