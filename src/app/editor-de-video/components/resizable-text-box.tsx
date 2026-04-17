@@ -109,8 +109,8 @@ export function ResizableTextBox({ widthPct, heightPx, isSelected, editable = fa
         event.stopPropagation();
         onSelect();
       }}
-      className="relative mx-auto"
-      style={wrapperStyle}
+      className="relative"
+      style={{ ...wrapperStyle, marginLeft: 0 }}
     >
       <div className="relative">
         {editable ? (
