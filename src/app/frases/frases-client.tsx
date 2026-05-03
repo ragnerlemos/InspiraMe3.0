@@ -4,6 +4,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Heart, Search, Copy, Film, Share2, LayoutGrid, Download, MoreVertical, Sun, Calendar, Moon, MessageSquare, Quote, CircleDollarSign, PartyPopper, Gift, Egg, HeartHandshake, TestTube, ImageUp, Edit, ZoomIn, BookOpen, Loader2, ChevronRight, RefreshCw, type LucideIcon } from 'lucide-react';
+import { useWindowSize } from 'react-use';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -332,6 +333,9 @@ export function FrasesClientPage({
   const { toast } = useToast();
   const router = useRouter();
   const { profile } = useProfile();
+  const { width } = useWindowSize();
+  
+  const cols = width >= 1024 ? 3 : 2;
 
   const handleRefreshQuotes = async () => {
     setIsRefreshing(true);
@@ -613,12 +617,18 @@ export function FrasesClientPage({
     );
   };
   
-    const getCardClasses = (index: number) => cn(
-    'group flex flex-col justify-between transition-shadow duration-300 border',
-    index % 2 === 0
-      ? 'bg-[#0a1530]/95 border-[#0a1530]/70'
-      : 'bg-[#020817]/95 border-[#020817]/70'
-  );
+    const getCardClasses = (index: number) => {
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const isColored = (row + col) % 2 === 0;
+
+        return cn(
+            'group flex flex-col justify-between transition-shadow duration-300 border',
+            isColored
+                ? 'bg-[#0a1530]/95 border-[#0a1530]/70'
+                : 'bg-[#020817]/95 border-[#020817]/70'
+        );
+    };
 
   const renderSkeletons = () => (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">

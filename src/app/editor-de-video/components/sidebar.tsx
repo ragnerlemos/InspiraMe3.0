@@ -762,6 +762,7 @@ export function Sidebar({
     
     const handleInvertColors = () => {
         if (backgroundStyle.type === 'solid') {
+            // Fundo sólido: troca cor do fundo com cor do texto
             const newBgColor = fgColor;
             const newFgColor = backgroundStyle.value;
             
@@ -770,11 +771,18 @@ export function Sidebar({
                 textColor: newFgColor,
             });
         } else {
-            toast({
-                variant: 'default',
-                title: 'Ação não suportada',
-                description: 'A inversão de cores só funciona com um fundo de cor sólida.'
-            })
+            // Fundo com mídia ou gradiente: inverte a cor do texto (claro↔escuro)
+            const hex = fgColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            const invertedR = (255 - r).toString(16).padStart(2, '0');
+            const invertedG = (255 - g).toString(16).padStart(2, '0');
+            const invertedB = (255 - b).toString(16).padStart(2, '0');
+            const invertedColor = `#${invertedR}${invertedG}${invertedB}`;
+            
+            updateState({ textColor: invertedColor });
+            toast({ title: 'Cor do texto invertida!' });
         }
     };
     
@@ -827,6 +835,13 @@ export function Sidebar({
                                 <span className="text-sm font-mono">{Math.round(scale * 100)}%</span>
                             </div>
                             <Slider value={[scale]} onValueChange={(v) => setScale(v[0])} min={0.5} max={2} step={0.01} />
+                            <div className="flex justify-between gap-1">
+                                {[80, 85, 90, 95, 100].map((val) => (
+                                    <Button key={val} variant="outline" size="sm" className="h-7 flex-1 text-xs px-0" onClick={() => setScale(val / 100)}>
+                                        {val}%
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 );
@@ -887,7 +902,7 @@ export function Sidebar({
                             </div>
                             <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
                             <div className="flex justify-between gap-1">
-                                {[0, 20, 40, 60, 80].map((val) => (
+                                {[0, 20, 40, 50, 60, 75, 80, 85, 90].map((val) => (
                                     <Button key={val} variant="outline" size="sm" className="h-7 flex-1 text-xs px-0" onClick={() => setFilmOpacity(val)}>
                                         {val}%
                                     </Button>
