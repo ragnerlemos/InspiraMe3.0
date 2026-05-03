@@ -35,6 +35,8 @@ export interface EditorState {
     backgroundStyle: EstiloFundo;
     filmColor: string;
     filmOpacity: number;
+    videoMuted: boolean;
+    videoVolume: number;
     aspectRatio: ProporcaoTela;
     activeTemplateId: string | null;
     showProfileSignature: boolean;

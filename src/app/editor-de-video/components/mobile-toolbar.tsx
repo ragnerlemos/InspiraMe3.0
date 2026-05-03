@@ -72,8 +72,9 @@ const aspectRatios = [
   { label: "Vídeo", value: "16 / 9", icon: RectangleHorizontal },
 ];
 
-type ActivePanel = "texto" | "canvas" | "cores" | "filtro" | "fundo" | "assinatura" | "logo" | "estilo" | null;
+type ActivePanel = "texto" | "canvas" | "cores" | "filtro" | "fundo" | "assinatura" | "logo" | "estilo" | "modelos" | null;
 type TipoFundoAtivo = 'media' | 'solid' | 'gradient';
+import { ControleModelos } from "./sidebar";
 
 
 function ControleTipoFundo({ backgroundStyle, setBackgroundStyle }: { backgroundStyle: EstiloFundo, setBackgroundStyle: (style: EstiloFundo) => void }) {
@@ -843,12 +844,19 @@ export function MobileToolbar({
                      <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                 </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <Label htmlFor="film-opacity-mobile" className="text-xs text-muted-foreground">Opacidade</Label>
                     <span className="text-xs text-muted-foreground">{filmOpacity}%</span>
                 </div>
                 <Slider id="film-opacity-mobile" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
+                <div className="flex justify-between gap-1">
+                    {[0, 20, 40, 60, 80].map((val) => (
+                        <Button key={val} variant="outline" size="sm" className="h-7 flex-1 text-xs px-0" onClick={() => setFilmOpacity(val)}>
+                            {val}%
+                        </Button>
+                    ))}
+                </div>
             </div>
         </div>
       ),
@@ -873,6 +881,7 @@ export function MobileToolbar({
             </ScrollArea>
        </div>
       ),
+      modelos: <div className="p-4"><ControleModelos /></div>,
       fundo: <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} /></div>,
       assinatura: <div className="p-4"><ControleAssinatura {...props} /></div>,
       logo: <div className="p-4"><ControleLogo {...props} /></div>,
@@ -888,6 +897,7 @@ export function MobileToolbar({
       cores: "Editar Cores",
       filtro: "Editar Película",
       estilo: "Editar Estilo",
+      modelos: "Modelos",
       fundo: "Editar Fundo",
       assinatura: "Editar Assinatura",
       logo: "Editar Logo",
@@ -901,10 +911,10 @@ export function MobileToolbar({
             <BotaoRecurso icon={Type} label="Texto" onClick={() => handlePanelChange("texto")} isActive={activePanel === "texto"} />
             <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handlePanelChange("canvas")} isActive={activePanel === "canvas"} />
             <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handlePanelChange("cores")} isActive={activePanel === "cores"} />
-            <BotaoRecurso icon={Film} label="Película" onClick={() => handlePanelChange("filtro")} isActive={activePanel === "filtro"} />
             <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handlePanelChange("estilo")} isActive={activePanel === "estilo"} />
-            <BotaoRecurso icon={LayoutTemplate} label="Modelos" onClick={() => router.push(`/modelos?quote=${encodeURIComponent(text)}`)} />
             <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handlePanelChange("fundo")} isActive={activePanel === "fundo"} />
+            <BotaoRecurso icon={Film} label="Película" onClick={() => handlePanelChange("filtro")} isActive={activePanel === "filtro"} />
+            <BotaoRecurso icon={LayoutTemplate} label="Modelos" onClick={() => handlePanelChange("modelos")} isActive={activePanel === "modelos"} />
             <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handlePanelChange("assinatura")} isActive={activePanel === "assinatura"} />
             <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handlePanelChange("logo")} isActive={activePanel === "logo"} />
         </div>

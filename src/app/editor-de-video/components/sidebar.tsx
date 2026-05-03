@@ -20,6 +20,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { EditorState, EstiloFundo } from "../tipos";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import { useTemplates } from "@/hooks/use-templates";
+import { IconeTwitter } from '@/app/modelos/icone-twitter';
+import { IconeModeloPadrao } from '@/app/modelos/icone-modelo-padrao';
+import { Card, CardContent } from "@/components/ui/card";
+import { useEditor } from "../contexts/editor-context";
 
 
 const aspectRatios = [
@@ -631,9 +637,76 @@ function LinkConfigurarPerfil() {
         </Button>
       </Link>
     );
-  }
-  
-  
+}
+
+export function ControleModelos() {
+    const { templates, isLoaded } = useTemplates();
+    const { applyTemplate } = useEditor();
+
+    if (!isLoaded) {
+        return <div className="p-4 text-center text-muted-foreground text-sm">Carregando modelos...</div>;
+    }
+
+    const defaultTemplates = templates.filter(t => !t.isCustom);
+    const customTemplates = templates.filter(t => t.isCustom);
+
+    return (
+        <div className="space-y-6">
+            <div>
+                <Label className="text-sm font-semibold mb-2 block">Padrões</Label>
+                <div className="grid grid-cols-3 gap-2">
+                    {defaultTemplates.map((template) => (
+                        <div key={template.id} onClick={() => applyTemplate(template.editorState, 'merge')} className="cursor-pointer group">
+                             <Card className="overflow-hidden flex flex-col h-full bg-transparent border shadow-sm hover:border-primary transition-colors">
+                                <div className="relative w-full aspect-square flex items-center justify-center bg-muted/30">
+                                    {template.thumbnail ? (
+                                        <Image
+                                            src={template.thumbnail}
+                                            alt={template.name}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full p-2">
+                                            {template.id === 'template-default' && <IconeModeloPadrao className="h-8 w-8 text-muted-foreground/50" />}
+                                            {template.id === 'template-twitter' && <IconeTwitter className="h-8 w-8 text-muted-foreground/50" />}
+                                        </div>
+                                    )}
+                                </div>
+                             </Card>
+                             <p className="text-[10px] text-center mt-1 truncate text-muted-foreground group-hover:text-foreground">{template.name}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {customTemplates.length > 0 && (
+                <div>
+                    <Label className="text-sm font-semibold mb-2 block">Meus Modelos</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                        {customTemplates.map((template) => (
+                            <div key={template.id} onClick={() => applyTemplate(template.editorState, 'merge')} className="cursor-pointer group">
+                                <Card className="overflow-hidden flex flex-col h-full border shadow-sm hover:border-primary transition-colors">
+                                    <div className="relative w-full aspect-square">
+                                        {template.thumbnail && (
+                                            <Image
+                                                src={template.thumbnail}
+                                                alt={template.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        )}
+                                    </div>
+                                </Card>
+                                <p className="text-[10px] text-center mt-1 truncate text-muted-foreground group-hover:text-foreground">{template.name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
 
 interface SidebarProps extends ControleAssinaturaProps, ControleLogoProps, CommonStyleProps {
     aspectRatio: string;
@@ -807,12 +880,19 @@ export function Sidebar({
                                 <div className="w-full h-full" style={{ backgroundColor: filmColor }} />
                             </div>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <div className="flex justify-between items-center">
                                 <Label htmlFor="film-opacity" className="text-xs text-muted-foreground">Opacidade</Label>
                                 <span className="text-xs text-muted-foreground">{filmOpacity}%</span>
                             </div>
                             <Slider id="film-opacity" min={0} max={100} step={1} value={[filmOpacity]} onValueChange={(v) => setFilmOpacity(v[0])} />
+                            <div className="flex justify-between gap-1">
+                                {[0, 20, 40, 60, 80].map((val) => (
+                                    <Button key={val} variant="outline" size="sm" className="h-7 flex-1 text-xs px-0" onClick={() => setFilmOpacity(val)}>
+                                        {val}%
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 );
@@ -840,6 +920,8 @@ export function Sidebar({
                  );
             case 'fundo':
                 return <div className="p-4"><ControleTipoFundo backgroundStyle={backgroundStyle} setBackgroundStyle={setBackgroundStyle} /></div>;
+            case 'modelos':
+                return <div className="p-4"><ControleModelos /></div>;
             case 'assinatura':
                 return <div className="p-4"><ControleAssinatura {...props} /></div>;
             case 'logo':
@@ -855,10 +937,10 @@ export function Sidebar({
                 <BotaoRecurso icon={Type} label="Texto" onClick={() => handleSetControleAtivo('texto')} isActive={activeControl === 'texto'}/>
                 <BotaoRecurso icon={RectangleHorizontal} label="Canvas" onClick={() => handleSetControleAtivo('canvas')} isActive={activeControl === 'canvas'}/>
                 <BotaoRecurso icon={Paintbrush} label="Cores" onClick={() => handleSetControleAtivo('cores')} isActive={activeControl === 'cores'}/>
-                <BotaoRecurso icon={Film} label="Película" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
                 <BotaoRecurso icon={Wand2} label="Estilo" onClick={() => handleSetControleAtivo('estilo')} isActive={activeControl === 'estilo'}/>
-                <BotaoRecurso icon={LayoutTemplate} label="Modelos" onClick={() => router.push(`/modelos?quote=${encodeURIComponent(text)}`)} />
                 <BotaoRecurso icon={LayoutTemplate} label="Fundo" onClick={() => handleSetControleAtivo('fundo')} isActive={activeControl === 'fundo'}/>
+                <BotaoRecurso icon={Film} label="Película" onClick={() => handleSetControleAtivo('filtro')} isActive={activeControl === 'filtro'} />
+                <BotaoRecurso icon={LayoutTemplate} label="Modelos" onClick={() => handleSetControleAtivo('modelos')} isActive={activeControl === 'modelos'}/>
                 <BotaoRecurso icon={UserCheck} label="Assinatura" onClick={() => handleSetControleAtivo('assinatura')} isActive={activeControl === 'assinatura'}/>
                 <BotaoRecurso icon={ImageUp} label="Logo" onClick={() => handleSetControleAtivo('logo')} isActive={activeControl === 'logo'}/>
             </div>

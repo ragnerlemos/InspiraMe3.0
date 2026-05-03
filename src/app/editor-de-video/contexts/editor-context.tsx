@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTemplates } from "@/hooks/use-templates";
 import type { EditorState, EstiloTexto } from '../tipos';
 import { captureAndDownload, captureThumbnail, generateVideoBlob } from '../exportar';
+import type { ExportOptions } from '../components/export-modal';
 import { useProfile } from '@/hooks/use-profile';
 import { useWindowSize } from 'react-use';
 import { createStrokeStyle, createDropShadowStyle } from '../utils/text-style-utils';
@@ -24,7 +25,8 @@ export interface EditorContextType {
   onSaveAsTemplate: () => Promise<void>;
   onExportJPG: () => void;
   onExportPNG: () => void;
-  onExportMP4: () => Promise<Blob | null>;
+  onExportMP4: (options: ExportOptions, onProgress?: (p: number) => void) => Promise<{ blob: Blob | null; error?: string }>;
+  applyTemplate: (templateState: Partial<EditorState>, strategy?: 'merge' | 'replace') => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -88,6 +90,47 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     setCurrentStateIndex(newHistory.length);
   }, [isReady, currentState, currentStateIndex, history]);
 
+  const applyTemplate = useCallback((templateState: Partial<EditorState>, strategy: 'merge' | 'replace' = 'merge') => {
+      if (!isReady || !currentState) return;
+
+      if (strategy === 'replace') {
+          updateState({ ...templateState, text: currentState.text });
+      } else {
+          // Merge Inteligente
+          // Considera mídia do usuário apenas se for data URl ou blob (upload direto da galeria)
+          const isUserMedia = currentState.backgroundStyle.type === 'media' && currentState.backgroundStyle.value !== '' && (currentState.backgroundStyle.value.startsWith('data:') || currentState.backgroundStyle.value.startsWith('blob:'));
+          
+          let nextBackgroundStyle = currentState.backgroundStyle;
+          if (isUserMedia) {
+             nextBackgroundStyle = currentState.backgroundStyle;
+          } else if (templateState.backgroundStyle) {
+             nextBackgroundStyle = templateState.backgroundStyle;
+          } else if (currentState.backgroundStyle.type === 'media') {
+             // Previne que a imagem de um template antigo vaze para um template que não possui fundo
+             nextBackgroundStyle = { type: 'solid', value: '#000000' };
+          } else {
+             nextBackgroundStyle = currentState.backgroundStyle;
+          }
+
+          updateState({
+              ...templateState,
+              text: currentState.text,
+              backgroundStyle: nextBackgroundStyle,
+              // Preservar customizações de logo/assinatura
+              showLogo: currentState.showLogo,
+              logoOpacity: currentState.logoOpacity,
+              logoPositionX: currentState.logoPositionX,
+              logoPositionY: currentState.logoPositionY,
+              logoScale: currentState.logoScale,
+              showProfileSignature: currentState.showProfileSignature,
+              signaturePositionX: currentState.signaturePositionX,
+              signaturePositionY: currentState.signaturePositionY,
+              signatureScale: currentState.signatureScale,
+          });
+      }
+      toast({ title: "Modelo Aplicado!", description: "O estilo foi importado com sucesso." });
+  }, [isReady, currentState, updateState, toast]);
+
   const undo = useCallback(() => { if (canUndo) setCurrentStateIndex(currentStateIndex - 1); }, [canUndo, currentStateIndex]);
   const redo = useCallback(() => { if (canRedo) setCurrentStateIndex(currentStateIndex + 1); }, [canRedo, currentStateIndex]);
 
@@ -114,9 +157,9 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       captureAndDownload('png', toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle);
   }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
-  const onExportMP4 = useCallback(async (): Promise<Blob | null> => {
-    if (!currentState || !profile) return null;
-    return await generateVideoBlob(toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle, 3, 15);
+  const onExportMP4 = useCallback(async (options: ExportOptions, onProgress?: (p: number) => void): Promise<{ blob: Blob | null; error?: string }> => {
+    if (!currentState || !profile) return { blob: null, error: 'Contexto ou perfil não encontrado' };
+    return await generateVideoBlob(toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle, 0, options, onProgress);
   }, [toast, currentState, profile, baseTextStyle, textEffectsStyle, dropShadowStyle]);
 
   const value = useMemo(() => ({
@@ -135,7 +178,8 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     onExportJPG,
     onExportPNG,
     onExportMP4,
-  }), [isReady, canUndo, canRedo, currentState, baseTextStyle, textEffectsStyle, dropShadowStyle, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4]);
+    applyTemplate,
+  }), [isReady, canUndo, canRedo, currentState, baseTextStyle, textEffectsStyle, dropShadowStyle, undo, redo, updateState, setInitialState, onSaveAsTemplate, onExportJPG, onExportPNG, onExportMP4, applyTemplate]);
 
   return (
     <EditorContext.Provider value={value}>

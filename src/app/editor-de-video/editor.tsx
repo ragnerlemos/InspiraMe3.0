@@ -123,18 +123,20 @@ export default function Editor() {
   }, [searchParams, isProfileLoaded, areTemplatesLoaded, isReady, setInitialState, allTemplates]);
 
 
+  const aspectRatio = currentState?.aspectRatio;
+
   useEffect(() => {
-    if (!currentState) return;
+    if (!aspectRatio) return;
     if (isDesktop) {
         setScale(1);
     } else {
-        if (currentState.aspectRatio === "9 / 16") {
+        if (aspectRatio === "9 / 16") {
             setScale(0.8);
         } else {
             setScale(1);
         }
     }
-  }, [currentState?.aspectRatio, isDesktop, currentState]);
+  }, [aspectRatio, isDesktop]);
   
   if (!isReady || !isProfileLoaded || !currentState) {
     return <Loading />;

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useEditor } from "../contexts/editor-context";
 import { useToast } from "@/hooks/use-toast";
+import { ExportModal, ExportOptions } from "./export-modal";
 
 export function EditorActions() {
     const { 
@@ -28,6 +29,11 @@ export function EditorActions() {
     const { toast } = useToast();
     const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
     const [videoPreview, setVideoPreview] = useState<{ url: string; blob: Blob } | null>(null);
+    
+    // Estados do novo Modal de Exportação
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [exportProgress, setExportProgress] = useState(0);
+    const [videoDuration, setVideoDuration] = useState(5);
 
     useEffect(() => {
       return () => {
@@ -42,17 +48,53 @@ export function EditorActions() {
         toast({ title: 'Projeto Salvo!'});
     }
 
-    const handleExportMP4 = async () => {
-        if (isGeneratingVideo) return;
-        toast({ title: 'Gerando vídeo...', description: 'Aguarde enquanto o vídeo é preparado.' });
+    const handleOpenExportModal = () => {
+        const bgVideo = document.querySelector('#editor-preview-content video') as HTMLVideoElement | null;
+        setVideoDuration(bgVideo?.duration || 5);
+        setIsExportModalOpen(true);
+        setExportProgress(0);
+    };
+
+    const handleStartExport = async (options: ExportOptions, isPreview: boolean) => {
         setIsGeneratingVideo(true);
-        const blob = await onExportMP4();
-        setIsGeneratingVideo(false);
-
-        if (!blob) return;
-
-        const url = URL.createObjectURL(blob);
-        setVideoPreview({ url, blob });
+        setExportProgress(0);
+        
+        try {
+            const { blob, error } = await onExportMP4(options, (p) => setExportProgress(p));
+            
+            if (blob) {
+                const url = URL.createObjectURL(blob);
+                
+                if (isPreview) {
+                   setVideoPreview({ url, blob });
+                } else {
+                   const extension = blob.type.includes('mp4') ? 'mp4' : 'webm';
+                   const link = document.createElement('a');
+                   link.href = url;
+                   link.download = `inspire-me-export-${Date.now()}.${extension}`;
+                   document.body.appendChild(link);
+                   link.click();
+                   document.body.removeChild(link);
+                }
+                
+                toast({ title: 'Sucesso!', description: 'O vídeo foi gerado corretamente.' });
+                setIsExportModalOpen(false); // Fecha o modal apenas se deu sucesso
+            } else {
+                toast({ 
+                  variant: 'destructive', 
+                  title: 'Erro de Exportação', 
+                  description: error || 'Não foi possível gerar o vídeo. Tente recarregar a página.' 
+                });
+            }
+        } catch (error: any) {
+            toast({ 
+              variant: 'destructive', 
+              title: 'Erro Crítico', 
+              description: `Ocorreu um erro ao processar o vídeo: ${error.message || 'Erro desconhecido'}` 
+            });
+        } finally {
+            setIsGeneratingVideo(false);
+        }
     };
 
     const closeVideoPreview = () => {
@@ -72,6 +114,8 @@ export function EditorActions() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        closeVideoPreview(); // Fecha o modal de pré-visualização 
     };
 
   return (
@@ -118,40 +162,58 @@ export function EditorActions() {
                     <Download className="mr-2 h-4 w-4" />
                     <span>Exportar como PNG</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExportMP4}>
+                <DropdownMenuItem onClick={handleOpenExportModal}>
                     <Share2 className="mr-2 h-4 w-4" />
-                    <span>{isGeneratingVideo ? 'Gerando MP4...' : 'Exportar como MP4'}</span>
+                    <span>Exportar como Vídeo</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
 
         {videoPreview && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4">
-            <div className="w-full max-w-3xl rounded-3xl border border-white/10 bg-background shadow-2xl overflow-hidden">
-              <div className="flex items-center justify-between gap-4 border-b px-4 py-3">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+            <div className="w-full max-w-3xl max-h-[95vh] rounded-3xl border border-white/10 bg-background shadow-2xl overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between gap-4 border-b px-6 py-4">
                 <div>
-                  <p className="text-base font-semibold">Pré-visualização do vídeo</p>
-                  <p className="text-sm text-muted-foreground">Veja o resultado antes de baixar.</p>
+                  <p className="text-lg font-bold">Pré-visualização do vídeo</p>
+                  <p className="text-sm text-muted-foreground">Confira o resultado final antes de baixar.</p>
                 </div>
-                <Button variant="ghost" size="icon" onClick={closeVideoPreview}>
-                  <span className="sr-only">Fechar pré-visualização</span>
-                  ×
+                <Button variant="ghost" size="icon" onClick={closeVideoPreview} className="rounded-full">
+                  <span className="sr-only">Fechar</span>
+                  <MoreVertical className="h-5 w-5 rotate-45" /> {/* Simples ícone de fechar */}
                 </Button>
               </div>
-              <div className="p-4">
+              
+              <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-black/20">
                 <video
                   src={videoPreview.url}
                   controls
                   autoPlay
-                  className="w-full rounded-2xl bg-black"
+                  loop
+                  className="max-w-full max-h-[65vh] rounded-xl shadow-lg bg-black object-contain"
                 />
               </div>
-              <div className="flex flex-wrap items-center justify-end gap-2 border-t px-4 py-3">
-                <Button onClick={downloadVideoPreview}>Baixar vídeo</Button>
-                <Button variant="secondary" onClick={closeVideoPreview}>Fechar</Button>
+
+              <div className="flex items-center justify-between gap-4 border-t px-6 py-4 bg-muted/30">
+                <Button variant="outline" onClick={closeVideoPreview}>Cancelar</Button>
+                <div className="flex items-center gap-2">
+                   <Button onClick={downloadVideoPreview} className="font-semibold">
+                     <Download className="mr-2 h-4 w-4" />
+                     Baixar Vídeo
+                   </Button>
+                </div>
               </div>
             </div>
           </div>
+        )}
+
+        {isExportModalOpen && (
+            <ExportModal 
+               isExporting={isGeneratingVideo}
+               progress={exportProgress}
+               durationSeconds={videoDuration}
+               onClose={() => !isGeneratingVideo && setIsExportModalOpen(false)}
+               onExport={handleStartExport}
+            />
         )}
     </>
   );
