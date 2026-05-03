@@ -4,25 +4,15 @@ const config: CapacitorConfig = {
   appId: 'com.inspireme2.app',
   appName: 'InspireMe',
   webDir: 'out',
-  cordova: {
-    preferences: {
-      'android-targetSdkVersion': '33',
-      'android-minSdkVersion': '22',
-      'android-compileSdkVersion': '33'
-    }
+  server: {
+    url: 'https://inspira-me3-0.vercel.app/',
+    cleartext: true
   },
   plugins: {
     Clipboard: {
       webAuth: {
         blockRobots: true,
         blockPartialBotDetection: true
-      }
-    },
-    Permissions: {
-      android: {
-        alias: 'clipboard-write',
-        name: 'clipboard-write',
-        permission: 'android.permission.CLIPBOARD_WRITE'
       }
     }
   }
